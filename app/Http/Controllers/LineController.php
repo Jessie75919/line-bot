@@ -55,7 +55,7 @@ class LineController extends Controller
 //            \Log::info($resp->getHTTPStatus() . ': ' . $resp->getRawBody());
 //        }
 
-        return response('OK');
+        return 'OK';
     }
 
 }
