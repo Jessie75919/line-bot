@@ -26,8 +26,8 @@ class LineController extends Controller
      */
     public function __construct($lineUserId)
     {
-        $this->lineBot    = app(LINEBot::class);
-        $this->lineUserId = $lineUserId;
+//        $this->lineBot    = app(LINEBot::class);
+//        $this->lineUserId = $lineUserId;
     }
 
 
