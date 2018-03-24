@@ -14,7 +14,8 @@ class LineController extends Controller
         $httpClient = new CurlHTTPClient(config('app.channel_token'));
         $bot        = new LINEBot($httpClient, ['channelSecret' => config('app.channel_secret')]);
 
-        dd($httpClient);
+        dd($bot);
+
 
 
         $response = $bot->replyText('<reply token>', 'hello!');
