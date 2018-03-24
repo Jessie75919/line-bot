@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
+use App\Services\LineBotService;
 use function config;
 use function env;
 use Illuminate\Support\ServiceProvider;
 use LINE\LINEBot;
-use App\Service\LineBotService;
 
 class AppServiceProvider extends ServiceProvider
 {
