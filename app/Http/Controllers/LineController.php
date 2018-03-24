@@ -84,7 +84,7 @@ class LineController extends Controller
         if($package['events']['0']['message']){
             $userMsg = $package['events']['0']['message'];
             if($userMsg['type'] === 'text' ) {
-                return $userMsg;
+                return $userMsg['text'];
             }
         }
     }
