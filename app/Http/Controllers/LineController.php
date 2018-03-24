@@ -36,24 +36,24 @@ class LineController extends Controller
 
         $this->log->addNotice('Line Bot Starting.....');
 
-//        $this->lineBot    = app(LINEBot::class);
-//        $this->lineUserId = $lineUserId;
+        $this->lineBot    = app(LINEBot::class);
+        $this->lineUserId = env('LINE_USER_ID');
     }
 
 
     public function index(Request $request)
     {
 
-        $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(env('CHANNEL_TOKEN'));
-        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => env('CHANNEL_SECRET')]);
+//        $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(env('CHANNEL_TOKEN'));
+//        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => env('CHANNEL_SECRET')]);
 
-        $req = $request->json()->all();
+        $req        = $request->json()->all();
         $replyToken = $req['events']['0']['replyToken'];
-        $userMsg = $req['events']['0']['message']['text'];
-        $this->log->addDebug('replyToken' . $replyToken);
-        $this->log->addDebug('userMsg' . $userMsg);
+        $userMsg    = $req['events']['0']['message']['text'];
+        $this->log->addDebug('replyToken : ' . $replyToken);
+        $this->log->addDebug('userMsg : ' . $userMsg);
 
-        $response = $bot->replyText($replyToken, $userMsg);
+        $response = $this->lineBot->replyText($replyToken, $userMsg);
 
 
         if($response->isSucceeded()) {
