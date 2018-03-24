@@ -24,7 +24,7 @@ class LineController extends Controller
      * @param $lineUserId
      * @internal param $lineBot
      */
-    public function __construct($lineUserId)
+    public function __construct()
     {
 //        $this->lineBot    = app(LINEBot::class);
 //        $this->lineUserId = $lineUserId;
