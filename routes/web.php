@@ -11,10 +11,12 @@
 |
 */
 
+use Illuminate\Http\Request;
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/webhook', function () {
-    return 'webhook is here';
+Route::post('/webhook', function (Request $request) {
+    dd($request);
 });
