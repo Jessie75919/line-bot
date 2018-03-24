@@ -40,8 +40,10 @@ class LineController extends Controller
 
         $req = $request->json()->all();
         $replyToken = $req['events']['0']['replyToken'];
+        $userMsg = $req['events']['0']['message']['text'];
 
-        $response = $bot->replyText($replyToken, 'hello!');
+        $response = $bot->replyText($replyToken, $userMsg);
+        
 
         if($response->isSucceeded()) {
             return;
