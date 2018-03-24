@@ -17,6 +17,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/webhook', function () {
-    return 'ok';
-});
+Route::post('/webhook', 'LineController@index');
