@@ -8,6 +8,7 @@ use function config;
 use function dd;
 use function env;
 use Illuminate\Http\Request;
+use function is_null;
 use function is_string;
 use LINE\LINEBot;
 use LINE\LINEBot\Constant\HTTPHeader;
@@ -96,13 +97,16 @@ class LineController extends Controller
     private function keywordReply($userMsg)
     {
         $keyword = collect([
-            'fb' => 'https://www.facebook.com/ChuCHandmade/',
-            'ig' => 'chu.c.handmade',
-            '蝦皮' => 'https://shopee.tw/juicekuo1227',
+            'fb'  => 'https://www.facebook.com/ChuCHandmade/',
+            'ig'  => 'chu.c.handmade',
+            '蝦皮'  => 'https://shopee.tw/juicekuo1227',
             '吃屎吧' => '哩假賽！！！'
         ]);
 
-        return $keyword->get($userMsg);
+
+        return is_null($keyword->get($userMsg))
+            ? '請講人話好嗎！！'
+            : $keyword->get($userMsg);
     }
 
 }
