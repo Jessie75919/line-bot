@@ -11,6 +11,7 @@ use LINE\LINEBot;
 use LINE\LINEBot\Constant\HTTPHeader;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use function response;
+use function var_dump;
 
 class LineController extends Controller
 {
@@ -33,6 +34,8 @@ class LineController extends Controller
 
     public function index(Request $request)
     {
+
+        var_dump($request->all());
 //        $httpRequestBody = "abc"; // Request body string
 //        $hash            = hash_hmac('sha256', $httpRequestBody, env('CHANNEL_SECRET'), true);
 //        $signature       = base64_encode($hash);
