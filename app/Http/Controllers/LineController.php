@@ -41,11 +41,9 @@ class LineController extends Controller
         $req = $request->json()->all();
         $replyToken = $req['events']['0']['replyToken'];
         $userMsg = $req['events']['0']['message']['text'];
-        echo $replyToken;
-        echo '================================' .PHP_EOL;
-        echo 'replyToken  = ' . $replyToken .PHP_EOL;
-        echo '================================' .PHP_EOL;
-        echo $userMsg;
+        file_put_contents("php://stderr", '$replyToken :' . $replyToken .PHP_EOL);
+        file_put_contents("php://stderr", '$userMsg :' . $userMsg .PHP_EOL);
+
         $response = $bot->replyText($replyToken, $userMsg);
 
 
