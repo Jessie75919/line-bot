@@ -35,7 +35,18 @@ class LineController extends Controller
     public function index(Request $request)
     {
 
-        var_dump($request->all());
+        $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(env('CHANNEL_TOKEN'));
+        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => env('CHANNEL_SECRET')]);
+
+        $req = $request->json()->all();
+        $replyToken = $req['events']['0']['replyToken'];
+
+        $response = $bot->replyText($replyToken, 'hello!');
+
+        if($response->isSucceeded()) {
+            return;
+        }
+
 //        $httpRequestBody = "abc"; // Request body string
 //        $hash            = hash_hmac('sha256', $httpRequestBody, env('CHANNEL_SECRET'), true);
 //        $signature       = base64_encode($hash);
@@ -58,7 +69,7 @@ class LineController extends Controller
 //            \Log::info($resp->getHTTPStatus() . ': ' . $resp->getRawBody());
 //        }
 
-        return 'OK';
+        return $response;
     }
 
 }
