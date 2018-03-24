@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use function app;
+use function collect;
 use function config;
 use function dd;
 use function env;
 use Illuminate\Http\Request;
+use function is_string;
 use LINE\LINEBot;
 use LINE\LINEBot\Constant\HTTPHeader;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
@@ -21,7 +23,6 @@ class LineController extends Controller
     private $lineBot;
     private $lineUserId;
     private $log;
-
 
 
     /**
@@ -43,43 +44,65 @@ class LineController extends Controller
 
     public function index(Request $request)
     {
+        $package    = $request->json()->all();
+        $replyToken = $this->getReplyToken($package);
+        $userMsg    = $this->getUserMessage($package);
 
-//        $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(env('CHANNEL_TOKEN'));
-//        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => env('CHANNEL_SECRET')]);
 
-        $req        = $request->json()->all();
-        $replyToken = $req['events']['0']['replyToken'];
-        $userMsg    = $req['events']['0']['message']['text'];
         $this->log->addDebug('replyToken : ' . $replyToken);
         $this->log->addDebug('userMsg : ' . $userMsg);
 
-        $response = $this->lineBot->replyText($replyToken, $userMsg);
+        $chuCResp = $this->keywordReply($userMsg);
+
+        $response = $this->lineBot->replyText($replyToken, $chuCResp);
 
 
         if($response->isSucceeded()) {
             return;
         }
 
-//        $httpRequestBody = "abc"; // Request body string //        $hash            = hash_hmac('sha256', $httpRequestBody, env('CHANNEL_SECRET'), true); //        $signature       = base64_encode($hash); //
-//        $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
-//
-//        $events = $this->lineBot->parseEventRequest($request->getContent(), $signature[0]);
-//
-//        foreach($events as $event) {
-//            if(!($event instanceof MessageEvent)) {
-//                continue;
-//            }
-//            if(!($event instanceof TextMessage)) {
-//                continue;
-//            }
-//
-//            $replyText = $event->getText();
-//            \Log::info('Reply test = ' . $replyText);
-//            $resp = $this->lineBot->replyText($event->getReplyToken(), $replyText);
-//            \Log::info($resp->getHTTPStatus() . ': ' . $resp->getRawBody());
-//        }
-
         return $response;
+    }
+
+
+    /**
+     * @param $package
+     * @return string
+     */
+    private function getReplyToken($package)
+    {
+        return $package['events']['0']['replyToken'];
+    }
+
+
+    /**
+     * @param $package
+     * @return mixed | string
+     */
+    private function getUserMessage($package)
+    {
+        if($package['events']['0']['message']){
+            $userMsg = $package['events']['0']['message'];
+            if($userMsg['type'] === 'text' ) {
+                return $userMsg;
+            }
+        }
+    }
+
+
+    /**
+     * @return mixed
+     */
+    private function keywordReply($userMsg)
+    {
+        $keyword = collect([
+            'fb' => 'https://www.facebook.com/ChuCHandmade/',
+            'ig' => 'chu.c.handmade',
+            '蝦皮' => 'https://shopee.tw/juicekuo1227',
+            '吃屎吧' => '哩假賽！！！'
+        ]);
+
+        return $keyword->get($userMsg);
     }
 
 }
