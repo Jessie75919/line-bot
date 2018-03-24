@@ -18,5 +18,5 @@ Route::get('/', function () {
 });
 
 Route::post('/webhook', function (Request $request) {
-    dd($request);
+    return $request;
 });
