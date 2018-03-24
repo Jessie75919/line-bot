@@ -15,6 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/webhook', function () {
+Route::post('/webhook', function () {
     return 'webhook is here';
 });
