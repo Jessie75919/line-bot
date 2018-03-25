@@ -126,7 +126,7 @@ class LineController extends Controller
         }
         $this->log->addDebug('reply message : ' . $resp);
 
-        return !empty($resp)
+        return count($resp) != 0
             ? $resp->random()->message
             : '不要再講幹話好嗎！！';
     }
