@@ -59,6 +59,7 @@ class LineController extends Controller
 
         $strArr = explode(' ', $userMsg);
         // check whether is learn command
+        $this->log->addDebug('isLearningCod = ' . $this->isLearningCommand($userMsg[0]));
         if(!$this->isLearningCommand($userMsg[0])){
             $chuCResp = $this->keywordReply($userMsg);
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
@@ -125,7 +126,7 @@ class LineController extends Controller
      */
     private function isLearningCommand($learnWord)
     {
-        return $learnWord === '學'
+        return $learnWord == '學'
             ? true
             : false;
     }
@@ -138,12 +139,13 @@ class LineController extends Controller
      */
     private function learnCommand($key, $message)
     {
+        $this->log->addDebug("key = ". $key);
+        $this->log->addDebug("message = ". $message);
+
         if(strlen($key) <= 0 && strlen($message) <= 0) {
             return false;
         }
 
-        $this->log->addDebug("key = ". $key);
-        $this->log->addDebug("message = ". $message);
 
         Message::create([
             'keyword' => $key,
