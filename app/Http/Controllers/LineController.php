@@ -99,7 +99,7 @@ class LineController extends Controller
      */
     private function keywordReply($userMsg)
     {
-        $resp = Message::where('keyword', strtolower($userMsg));
+        $resp = Message::where('keyword', strtolower($userMsg))->first()->message;
 
 //        $keyword = collect([
 //            'fb'    => 'https://www.facebook.com/ChuCHandmade/',
