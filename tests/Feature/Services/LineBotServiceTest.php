@@ -2,6 +2,8 @@
 namespace Tests\Feature\Services;
 
 use App\Services\LineBotService;
+use function assertEquals;
+use function dd;
 use Tests\TestCase;
 
 class LineBotServiceTest extends TestCase
@@ -27,4 +29,21 @@ class LineBotServiceTest extends TestCase
 
         $this->assertEquals(200, $response->getHTTPStatus());
     }
+
+
+    public function testPushMessageWithObject()
+    {
+        $target = $this->lineBotService->buildTemplateMessageBuilder(
+            'https://scontent.ftpe7-3.fna.fbcdn.net/v/t1.0-1/p200x200/28783736_874496826065433_2832967364813783040_n.jpg?oh=0650bd4499af50dd4e8fdd7340ff365d&oe=5B3F42CE',
+            'https://www.facebook.com/pg/ChuCHandmade/about/?ref=page_internal',
+            'Chu.C 啾囍'
+        );
+
+        $response = $this->lineBotService->pushMessage($target);
+
+        dd($response);
+
+        assertEquals(200, $response->getHTTPStatus());
+    }
+
 }

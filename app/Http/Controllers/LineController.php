@@ -16,6 +16,7 @@ use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use function response;
+use function strtolower;
 use function var_dump;
 
 class LineController extends Controller
@@ -97,18 +98,18 @@ class LineController extends Controller
     private function keywordReply($userMsg)
     {
         $keyword = collect([
-            'fb'  => 'https://www.facebook.com/ChuCHandmade/',
-            'ig'  => 'chu.c.handmade',
-            '蝦皮'  => 'https://shopee.tw/juicekuo1227',
-            '吃屎吧' => '哩假賽！！！',
+            'fb'    => 'https://www.facebook.com/ChuCHandmade/',
+            'ig'    => 'chu.c.handmade',
+            '蝦皮'    => 'https://shopee.tw/juicekuo1227',
+            '吃屎吧'   => '哩假賽！！！',
             '你好'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
             'hi'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
-            'hello'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
+            'hello' => '安安幾歲哪人星座血型喜歡的花語單身否?',
             'yo'    => '安安幾歲哪人星座血型喜歡的花語單身否?'
         ]);
 
 
-        return is_null($keyword->get($userMsg))
+        return is_null($keyword->get(strtolower($userMsg)))
             ? '請講人話好嗎！！'
             : $keyword->get($userMsg);
     }

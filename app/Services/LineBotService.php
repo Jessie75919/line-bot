@@ -4,6 +4,7 @@ namespace App\Services;
 
 use LINE\LINEBot;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselColumnTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\Response;
@@ -49,8 +50,9 @@ class LineBotService
         string $label
     ): TemplateMessageBuilder {
         $action = new UriTemplateActionBuilder($label, $directUri);
-        $target = new ImageCarouselColumnTemplateBuilder($imagePath, $action);
+        $img    = new ImageCarouselColumnTemplateBuilder($imagePath, $action);
 
+        $target = new ImageCarouselTemplateBuilder([$img, $img]);
         return new TemplateMessageBuilder('WTF', $target);
     }
 
