@@ -57,7 +57,7 @@ class LineController extends Controller
 
         $this->log->addDebug('replyToken : ' . $replyToken);
 
-        $strArr = explode(' ', $userMsg);
+        $strArr = explode(':', $userMsg);
         // check whether is learn command
         $this->log->addDebug('isLearningCmd= ' . $this->isLearningCommand($strArr[0]));
 
