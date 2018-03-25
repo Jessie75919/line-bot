@@ -120,12 +120,15 @@ class LineController extends Controller
     private function keywordReply($userMsg)
     {
         $this->log->addDebug('userMsg : ' . $userMsg);
-        $resp = Message::where('keyword', strtolower($userMsg))->get()->random()->message;
+        $resp = Message::where('keyword', strtolower($userMsg))->get();
+        if(!empty($resp)){
+
+        }
         $this->log->addDebug('reply message : ' . $resp);
 
-        return isset($resp)
-            ? '不要再講幹話好嗎！！'
-            : $resp;
+        return !empty($resp)
+            ? $resp->random()->message
+            : '不要再講幹話好嗎！！';
     }
 
 
