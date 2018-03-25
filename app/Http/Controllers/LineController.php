@@ -59,17 +59,26 @@ class LineController extends Controller
 
         $strArr = explode(' ', $userMsg);
         // check whether is learn command
-        $this->log->addDebug('isLearningCod = ' . $this->isLearningCommand($strArr[0]));
-        if(!$this->isLearningCommand($strArr[0])){
+        $this->log->addDebug('isLearningCmd= ' . $this->isLearningCommand($strArr[0]));
+
+
+        if(!$this->isLearningCommand($strArr[0])) {
             $chuCResp = $this->keywordReply($userMsg);
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
-        }else{
-            if($this->learnCommand($strArr[1], $strArr[2])== true){
-                $response = $this
-                    ->lineBot
-                    ->replyText($replyToken, "我已經學習了：$strArr[1] = $strArr[2])囉！！ 試試看吧～");
-            }
+            return $response;
         }
+
+
+        if($this->learnCommand($strArr[1], $strArr[2]) == true) {
+            $response = $this
+                ->lineBot
+                ->replyText($replyToken, "我已經學習了：$strArr[1] = $strArr[2]囉！！ 試試看吧～");
+        } else {
+            $response = $this
+                ->lineBot
+                ->replyText($replyToken, "你不要盡教我一些幹話好不好！");
+        }
+
 
         if($response->isSucceeded()) {
             return;
@@ -111,7 +120,7 @@ class LineController extends Controller
     private function keywordReply($userMsg)
     {
         $this->log->addDebug('userMsg : ' . $userMsg);
-        $resp = Message::where('keyword', strtolower($userMsg))->first()->message;
+        $resp = Message::where('keyword', strtolower($userMsg))->get()->random()->message;
         $this->log->addDebug('reply message : ' . $resp);
 
         return is_null($resp)
