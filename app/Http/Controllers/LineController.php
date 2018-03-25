@@ -59,15 +59,15 @@ class LineController extends Controller
 
         $strArr = explode(' ', $userMsg);
         // check whether is learn command
-        $this->log->addDebug('isLearningCod = ' . $this->isLearningCommand($userMsg[0]));
-        if(!$this->isLearningCommand($userMsg[0])){
+        $this->log->addDebug('isLearningCod = ' . $this->isLearningCommand($strArr[0]));
+        if(!$this->isLearningCommand($strArr[0])){
             $chuCResp = $this->keywordReply($userMsg);
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
         }else{
-            if($this->learnCommand($userMsg[1], $userMsg[2])== true){
+            if($this->learnCommand($strArr[1], $strArr[2])== true){
                 $response = $this
                     ->lineBot
-                    ->replyText($replyToken, "我已經學習了：$userMsg[1] = $userMsg[2])囉！！ 試試看吧～");
+                    ->replyText($replyToken, "我已經學習了：$strArr[1] = $strArr[2])囉！！ 試試看吧～");
             }
         }
 
