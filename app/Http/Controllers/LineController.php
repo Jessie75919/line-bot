@@ -123,7 +123,7 @@ class LineController extends Controller
         $resp = Message::where('keyword', strtolower($userMsg))->get()->random()->message;
         $this->log->addDebug('reply message : ' . $resp);
 
-        return is_null($resp)
+        return isset($resp)
             ? '不要再講幹話好嗎！！'
             : $resp;
     }
