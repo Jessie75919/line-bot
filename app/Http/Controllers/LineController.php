@@ -142,6 +142,9 @@ class LineController extends Controller
             return false;
         }
 
+        $this->log->addDebug("key = ". $key);
+        $this->log->addDebug("message = ". $message);
+
         Message::create([
             'keyword' => $key,
             'message' => $message
