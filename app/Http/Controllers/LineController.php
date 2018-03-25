@@ -21,6 +21,7 @@ use Monolog\Logger;
 use function response;
 use function strlen;
 use function strtolower;
+use function trim;
 use const true;
 use function var_dump;
 
@@ -41,7 +42,6 @@ class LineController extends Controller
     {
         $this->log = new Logger('Chu-C ');
         $this->log->pushHandler(new StreamHandler('php://stderr', Logger::DEBUG));
-
         $this->log->addNotice('Line Bot Starting.....');
 
         $this->lineBot    = app(LINEBot::class);
@@ -121,9 +121,7 @@ class LineController extends Controller
     {
         $this->log->addDebug('userMsg : ' . $userMsg);
         $resp = Message::where('keyword', strtolower($userMsg))->get();
-        if(!empty($resp)){
 
-        }
         $this->log->addDebug('reply message : ' . $resp);
 
         return count($resp) != 0
@@ -138,9 +136,7 @@ class LineController extends Controller
      */
     private function isLearningCommand($learnWord)
     {
-        return $learnWord == '學'
-            ? true
-            : false;
+        return trim($learnWord ) == '學' ? true : false;
     }
 
 
@@ -158,6 +154,8 @@ class LineController extends Controller
             return false;
         }
 
+        $key     = trim($key);
+        $message = trim($message);
 
         Message::create([
             'keyword' => $key,
