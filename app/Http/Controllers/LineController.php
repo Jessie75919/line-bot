@@ -8,6 +8,8 @@ use function collect;
 use function config;
 use function dd;
 use function env;
+use function explode;
+use const false;
 use Illuminate\Http\Request;
 use function is_null;
 use function is_string;
@@ -17,7 +19,9 @@ use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use function response;
+use function strlen;
 use function strtolower;
+use const true;
 use function var_dump;
 
 class LineController extends Controller
@@ -51,14 +55,19 @@ class LineController extends Controller
         $replyToken = $this->getReplyToken($package);
         $userMsg    = $this->getUserMessage($package);
 
-
         $this->log->addDebug('replyToken : ' . $replyToken);
-        $this->log->addDebug('userMsg : ' . $userMsg);
 
-        $chuCResp = $this->keywordReply($userMsg);
-
-        $response = $this->lineBot->replyText($replyToken, $chuCResp);
-
+        $strArr = explode(' ', $userMsg);
+        // check whether is learn command
+        if(!$this->isLearningCommand($userMsg[0])){
+            $chuCResp = $this->keywordReply($userMsg);
+            $response = $this->lineBot->replyText($replyToken, $chuCResp);
+        }else{
+            $this->learnCommand($userMsg[1], $userMsg[2]);
+            $response = $this
+                            ->lineBot
+                            ->replyText($replyToken, "我已經學習了：$userMsg[1] = $userMsg[2])囉！！ 試試看吧～");
+        }
 
         if($response->isSucceeded()) {
             return;
@@ -95,27 +104,49 @@ class LineController extends Controller
 
     /**
      * @param $userMsg
-     * @return mixed
+     * @return string
      */
     private function keywordReply($userMsg)
     {
+        $this->log->addDebug('userMsg : ' . $userMsg);
         $resp = Message::where('keyword', strtolower($userMsg))->first()->message;
-
-//        $keyword = collect([
-//            'fb'    => 'https://www.facebook.com/ChuCHandmade/',
-//            'ig'    => 'chu.c.handmade',
-//            '蝦皮'    => 'https://shopee.tw/juicekuo1227',
-//            '吃屎吧'   => '哩假賽！！！',
-//            '你好'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
-//            'hi'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
-//            'hello' => '安安幾歲哪人星座血型喜歡的花語單身否?',
-//            'yo'    => '安安幾歲哪人星座血型喜歡的花語單身否?'
-//        ]);
-
+        $this->log->addDebug('reply message : ' . $resp);
 
         return is_null($resp)
-            ? '請講人話好嗎！！'
+            ? '不要再講幹話好嗎！！'
             : $resp;
+    }
+
+
+    /**
+     * @param string $learnWord
+     * @return bool
+     */
+    private function isLearningCommand($learnWord)
+    {
+        return $learnWord === '學'
+            ? true
+            : false;
+    }
+
+
+    /**
+     * @param $key
+     * @param $message
+     * @return bool
+     */
+    private function learnCommand($key, $message)
+    {
+        if(strlen($key) <= 0 && strlen($message) <= 0) {
+            return false;
+        }
+
+        Message::create([
+            'keyword' => $key,
+            'message' => $message
+        ]);
+
+        return true;
     }
 
 }
