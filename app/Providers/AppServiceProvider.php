@@ -7,6 +7,8 @@ use function config;
 use function env;
 use Illuminate\Support\ServiceProvider;
 use LINE\LINEBot;
+use Illuminate\Support\Facades\Schema;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Schema::defaultStringLength(191);
     }
 
     /**
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
         $this->lineBotRegister();
         $this->lineBotServiceRegister();
     }
