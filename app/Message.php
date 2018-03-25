@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Message extends Model
 {
+    protected $fillable = [
+        'keyword',
+        'message'
+    ];
 
     use SoftDeletes;
     /**

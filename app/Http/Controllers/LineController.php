@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use function app;
+use App\Message;
 use function collect;
 use function config;
 use function dd;
@@ -93,25 +94,28 @@ class LineController extends Controller
 
 
     /**
+     * @param $userMsg
      * @return mixed
      */
     private function keywordReply($userMsg)
     {
-        $keyword = collect([
-            'fb'    => 'https://www.facebook.com/ChuCHandmade/',
-            'ig'    => 'chu.c.handmade',
-            '蝦皮'    => 'https://shopee.tw/juicekuo1227',
-            '吃屎吧'   => '哩假賽！！！',
-            '你好'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
-            'hi'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
-            'hello' => '安安幾歲哪人星座血型喜歡的花語單身否?',
-            'yo'    => '安安幾歲哪人星座血型喜歡的花語單身否?'
-        ]);
+        $resp = Message::where('keyword', strtolower($userMsg));
+
+//        $keyword = collect([
+//            'fb'    => 'https://www.facebook.com/ChuCHandmade/',
+//            'ig'    => 'chu.c.handmade',
+//            '蝦皮'    => 'https://shopee.tw/juicekuo1227',
+//            '吃屎吧'   => '哩假賽！！！',
+//            '你好'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
+//            'hi'    => '安安幾歲哪人星座血型喜歡的花語單身否?',
+//            'hello' => '安安幾歲哪人星座血型喜歡的花語單身否?',
+//            'yo'    => '安安幾歲哪人星座血型喜歡的花語單身否?'
+//        ]);
 
 
-        return is_null($keyword->get(strtolower($userMsg)))
+        return is_null($resp)
             ? '請講人話好嗎！！'
-            : $keyword->get($userMsg);
+            : $resp;
     }
 
 }
