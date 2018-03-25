@@ -63,10 +63,11 @@ class LineController extends Controller
             $chuCResp = $this->keywordReply($userMsg);
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
         }else{
-            $this->learnCommand($userMsg[1], $userMsg[2]);
-            $response = $this
-                            ->lineBot
-                            ->replyText($replyToken, "我已經學習了：$userMsg[1] = $userMsg[2])囉！！ 試試看吧～");
+            if($this->learnCommand($userMsg[1], $userMsg[2])== true){
+                $response = $this
+                    ->lineBot
+                    ->replyText($replyToken, "我已經學習了：$userMsg[1] = $userMsg[2])囉！！ 試試看吧～");
+            }
         }
 
         if($response->isSucceeded()) {
