@@ -3,16 +3,11 @@
 namespace App\Http\Controllers;
 
 use function app;
-use App\Message;
 use App\Services\LineBotReceiveMessageService;
 use App\Services\LineBotResponseService;
 use function env;
-use const false;
 use Illuminate\Http\Request;
 use LINE\LINEBot;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use function print_r;
 use const true;
 
 class LineController extends Controller
@@ -26,7 +21,7 @@ class LineController extends Controller
 
     /**
      * LineController constructor.
-     * @param $lineUserId
+     * @internal param $lineUserId
      * @internal param $lineBot
      */
     public function __construct()
@@ -53,7 +48,7 @@ class LineController extends Controller
             $chuCResp = $this->botResponseService->keywordReply($userMsg);
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
             \Log::info('response = '. print_r($response,true));
-            return $response->json();
+            return $response;
         }
 
 
