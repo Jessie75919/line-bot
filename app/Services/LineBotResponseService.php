@@ -9,8 +9,25 @@
 namespace App\Services;
 
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
 class LineBotResponseService
 {
+    private $log;
+
+
+    /**
+     * LineBotResponseService constructor.
+     * @param $log
+     */
+    public function __construct()
+    {
+        $this->log = new Logger('Chu-C ');
+        $this->log->pushHandler(new StreamHandler('php://stderr', Logger::DEBUG));
+    }
+
+
     /**
      * @param $userMsg
      * @return string
