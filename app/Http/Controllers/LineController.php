@@ -59,21 +59,23 @@ class LineController extends Controller
             return;
         }
 
-
-        // check whether is learn command
-        if(!$this->botResponseService->isLearningCommand($strArr[0])) {
-            $chuCResp = $this->botResponseService->keywordReply($userMsg);
-            $response = $this->lineBot->replyText($replyToken, $chuCResp);
-            \Log::info('response = '. print_r($response,true));
-            return $response;
-        }
-
         if($this->botResponseService->isNeedShutUp($userMsg)){
             $this->botResponseService->setShutUp(true);
             return $this
                 ->lineBot
                 ->replyText($replyToken, "好啦～我閉嘴就是了！");
         }
+
+
+
+        // check whether is learn command
+        if(!$this->botResponseService->isLearningCommand($strArr[0])) {
+            $chuCResp = $this->botResponseService->keywordReply($userMsg);
+            $response = $this->lineBot->replyText($replyToken, $chuCResp);
+            return $response;
+        }
+
+
 
 
         if($this->botResponseService->learnCommand($strArr[1], $strArr[2]) == true) {
