@@ -47,7 +47,7 @@ class LineController extends Controller
 
         $strArr = explode(':', $userMsg);
         // check whether is learn command
-        $this->log->addDebug('isLearningCmd= ' . $this->isLearningCommand($strArr[0]));
+        $this->log->addDebug('isLearningCmd= ' . $this->botResponseService->isLearningCommand($strArr[0]));
 
 
 
