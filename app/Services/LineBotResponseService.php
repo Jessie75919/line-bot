@@ -102,7 +102,10 @@ class LineBotResponseService
      */
     public function isNeedShutUp(string $keyword):bool
     {
-        return strpos($keyword, 'ChuC 安靜') === false ? false : true;
+        \Log::info('isNeedShutUp = '.$keyword);
+        $result = strpos($keyword, 'ChuC 安靜');
+        \Log::info('result = '.$result);
+        return $result === false ? false : true;
     }
 
 
