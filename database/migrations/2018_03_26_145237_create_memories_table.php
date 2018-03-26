@@ -16,7 +16,7 @@ class CreateMemoriesTable extends Migration
         Schema::create('memories', function (Blueprint $table) {
             $table->increments('id');
             $table->string('channel_id');
-            $table->boolean('is_talk');
+            $table->boolean('is_talk')->default('true');
             $table->string('save_to_received');
             $table->string('save_to_reply');
             $table->string('echo2');
