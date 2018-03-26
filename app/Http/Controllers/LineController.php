@@ -104,6 +104,7 @@ class LineController extends Controller
      */
     private function getUserMessage($package)
     {
+        // only respond text type message
         if($package['events']['0']['message']){
             $userMsg = $package['events']['0']['message'];
             if($userMsg['type'] === 'text' ) {
@@ -120,7 +121,7 @@ class LineController extends Controller
     private function keywordReply($userMsg)
     {
         $this->log->addDebug('userMsg : ' . $userMsg);
-        $resp = Message::where('keyword', strtolower($userMsg))->get();
+        $resp = Message::where('keyword','like', '%' . strtolower($userMsg) .'%')->get();
 
         $this->log->addDebug('reply message : ' . $resp);
 
