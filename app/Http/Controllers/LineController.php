@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use function app;
 use App\Message;
+use App\Services\LineBotReceiveMessageService;
 use App\Services\LineBotResponseService;
 use function env;
 use const false;
@@ -20,6 +21,7 @@ class LineController extends Controller
     private $lineBot;
     private $lineUserId;
     private $botResponseService;
+    private $botReceiveMessageService;
 
 
     /**
@@ -30,17 +32,18 @@ class LineController extends Controller
     public function __construct()
     {
         \Log::info('Line Bot Starting .... ');
-        $this->lineBot            = app(LINEBot::class);
-        $this->lineUserId         = env('LINE_USER_ID');
-        $this->botResponseService = new LineBotResponseService();
+        $this->lineBot                  = app(LINEBot::class);
+        $this->lineUserId               = env('LINE_USER_ID');
+        $this->botResponseService       = new LineBotResponseService();
+        $this->botReceiveMessageService = new LineBotReceiveMessageService();
     }
 
 
     public function index(Request $request)
     {
         $package    = $request->json()->all();
-        $replyToken = $this->getReplyToken($package);
-        $userMsg    = $this->getUserMessage($package);
+        $replyToken = $this->botReceiveMessageService->getReplyToken($package);
+        $userMsg    = $this->botReceiveMessageService->getUserMessage($package);
 
         \Log::info('replyToken = '.$replyToken);
 
@@ -50,7 +53,7 @@ class LineController extends Controller
             $chuCResp = $this->botResponseService->keywordReply($userMsg);
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
             \Log::info('response = '. print_r($response,true));
-            return $response;
+            return $response->json();
         }
 
 
@@ -73,28 +76,28 @@ class LineController extends Controller
     }
 
 
-    /**
-     * @param $package
-     * @return string
-     */
-    private function getReplyToken($package)
-    {
-        return $package['events']['0']['replyToken'];
-    }
-
-
-    /**
-     * @param $package
-     * @return mixed | string
-     */
-    private function getUserMessage($package)
-    {
-        // only respond text type message
-        if($package['events']['0']['message']){
-            $userMsg = $package['events']['0']['message'];
-            if($userMsg['type'] === 'text' ) {
-                return $userMsg['text'];
-            }
-        }
-    }
+//    /**
+//     * @param $package
+//     * @return string
+//     */
+//    private function getReplyToken($package)
+//    {
+//        return $package['events']['0']['replyToken'];
+//    }
+//
+//
+//    /**
+//     * @param $package
+//     * @return mixed | string
+//     */
+//    private function getUserMessage($package)
+//    {
+//        // only respond text type message
+//        if($package['events']['0']['message']){
+//            $userMsg = $package['events']['0']['message'];
+//            if($userMsg['type'] === 'text' ) {
+//                return $userMsg['text'];
+//            }
+//        }
+//    }
 }

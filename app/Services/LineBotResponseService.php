@@ -30,7 +30,6 @@ class LineBotResponseService
         \Log::info('userMsg = '.$userMsg);
         $resp = Message::where('keyword','like', '%' . strtolower($userMsg) .'%')->get();
 
-        \Log::info( 'reply message : ' . $resp);
         return count($resp) != 0
             ? $resp->random()->message
             : '不要再講幹話好嗎！！';
