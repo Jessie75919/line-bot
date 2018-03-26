@@ -6,6 +6,7 @@ use function app;
 use App\Services\LineBotReceiveMessageService;
 use App\Services\LineBotResponseService;
 use function env;
+use const false;
 use Illuminate\Http\Request;
 use LINE\LINEBot;
 use const true;
@@ -36,6 +37,9 @@ class LineController extends Controller
 
     public function index(Request $request)
     {
+
+
+
         $package    = $request->json()->all();
         $replyToken = $this->botReceiveMessageService->getReplyToken($package);
         $userMsg    = $this->botReceiveMessageService->getUserMessage($package);
@@ -43,12 +47,32 @@ class LineController extends Controller
         \Log::info('replyToken = '.$replyToken);
 
         $strArr = explode(':', $userMsg);
+
+        if(!$this->botResponseService->isShutUp()){
+            
+            if($this->botResponseService->isNeedTalk($userMsg)){
+                $this->botResponseService->setShutUp(false);
+                return $this
+                    ->lineBot
+                    ->replyText($replyToken, "是你要我講話的喔！就別怪我吵喔～");
+            }
+            return;
+        }
+
+
         // check whether is learn command
         if(!$this->botResponseService->isLearningCommand($strArr[0])) {
             $chuCResp = $this->botResponseService->keywordReply($userMsg);
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
             \Log::info('response = '. print_r($response,true));
             return $response;
+        }
+
+        if($this->botResponseService->isNeedShutUp($userMsg)){
+            $this->botResponseService->setShutUp(true);
+            return $this
+                ->lineBot
+                ->replyText($replyToken, "好啦～我閉嘴就是了！");
         }
 
 
@@ -71,28 +95,4 @@ class LineController extends Controller
     }
 
 
-//    /**
-//     * @param $package
-//     * @return string
-//     */
-//    private function getReplyToken($package)
-//    {
-//        return $package['events']['0']['replyToken'];
-//    }
-//
-//
-//    /**
-//     * @param $package
-//     * @return mixed | string
-//     */
-//    private function getUserMessage($package)
-//    {
-//        // only respond text type message
-//        if($package['events']['0']['message']){
-//            $userMsg = $package['events']['0']['message'];
-//            if($userMsg['type'] === 'text' ) {
-//                return $userMsg['text'];
-//            }
-//        }
-//    }
 }

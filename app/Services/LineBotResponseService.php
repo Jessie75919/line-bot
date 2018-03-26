@@ -10,14 +10,20 @@ namespace App\Services;
 
 
 use App\Message;
+use const false;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use const true;
 
 class LineBotResponseService
 {
 
+    private $shutUp;
+
+
     public function __construct()
     {
+        $this->shutUp = false;
     }
 
 
@@ -69,5 +75,39 @@ class LineBotResponseService
         ]);
 
         return true;
+    }
+
+
+    /**
+     * @param bool $shutUp
+     */
+    public function setShutUp(bool $shutUp):bool
+    {
+        $this->shutUp = $shutUp;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isShutUp():bool
+    {
+        return $this->shutUp;
+    }
+
+
+    /**
+     * @param string $keyword
+     * @return bool
+     */
+    public function isNeedShutUp(string $keyword):bool
+    {
+        return strpos($keyword, 'ChuC 安靜') === false ? false : true;
+    }
+
+
+    public function isNeedTalk(string $keyword):bool
+    {
+        return strpos($keyword, 'ChuC 講話') === false ? false : true;
     }
 }
