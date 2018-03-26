@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Message;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
