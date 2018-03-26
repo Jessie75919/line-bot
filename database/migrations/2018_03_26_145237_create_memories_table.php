@@ -15,11 +15,11 @@ class CreateMemoriesTable extends Migration
     {
         Schema::create('memories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('channel_id');
-            $table->boolean('is_talk')->default('true');
-            $table->string('save_to_received');
-            $table->string('save_to_reply');
-            $table->string('echo2');
+            $table->string('channel_id')->nullable();
+            $table->boolean('is_talk')->default('1');
+            $table->string('save_to_received')->nullable();
+            $table->string('save_to_reply')->nullable();
+            $table->string('echo2')->nullable();
             $table->foreign('channel_id')->references('channel_id')->on('messages');
             $table->timestamps();
         });
