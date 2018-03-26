@@ -34,7 +34,7 @@ class LineBotResponseService
     public function keywordReply($userMsg)
     {
         \Log::info('userMsg = '.$userMsg);
-        $resp = Message::where('keyword','like', '%' . strtolower($userMsg) .'%')->get();
+        $resp = Message::where('keyword',strtolower($userMsg))->get();
 
         return count($resp) != 0
             ? $resp->random()->message
@@ -81,7 +81,7 @@ class LineBotResponseService
     /**
      * @param bool $shutUp
      */
-    public function setShutUp(bool $shutUp):bool
+    public function setShutUp(bool $shutUp)
     {
         $this->shutUp = $shutUp;
     }

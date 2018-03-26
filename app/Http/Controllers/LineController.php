@@ -46,10 +46,10 @@ class LineController extends Controller
 
         \Log::info('replyToken = '.$replyToken);
 
-        $strArr = explode(':', $userMsg);
+        $strArr = explode(';', $userMsg);
 
-        if(!$this->botResponseService->isShutUp()){
-            
+        if($this->botResponseService->isShutUp()){
+
             if($this->botResponseService->isNeedTalk($userMsg)){
                 $this->botResponseService->setShutUp(false);
                 return $this
