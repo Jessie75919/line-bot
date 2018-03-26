@@ -15,17 +15,9 @@ use Monolog\Logger;
 
 class LineBotResponseService
 {
-    private $log;
 
-
-    /**
-     * LineBotResponseService constructor.
-     * @param $log
-     */
     public function __construct()
     {
-        $this->log = new Logger('Chu-C ');
-        $this->log->pushHandler(new StreamHandler('php://stderr', Logger::DEBUG));
     }
 
 
@@ -35,11 +27,10 @@ class LineBotResponseService
      */
     public function keywordReply($userMsg)
     {
-        $this->log->addDebug('userMsg : ' . $userMsg);
+        \Log::info('userMsg = '.$userMsg);
         $resp = Message::where('keyword','like', '%' . strtolower($userMsg) .'%')->get();
 
-        $this->log->addDebug('reply message : ' . $resp);
-
+        \Log::info( 'reply message : ' . $resp);
         return count($resp) != 0
             ? $resp->random()->message
             : '不要再講幹話好嗎！！';
@@ -63,8 +54,8 @@ class LineBotResponseService
      */
     public function learnCommand($key, $message)
     {
-        $this->log->addDebug("key = ". $key);
-        $this->log->addDebug("message = ". $message);
+        \Log::info('key = '. $key);
+        \Log::info('message = '.$message);
 
         if(strlen($key) <= 0 && strlen($message) <= 0) {
             return false;
