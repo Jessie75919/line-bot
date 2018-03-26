@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use LINE\LINEBot;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use function print_r;
+use const true;
 
 class LineController extends Controller
 {
@@ -50,11 +52,10 @@ class LineController extends Controller
         $this->log->addDebug('isLearningCmd= ' . $this->botResponseService->isLearningCommand($strArr[0]));
 
 
-
-
         if(!$this->botResponseService->isLearningCommand($strArr[0])) {
             $chuCResp = $this->botResponseService->keywordReply($userMsg);
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
+            \Log::info('response = '. print_r($response,true));
             return $response;
         }
 
