@@ -20,9 +20,6 @@ class LineBotReceiveMessageService
     public function __construct($package)
     {
         $this->replyToken  = $package['events']['0']['replyToken'];
-
-
-
         $this->channelId   = $package['events']['0']['source']['userId'];
     }
 

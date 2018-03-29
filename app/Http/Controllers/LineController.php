@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use function app;
+use App\Memory;
 use App\Services\LineBotReceiveMessageService;
 use App\Services\LineBotResponseService;
 use function env;
@@ -40,9 +41,11 @@ class LineController extends Controller
         $this->botReceiveMessageService = new LineBotReceiveMessageService($package);
         $this->botReceiveMessageService->setUserMessage($package);
 
-        $replyToken               = $this->botReceiveMessageService->getReplyToken();
-        $userMsg                  = $this->botReceiveMessageService->getUserMessage();
-        $channelId                = $this->botReceiveMessageService->getChannelId();
+        $replyToken = $this->botReceiveMessageService->getReplyToken();
+        $userMsg    = $this->botReceiveMessageService->getUserMessage();
+        $channelId  = $this->botReceiveMessageService->getChannelId();
+
+        $this->init($channelId);
         $this->botResponseService = new LineBotResponseService($channelId);
 
         \Log::info('channelId = '.$channelId);
@@ -87,6 +90,21 @@ class LineController extends Controller
         }
 
         return $response;
+    }
+
+
+    private function init($channelId)
+    {
+        $memory = Memory::where('channel_id', $channelId)->first();
+
+        if($memory) {
+            return ;
+        }
+
+        Memory::create([
+            'channel_id' => $channelId ,
+            'is_talk'  => 1
+        ]);
     }
 
 
