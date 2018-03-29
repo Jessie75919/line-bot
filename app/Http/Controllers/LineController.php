@@ -13,7 +13,6 @@ use const true;
 
 class LineController extends Controller
 {
-
     private $lineBot;
     private $lineUserId;
     private $botResponseService;
@@ -30,40 +29,38 @@ class LineController extends Controller
         \Log::info('Line Bot Starting .... ');
         $this->lineBot                  = app(LINEBot::class);
         $this->lineUserId               = env('LINE_USER_ID');
-        $this->botResponseService       = new LineBotResponseService();
-        $this->botReceiveMessageService = new LineBotReceiveMessageService();
+
     }
 
 
     public function index(Request $request)
     {
 
-        $package    = $request->json()->all();
-        $replyToken = $this->botReceiveMessageService->getReplyToken($package);
-        $userMsg    = $this->botReceiveMessageService->getUserMessage($package);
+        $package                        = $request->json()->all();
+        $this->botReceiveMessageService = new LineBotReceiveMessageService($package);
+        $this->botReceiveMessageService->setUserMessage($package);
 
-        \Log::info('replyToken = '.$replyToken);
+        $replyToken               = $this->botReceiveMessageService->getReplyToken();
+        $userMsg                  = $this->botReceiveMessageService->getUserMessage();
+        $channelId                = $this->botReceiveMessageService->getChannelId();
+        $this->botResponseService = new LineBotResponseService($channelId);
 
-        $strArr = explode(';', $userMsg);
+        \Log::info('channelId = '.$channelId);
+
+        $strArr = explode('；', $userMsg);
 
         if($this->botResponseService->isShutUp()){
-
             if($this->botResponseService->isNeedTalk($userMsg)){
-                $this->botResponseService->setShutUp(false);
-                return $this
-                    ->lineBot
-                    ->replyText($replyToken, "是你要我講話的喔！就別怪我吵喔～");
+                $this->botResponseService->setShutUp(0);
+                return $this->lineBot->replyText($replyToken, "是你要我講話的喔！就別怪我吵喔～");
             }
             return;
         }
 
         if($this->botResponseService->isNeedShutUp($userMsg)){
-            $this->botResponseService->setShutUp(true);
-            return $this
-                ->lineBot
-                ->replyText($replyToken, "好啦～我閉嘴就是了！");
+            $this->botResponseService->setShutUp(1);
+            return $this->lineBot->replyText($replyToken, "好啦～我閉嘴就是了！");
         }
-
 
 
         // check whether is learn command
@@ -72,8 +69,6 @@ class LineController extends Controller
             $response = $this->lineBot->replyText($replyToken, $chuCResp);
             return $response;
         }
-
-
 
 
         if($this->botResponseService->learnCommand($strArr[1], $strArr[2]) == true) {

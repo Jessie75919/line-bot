@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Memory;
 use App\Message;
 use const false;
 use Monolog\Handler\StreamHandler;
@@ -19,11 +20,13 @@ class LineBotResponseService
 {
 
     private $shutUp;
+    private $channelId;
 
 
-    public function __construct()
+    public function __construct($channelId)
     {
-        $this->shutUp = false;
+        $this->shutUp    = Memory::where('channel_id', $channelId)->first()->is_talk;
+        $this->channelId = $channelId;
     }
 
 
@@ -46,7 +49,7 @@ class LineBotResponseService
      * @param string $learnWord
      * @return bool
      */
-    public function isLearningCommand($learnWord)
+    public function isLearningCommand($learnWord):bool
     {
         return trim($learnWord) == '學' ? true : false;
     }
@@ -57,7 +60,7 @@ class LineBotResponseService
      * @param $message
      * @return bool
      */
-    public function learnCommand($key, $message)
+    public function learnCommand($key, $message):bool
     {
         \Log::info('key = '. $key);
         \Log::info('message = '.$message);
@@ -70,8 +73,9 @@ class LineBotResponseService
         $message = trim($message);
 
         Message::create([
-            'keyword' => $key,
-            'message' => $message
+            'keyword'    => $key,
+            'message'    => $message,
+            'channel_id' => $this->channelId
         ]);
 
         return true;
@@ -81,9 +85,9 @@ class LineBotResponseService
     /**
      * @param bool $shutUp
      */
-    public function setShutUp(bool $shutUp)
+    public function setShutUp(bool $shutUp):void
     {
-        $this->shutUp = $shutUp;
+       Memory::where('channel_id', $this->channelId)->update(['is_talk' => $shutUp]);
     }
 
 
@@ -92,7 +96,7 @@ class LineBotResponseService
      */
     public function isShutUp():bool
     {
-        return $this->shutUp;
+        return  $this->shutUp ;
     }
 
 

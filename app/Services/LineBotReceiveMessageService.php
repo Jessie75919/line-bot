@@ -6,37 +6,63 @@ namespace App\Services;
 
 class LineBotReceiveMessageService
 {
+    public $replyToken;
+    public $userMessage;
+    public $channelId;
+
 
     /**
      * LineBotReceiveMessageService constructor.
+     * @param $package
+     * @internal param $replyToken
+     * @internal param $channelId
      */
-    public function __construct()
+    public function __construct($package)
     {
+        $this->replyToken  = $package['events']['0']['replyToken'];
+        $this->channelId   = $package['events']['0']['source'];
     }
 
 
     /**
-     * @param $package
      * @return string
      */
-    public function getReplyToken($package)
+    public function getReplyToken()
     {
-        return $package['events']['0']['replyToken'];
+        return $this->replyToken;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getUserMessage():string
+    {
+       return $this->userMessage;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getChannelId():string
+    {
+        return $this->channelId;
     }
 
 
     /**
      * @param $package
-     * @return mixed | string
      */
-    public function getUserMessage($package)
+    public function setUserMessage($package):void
     {
-        // only respond text type message
         if($package['events']['0']['message']){
             $userMsg = $package['events']['0']['message'];
             if($userMsg['type'] === 'text' ) {
-                return $userMsg['text'];
+                $this->userMessage = $userMsg['text'];
             }
         }
     }
+
+
 }

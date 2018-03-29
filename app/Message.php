@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property mixed $memory
+ */
 class Message extends Model
 {
     protected $fillable = [
@@ -19,5 +22,11 @@ class Message extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+
+    public function memory()
+    {
+        return $this->belongsTo(Memory::class);
+    }
 
 }
