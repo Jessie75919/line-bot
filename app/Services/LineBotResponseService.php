@@ -20,14 +20,15 @@ use const true;
 class LineBotResponseService
 {
 
-    private $shutUp;
+    private $isTalk;
     private $channelId;
 
 
     public function __construct($channelId)
     {
-        $this->shutUp    = Memory::where('channel_id', $channelId)->first()->is_talk;
+        $this->isTalk    = Memory::where('channel_id', $channelId)->first()->is_talk;
         $this->channelId = $channelId;
+        \Log::info('is_talk = '. $this->isTalk);
     }
 
 
@@ -95,9 +96,9 @@ class LineBotResponseService
     /**
      * @return bool
      */
-    public function isShutUp():bool
+    public function isTalk():bool
     {
-        return  $this->shutUp ;
+        return  $this->isTalk ;
     }
 
 

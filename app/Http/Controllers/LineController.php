@@ -53,11 +53,12 @@ class LineController extends Controller
 
         $strArr = explode(';', $userMsg);
 
-        if(!$this->botResponseService->isShutUp()){
+        if(!$this->botResponseService->isTalk()){
             if($this->botResponseService->isNeed($userMsg,'talk')){
                 $this->botResponseService->setTalk(1);
                 return $this->lineBot->replyText($replyToken, "是你要我講話的喔！就別怪我吵喔～");
             }
+            return false;
         }
 
         if($this->botResponseService->isNeed($userMsg,'shutUp')){
