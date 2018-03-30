@@ -86,7 +86,7 @@ class LineBotResponseService
     /**
      * @param bool $shutUp
      */
-    public function setShutUp(bool $shutUp):void
+    public function setTalk(bool $shutUp):void
     {
        Memory::where('channel_id', $this->channelId)->update(['is_talk' => $shutUp]);
     }
