@@ -12,9 +12,6 @@ namespace App\Services;
 use App\Memory;
 use App\Message;
 use const false;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use function substr;
 use const true;
 
 class LineBotResponseService
@@ -39,7 +36,9 @@ class LineBotResponseService
     public function keywordReply($userMsg)
     {
         \Log::info('userMsg = '.$userMsg);
-        $resp = Message::where('keyword',strtolower($userMsg))->get();
+        $resp = Message::where('keyword', strtolower($userMsg))
+                       ->where('channel_id', $this->channelId)
+                       ->get();
 
         return count($resp) != 0
             ? $resp->random()->message
