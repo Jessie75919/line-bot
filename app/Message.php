@@ -12,7 +12,8 @@ class Message extends Model
 {
     protected $fillable = [
         'keyword',
-        'message'
+        'message',
+        'channel_id',
     ];
 
     use SoftDeletes;
