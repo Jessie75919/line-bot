@@ -49,6 +49,7 @@ class LineController extends Controller
         $this->botResponseService = new LineBotResponseService($channelId);
 
         \Log::info('channelId = '.$channelId);
+        \Log::info('$userMsg = '. $userMsg);
 
         $strArr = explode('；', $userMsg);
 
