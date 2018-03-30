@@ -14,6 +14,7 @@ use App\Message;
 use const false;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use function substr;
 use const true;
 
 class LineBotResponseService
@@ -102,19 +103,18 @@ class LineBotResponseService
 
     /**
      * @param string $keyword
+     * @param string $mode
      * @return bool
      */
-    public function isNeedShutUp(string $keyword):bool
+    public function isNeed(string $keyword, string $mode):bool
     {
-        \Log::info('isNeedShutUp = '.$keyword);
-        $result = strpos($keyword, 'ChuC 安靜');
-        \Log::info('result = '.$result);
-        return $result === false ? false : true;
-    }
-
-
-    public function isNeedTalk(string $keyword):bool
-    {
-        return strpos($keyword, 'ChuC 講話') === false ? false : true;
+        switch($mode){
+            case 'talk':
+                return strpos($keyword, 'ChuC 講話') === false ? false : true;
+                break;
+            case 'shutUp':
+                return strpos($keyword, 'ChuC 安靜') === false ? false : true;
+                break;
+        }
     }
 }
