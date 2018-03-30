@@ -58,7 +58,6 @@ class LineController extends Controller
                 $this->botResponseService->setShutUp(0);
                 return $this->lineBot->replyText($replyToken, "是你要我講話的喔！就別怪我吵喔～");
             }
-            return;
         }
 
         if($this->botResponseService->isNeedShutUp($userMsg)){
