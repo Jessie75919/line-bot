@@ -22,8 +22,10 @@ class LineBotReceiveMessageService
 
          \Log::info('package = '. print_r($package , true));
 
-        $this->replyToken  = $package['events']['0']['replyToken'];
-        $this->channelId   = $package['events']['0']['source']['userId'];
+        $this->replyToken = $package['events']['0']['replyToken'];
+        $this->channelId = $package['events']['0']['source']['type'] == 'user'
+                          ? $package['events']['0']['source']['userId']
+                          : $package['events']['0']['source']['groupId'];
     }
 
 
