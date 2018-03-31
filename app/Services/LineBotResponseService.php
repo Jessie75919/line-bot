@@ -44,7 +44,7 @@ class LineBotResponseService
 
         return count($resp) != 0
             ? $resp->random()->message
-            : '不要再講幹話好嗎！！';
+            : '';
     }
 
 

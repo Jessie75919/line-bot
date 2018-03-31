@@ -69,9 +69,11 @@ class LineController extends Controller
 
         // check whether is learn command
         if(!$this->botResponseService->isLearningCommand($strArr[0])) {
-            $chuCResp = $this->botResponseService->keywordReply($userMsg);
-            $response = $this->lineBot->replyText($replyToken, $chuCResp);
-            return $response;
+            $chuCResponseText = $this->botResponseService->keywordReply($userMsg);
+            if(!$chuCResponseText == '') {
+                $response = $this->lineBot->replyText($replyToken, $chuCResponseText);
+                return $response;
+            }
         }
 
 
