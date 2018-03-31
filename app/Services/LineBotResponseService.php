@@ -48,41 +48,6 @@ class LineBotResponseService
     }
 
 
-    /**
-     * @param string $learnWord
-     * @return bool
-     */
-    public function isLearningCommand($learnWord):bool
-    {
-        return trim($learnWord) == '學' ? true : false;
-    }
-
-
-    /**
-     * @param $key
-     * @param $message
-     * @return bool
-     */
-    public function learnCommand($key, $message):bool
-    {
-        \Log::info('key = '. $key);
-        \Log::info('message = '.$message);
-
-        if(strlen($key) <= 0 && strlen($message) <= 0) {
-            return false;
-        }
-
-        $key     = trim($key);
-        $message = trim($message);
-
-        Message::create([
-            'keyword'    => $key,
-            'message'    => $message,
-            'channel_id' => $this->channelId
-        ]);
-
-        return true;
-    }
 
 
     /**
