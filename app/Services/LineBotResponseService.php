@@ -110,13 +110,8 @@ class LineBotResponseService
      */
     public function isNeed(string $keyword, string $mode):bool
     {
-        $talkCmd = [
-            '講話' ,'說話', '開口'
-        ];
-
-        $shutUpCmd = [
-            '閉嘴', '安靜', '吵死了'
-        ];
+        $talkCmd   = ['講話', '說話', '開口'];
+        $shutUpCmd = ['閉嘴', '安靜', '吵死了'];
 
         $cmd = substr($keyword, 3);
         \Log::info('cmd = '. $cmd);

@@ -19,13 +19,22 @@ class LineBotReceiveMessageService
      */
     public function __construct($package)
     {
-
          \Log::info('package = '. print_r($package , true));
 
         $this->replyToken = $package['events']['0']['replyToken'];
-        $this->channelId = $package['events']['0']['source']['type'] == 'user'
-                          ? $package['events']['0']['source']['userId']
-                          : $package['events']['0']['source']['groupId'];
+        $type = $package['events']['0']['source']['type'];
+
+        switch($type) {
+            case 'user':
+                $this->channelId = $package['events']['0']['source']['userId'];
+                break;
+            case 'group':
+                $this->channelId = $package['events']['0']['source']['groupId'];
+                break;
+            case 'room':
+                $this->channelId = $package['events']['0']['source']['roomId'];
+                break;
+        }
     }
 
 
