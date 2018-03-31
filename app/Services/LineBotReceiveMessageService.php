@@ -21,27 +21,51 @@ class LineBotReceiveMessageService
     {
          \Log::info('package = '. print_r($package , true));
 
-        $this->replyToken = $package['events']['0']['replyToken'];
-        $type = $package['events']['0']['source']['type'];
+        /** @var  array */
+        $data = $package['events']['0'];
+
+        /** @var  string */
+        $type = $data['type'];
+
+        /** @var array */
+        $source = $data['source'];
+
+        /** @var  array */
+        $message = $data['message'];
+
+        $this->replyToken = $data['replyToken'];
 
         switch($type) {
-            case 'user':
-                $this->channelId = $package['events']['0']['source']['userId'];
-                break;
-            case 'group':
-                $this->channelId = $package['events']['0']['source']['groupId'];
-                break;
-            case 'room':
-                $this->channelId = $package['events']['0']['source']['roomId'];
+            case 'message':
+                // deals with source
+                switch($source['type']) {
+                    case 'user':
+                        $this->channelId = $source['userId'];
+                        break;
+                    case 'group':
+                        $this->channelId = $source['groupId'];
+                        break;
+                    case 'room':
+                        $this->channelId = $source['roomId'];
+                        break;
+                }
+
+                // deals with message
+                switch($message['type']) {
+                    case 'text':
+                        $this->userMessage = $message['text'];
+                        break;
+                }
                 break;
         }
+
     }
 
 
     /**
      * @return string
      */
-    public function getReplyToken()
+    public function getReplyToken():string
     {
         return $this->replyToken;
     }
@@ -63,20 +87,5 @@ class LineBotReceiveMessageService
     {
         return $this->channelId;
     }
-
-
-    /**
-     * @param $package
-     */
-    public function setUserMessage($package):void
-    {
-        if($package['events']['0']['message']){
-            $userMsg = $package['events']['0']['message'];
-            if($userMsg['type'] === 'text' ) {
-                $this->userMessage = $userMsg['text'];
-            }
-        }
-    }
-
 
 }

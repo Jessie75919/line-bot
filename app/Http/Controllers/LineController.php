@@ -30,7 +30,6 @@ class LineController extends Controller
         \Log::info('Line Bot Starting .... ');
         $this->lineBot                  = app(LINEBot::class);
         $this->lineUserId               = env('LINE_USER_ID');
-
     }
 
 
@@ -39,7 +38,6 @@ class LineController extends Controller
 
         $package                        = $request->json()->all();
         $this->botReceiveMessageService = new LineBotReceiveMessageService($package);
-        $this->botReceiveMessageService->setUserMessage($package);
 
         $replyToken = $this->botReceiveMessageService->getReplyToken();
         $userMsg    = $this->botReceiveMessageService->getUserMessage();
