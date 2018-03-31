@@ -12,6 +12,8 @@ namespace App\Services;
 use App\Memory;
 use App\Message;
 use const false;
+use function in_array;
+use function substr;
 use const true;
 
 class LineBotResponseService
@@ -108,12 +110,23 @@ class LineBotResponseService
      */
     public function isNeed(string $keyword, string $mode):bool
     {
+        $talkCmd = [
+            '講話' ,'說話', '開口'
+        ];
+
+        $shutUpCmd = [
+            '閉嘴', '安靜', '吵死了'
+        ];
+
+        $cmd = substr($keyword, 3);
+        \Log::info('cmd = '. $cmd);
+
         switch($mode){
             case 'talk':
-                return strpos($keyword, 'ChuC 講話') === false ? false : true;
+                return in_array($cmd, $talkCmd);
                 break;
             case 'shutUp':
-                return strpos($keyword, 'ChuC 安靜') === false ? false : true;
+                return in_array($cmd, $shutUpCmd);
                 break;
         }
     }
