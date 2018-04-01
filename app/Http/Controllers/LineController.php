@@ -42,7 +42,7 @@ class LineController extends Controller
         $replyToken = $this->botReceiveMessageService->getReplyToken();
         $purpose    = $this->botReceiveMessageService->checkPurpose();
         $response   = $this->botReceiveMessageService->dispatch($purpose);
-        
+
         return $this->lineBot->replyText($replyToken, $response);
     }
 }

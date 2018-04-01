@@ -14,7 +14,6 @@ use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
  * Class LineBotService
  * @package App\Services
  */
-
 class LineBotPushService
 {
     /** @var LINEBot */
@@ -25,7 +24,7 @@ class LineBotPushService
 
     public function __construct()
     {
-        $this->lineBot    = app(LINEBot::class);
+        $this->lineBot = app(LINEBot::class);
     }
 
 
@@ -33,12 +32,12 @@ class LineBotPushService
      * @param TemplateMessageBuilder|string $content
      * @return Response
      */
-    public function pushMessage($content): Response
+    public function pushMessage($channelId, $content): Response
     {
         if(is_string($content)) {
             $content = new TextMessageBuilder($content);
         }
-        return $this->lineBot->pushMessage($this->lineUserId, $content);
+        return $this->lineBot->pushMessage($channelId, $content);
     }
 
 
