@@ -19,16 +19,23 @@ use const true;
 class LineBotResponseService
 {
 
-    private $isTalk;
     private $channelId;
+    private $purpose;
+    private $content;
+    const GENERAL_RESPONSE = '好喔～好喔～';
 
 
-    public function __construct($channelId)
+    public function __construct($channelId, $purpose , $content=null)
     {
-        $this->isTalk    = Memory::where('channel_id', $channelId)->first()->is_talk;
         $this->channelId = $channelId;
-        \Log::info('is_talk = '. $this->isTalk);
+        $this->purpose   = $purpose;
+        $this->content   = $content;
+
+        $this->responsePurpose();
+
+        //Todo:: need check purpose and response
     }
+
 
 
     /**
@@ -49,45 +56,41 @@ class LineBotResponseService
 
 
 
-
     /**
      * @param bool $shutUp
      */
     public function setTalk(bool $shutUp):void
     {
-       Memory::where('channel_id', $this->channelId)->update(['is_talk' => $shutUp]);
+        Memory::where('channel_id', $this->channelId)->update(['is_talk' => $shutUp]);
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isTalk():bool
+    public function responsePurpose()
     {
-        return  $this->isTalk ;
-    }
-
-
-    /**
-     * @param string $keyword
-     * @param string $mode
-     * @return bool
-     */
-    public function isNeed(string $keyword, string $mode):bool
-    {
-        $talkCmd   = ['講話', '說話', '開口'];
-        $shutUpCmd = ['閉嘴', '安靜', '吵死了'];
-
-        $cmd = substr($keyword, 3);
-        \Log::info('cmd = '. $cmd);
-
-        switch($mode){
+        switch($this->purpose) {
+            case 'response' :
+                return $this->response($this->content);
+                break;
             case 'talk':
-                return in_array($cmd, $talkCmd);
+                $responseText = $this->keywordReply($this->content);
+                return $this->response($responseText);
+                break;
+            case 'speak':
+                $this->setTalk(1);
+                return $this->response(self::GENERAL_RESPONSE);
                 break;
             case 'shutUp':
-                return in_array($cmd, $shutUpCmd);
+                $this->setTalk(0);
+                return $this->response(self::GENERAL_RESPONSE);
                 break;
         }
     }
+
+
+    private function response($responseText)
+    {
+        return $responseText;
+    }
+
+
 }

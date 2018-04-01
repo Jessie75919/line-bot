@@ -10,6 +10,11 @@ use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\Response;
 use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 
+/** This is a app entry point
+ * Class LineBotService
+ * @package App\Services
+ */
+
 class LineBotService
 {
     /** @var LINEBot */

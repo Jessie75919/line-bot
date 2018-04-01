@@ -16,44 +16,36 @@ use function explode;
 class LineBotLearnService
 {
     private $channelId;
-
+    private $learnContent;
 
     /**
      * LineBotLearnService constructor.
-     * @param $channelId
+     * @param string $channelId
+     * @param array $learnContent
      */
-    public function __construct($channelId)
+    public function __construct($channelId, $learnContent)
     {
-        $this->channelId = $channelId;
+        $this->channelId    = $channelId;
+        $this->learnContent = $learnContent;
     }
 
 
     /**
-     * @param string $learnWord
      * @return bool
+     * @internal param $key
+     * @internal param $message
      */
-    public function isLearningCommand($learnWord):bool
+    public function learnCommand():bool
     {
-        return trim($learnWord) == '學' ? true : false;
-    }
+        $key     = trim($this->learnContent['key']);
+        $message = trim($this->learnContent['message']);
 
-
-    /**
-     * @param $key
-     * @param $message
-     * @return bool
-     */
-    public function learnCommand($key, $message):bool
-    {
         \Log::info('key = '. $key);
         \Log::info('message = '.$message);
 
         if(strlen($key) <= 0 && strlen($message) <= 0) {
             return false;
         }
-
-        $key     = trim($key);
-        $message = trim($message);
 
         Message::create([
             'keyword'    => $key,
@@ -65,19 +57,6 @@ class LineBotLearnService
     }
 
 
-    /**
-     * @param $userMsg
-     * @return array
-     */
-    public function learning($userMsg):array
-    {
-        $strArr = explode(';', $userMsg) ;
-
-        return count($strArr) == 3
-            ? $strArr
-            : explode('；', $userMsg);
-
-    }
 
 
 }
