@@ -34,9 +34,13 @@ class PushMessageController extends Controller
                         ? Memory::all('channel_id')
                         : $request->channel_id ;
 
+        $message = $request->message;
+
         foreach($channelIds as $channelId) {
-            $this->lineBotPushService->pushMessage($channelId, 'Test For Push Message');
+            $this->lineBotPushService->pushMessage($channelId, $message);
        }
+       
+       return 200;
     }
 
 }
