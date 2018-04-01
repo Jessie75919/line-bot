@@ -33,8 +33,13 @@ class LineBotReceiveMessageService
     {
         \Log::info('package = ' . print_r($package, true));
 
+        // get data from user's package
         $this->getData($package);
+
+        // for first time to use this line bot
         $this->init($this->channelId);
+
+        // check the state of talk
         $this->isTalk = Memory::where('channel_id', $this->channelId)->first()->is_talk;
 
         \Log::info('channelId = ' . $this->channelId);
@@ -112,7 +117,7 @@ class LineBotReceiveMessageService
     }
 
 
-    /**
+    /** Dissect the Message if it is a learning command with <學;key;value>
      * @return array
      * @internal param $userMsg
      */
@@ -127,6 +132,9 @@ class LineBotReceiveMessageService
     }
 
 
+    /** check the purpose of message
+     * @return string
+     */
     public function checkPurpose(): string
     {
         // check need to talk
@@ -156,7 +164,11 @@ class LineBotReceiveMessageService
     }
 
 
-    public function dispatch($purpose)
+    /**
+     * @param $purpose
+     * @return string
+     */
+    public function dispatch($purpose):string
     {
         switch($purpose) {
             case self::SPEAK:
@@ -188,13 +200,14 @@ class LineBotReceiveMessageService
     }
 
 
-    private function init($channelId)
+    /** for the first time user which not has record in DB
+     * @param $channelId
+     */
+    private function init($channelId):void
     {
         $memory = Memory::where('channel_id', $channelId)->first();
 
-        if($memory) {
-            return;
-        }
+        if($memory) { return; }
 
         Memory::create([
             'channel_id' => $channelId,
@@ -203,6 +216,9 @@ class LineBotReceiveMessageService
     }
 
 
+    /** get data of package from user
+     * @param $package
+     */
     private function getData($package)
     {
         /** @var  array */

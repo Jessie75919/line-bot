@@ -11,10 +11,6 @@ namespace App\Services;
 
 use App\Memory;
 use App\Message;
-use const false;
-use function in_array;
-use function substr;
-use const true;
 
 class LineBotResponseService
 {
@@ -25,26 +21,23 @@ class LineBotResponseService
     const GENERAL_RESPONSE = '好喔～好喔～';
 
 
-    public function __construct($channelId, $purpose , $content=null)
+    public function __construct($channelId, $purpose, $content = null)
     {
         $this->channelId = $channelId;
         $this->purpose   = $purpose;
         $this->content   = $content;
 
         $this->responsePurpose();
-
-        //Todo:: need check purpose and response
     }
-
 
 
     /**
      * @param $userMsg
      * @return string
      */
-    public function keywordReply($userMsg)
+    public function keywordReply($userMsg): string
     {
-        \Log::info('userMsg = '.$userMsg);
+        \Log::info('userMsg = ' . $userMsg);
         $resp = Message::where('keyword', strtolower($userMsg))
                        ->where('channel_id', $this->channelId)
                        ->get();
@@ -55,17 +48,19 @@ class LineBotResponseService
     }
 
 
-
     /**
      * @param bool $shutUp
      */
-    public function setTalk(bool $shutUp):void
+    public function setTalk(bool $shutUp): void
     {
         Memory::where('channel_id', $this->channelId)->update(['is_talk' => $shutUp]);
     }
 
 
-    public function responsePurpose()
+    /**
+     * @return string
+     */
+    public function responsePurpose(): string
     {
         switch($this->purpose) {
             case 'response' :
@@ -87,10 +82,12 @@ class LineBotResponseService
     }
 
 
-    private function response($responseText)
+    /**
+     * @param string $responseText
+     * @return mixed
+     */
+    private function response($responseText): string
     {
         return $responseText;
     }
-
-
 }

@@ -55,8 +55,4 @@ class LineBotLearnService
 
         return true;
     }
-
-
-
-
 }
