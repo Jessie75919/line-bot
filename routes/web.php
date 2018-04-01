@@ -18,7 +18,10 @@ Route::get('/', function () {
 });
 
 Route::post('/webhook', 'LineController@index');
+Route::post('/pushMessage', 'PushMessageController@index');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+

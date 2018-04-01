@@ -29,19 +29,20 @@ class LineController extends Controller
     {
         \Log::info('Line Bot Starting .... ');
         $this->lineBot    = app(LINEBot::class);
+        $this->botReceiveMessageService = app(LineBotReceiveMessageService::class);
         $this->lineUserId = env('LINE_USER_ID');
     }
 
 
     public function index(Request $request)
     {
-        $package                        = $request->json()->all();
-        $this->botReceiveMessageService = new LineBotReceiveMessageService($package);
-        $replyToken                     = $this->botReceiveMessageService->getReplyToken();
-        $purpose                        = $this->botReceiveMessageService->checkPurpose();
+        $package = $request->json()->all();
+        $this->botReceiveMessageService->handle($package);
 
-        $response = $this->botReceiveMessageService->dispatch($purpose);
+        $replyToken = $this->botReceiveMessageService->getReplyToken();
+        $purpose    = $this->botReceiveMessageService->checkPurpose();
+        $response   = $this->botReceiveMessageService->dispatch($purpose);
+        
         return $this->lineBot->replyText($replyToken, $response);
-
     }
 }

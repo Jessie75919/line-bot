@@ -25,11 +25,12 @@ class LineBotReceiveMessageService
 
     /**
      * LineBotReceiveMessageService constructor.
-     * @param $package
-     * @internal param $replyToken
-     * @internal param $channelId
      */
-    public function __construct($package)
+    public function __construct()
+    {
+    }
+
+    public function handle($package)
     {
         \Log::info('package = ' . print_r($package, true));
 
@@ -259,5 +260,8 @@ class LineBotReceiveMessageService
                 break;
         }
     }
+
+
+
 
 }

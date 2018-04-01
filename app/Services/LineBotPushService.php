@@ -15,7 +15,7 @@ use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
  * @package App\Services
  */
 
-class LineBotService
+class LineBotPushService
 {
     /** @var LINEBot */
     private $lineBot;
@@ -23,10 +23,9 @@ class LineBotService
     private $lineUserId;
 
 
-    public function __construct($lineUserId)
+    public function __construct()
     {
         $this->lineBot    = app(LINEBot::class);
-        $this->lineUserId = $lineUserId;
     }
 
 
@@ -59,6 +58,15 @@ class LineBotService
 
         $target = new ImageCarouselTemplateBuilder([$img, $img]);
         return new TemplateMessageBuilder('WTF', $target);
+    }
+
+
+    /**
+     * @param string $lineUserId
+     */
+    public function setLineUserId(string $lineUserId)
+    {
+        $this->lineUserId = $lineUserId;
     }
 
 
