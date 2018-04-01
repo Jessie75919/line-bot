@@ -34,15 +34,11 @@ class LineBotReceiveMessageService
         \Log::info('package = ' . print_r($package, true));
 
         $this->getData($package);
-
         $this->init($this->channelId);
-
         $this->isTalk = Memory::where('channel_id', $this->channelId)->first()->is_talk;
 
-        \Log::info('channelId = '. $this->channelId);
-        \Log::info('$userMsg = '.  $this->userMessage);
-
-
+        \Log::info('channelId = ' . $this->channelId);
+        \Log::info('$userMsg = ' . $this->userMessage);
     }
 
 
@@ -71,8 +67,6 @@ class LineBotReceiveMessageService
     {
         return $this->channelId;
     }
-
-
 
 
     /**
@@ -132,7 +126,8 @@ class LineBotReceiveMessageService
 
     }
 
-    public  function checkPurpose(): string
+
+    public function checkPurpose(): string
     {
         // check need to talk
         if(!$this->isTalk()) {
@@ -140,16 +135,10 @@ class LineBotReceiveMessageService
                 return self::SPEAK;
             }
             return false;
-        } else {
-            if($this->isNeed($this->userMessage, self::TALK)) {
-                return "我已經是閉嘴狀態囉～";
-            }
         }
 
         // check need to shut up
         if($this->isNeed($this->userMessage, self::SHUT_UP)) {
-//            $this->botResponseService->setTalk(0);
-//            return $this->lineBot->replyText($replyToken, "好喔！好喔！");
             return self::SHUT_UP;
         }
 
@@ -161,14 +150,8 @@ class LineBotReceiveMessageService
                 'key'     => $dissectData[1],
                 'message' => $dissectData[2]
             ];
-//            $chuCResponseText = $this->botResponseService->keywordReply($userMsg);
-//            if(!$chuCResponseText == '') {
-//                $response = $this->lineBot->replyText($replyToken, $chuCResponseText);
-//                return $response;
-//            }
             return self::LEARN;
         }
-
         return self::TALK;
     }
 
@@ -177,42 +160,45 @@ class LineBotReceiveMessageService
     {
         switch($purpose) {
             case self::SPEAK:
-                $this->botResponseService = 
+                $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::SPEAK);
                 return $this->botResponseService->responsePurpose();
                 break;
             case self::SHUT_UP:
-                $this->botResponseService = 
+                $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::SHUT_UP);
                 return $this->botResponseService->responsePurpose();
                 break;
             case self::TALK:
-                $this->botResponseService = 
-                    new LineBotResponseService($this->channelId, self::TALK,$this->userMessage);
+                $this->botResponseService =
+                    new LineBotResponseService($this->channelId, self::TALK, $this->userMessage);
                 return $this->botResponseService->responsePurpose();
                 break;
 
             case self::LEARN:
-                $this->botLearnService = 
+                $this->botLearnService =
                     new LineBotLearnService($this->channelId, $this->learnContent);
                 if($this->botLearnService->learnCommand()) {
-                   $this->botResponseService =
-                       new LineBotResponseService($this->channelId, self::RESPONSE, self::GENERAL_RESPONSE);
+                    $this->botResponseService =
+                        new LineBotResponseService($this->channelId, self::RESPONSE, self::GENERAL_RESPONSE);
                     return $this->botResponseService->responsePurpose();
                 }
                 break;
         }
     }
 
+
     private function init($channelId)
     {
         $memory = Memory::where('channel_id', $channelId)->first();
 
-        if($memory) { return; }
+        if($memory) {
+            return;
+        }
 
         Memory::create([
-            'channel_id' => $channelId ,
-            'is_talk'  => 1
+            'channel_id' => $channelId,
+            'is_talk'    => 1
         ]);
     }
 
