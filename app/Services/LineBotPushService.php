@@ -29,6 +29,7 @@ class LineBotPushService
 
 
     /**
+     * @param                               $channelId
      * @param TemplateMessageBuilder|string $content
      * @return Response
      */

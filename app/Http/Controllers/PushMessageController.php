@@ -13,6 +13,7 @@ use LINE\LINEBot;
 class PushMessageController extends Controller
 {
     private $lineBot;
+    /** @var  LineBotPushService */
     private $lineBotPushService;
 
 
@@ -36,7 +37,12 @@ class PushMessageController extends Controller
 
         $message = $request->message;
 
+        \Log::info('message = '.$message);
+
+
+
         foreach($channelIds as $channelId) {
+            \Log::info('channel_id = '.$channelId);
             $this->lineBotPushService->pushMessage($channelId, $message);
        }
        
