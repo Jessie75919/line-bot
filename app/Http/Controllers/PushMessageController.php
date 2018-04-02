@@ -42,8 +42,8 @@ class PushMessageController extends Controller
 
 
         foreach($channelIds as $channelId) {
-            \Log::info('channel_id = '.$channelId);
-            $this->lineBotPushService->pushMessage($channelId, $message);
+            \Log::info('channel_id = '.$channelId->channel_id);
+            $this->lineBotPushService->pushMessage($channelId->channel_id, $message);
        }
        
        return 200;
