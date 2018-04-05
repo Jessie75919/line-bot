@@ -83,9 +83,9 @@ class LineBotResponseService
                 $stateText = "我的 channel_id 為 [ {$this->channelId }, ";
 
                 if($isTalk == 0){
-                    $stateText .= "[ 目前處於閉嘴狀態 ]";
+                    $stateText .= "目前處於 [ 閉嘴狀態 ]";
                 }else {
-                    $stateText .= "[ 目前處於可以講話狀態 ]";
+                    $stateText .= " 目前處於 [可以講話狀態 ]";
                 }
                 return $this->response($stateText);
                 break;
