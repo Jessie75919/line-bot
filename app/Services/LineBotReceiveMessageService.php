@@ -102,7 +102,7 @@ class LineBotReceiveMessageService
         $talkCmd   = ['講話', '說話', '開口'];
         $shutUpCmd = ['閉嘴', '安靜', '吵死了'];
 
-        if(substr($keyword, 0, 3) != 'cc') {
+        if(substr($keyword, 0, 2) != 'cc') {
             return false;
         }
         
