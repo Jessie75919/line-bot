@@ -22,7 +22,7 @@ Route::post('/pushMessage', 'PushMessageController@index')->name('pushConsole');
 
 //Auth::routes();
 
-    Route::get('/pushConsole', 'HomeController@index');
+Route::get('/pushConsole', 'HomeController@index');
 
 
 
