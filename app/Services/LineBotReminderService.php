@@ -62,6 +62,20 @@ class LineBotReminderService
 
     private function validTimeFormat($time):bool
     {
+
+        $time = $this->checkForAliasDay($time);
+
+        try {
+            $targetTime = Carbon::createFromFormat('Y-m-d H:i',$time, 'Asia/Taipei');
+            return isset($targetTime) ? true : false;
+        } catch(InvalidArgumentException $exception) {
+            return false;
+        }
+    }
+
+
+    private function checkForAliasDay($time):string
+    {
         $times = explode(' ', $time);
         $date = null ;
 
@@ -79,19 +93,15 @@ class LineBotReminderService
                 $date = $times[0];
                 break;
         }
-
-        try {
-            $targetTime = Carbon::createFromFormat('Y-m-d H:i',"{$date} $times[1]", 'Asia/Taipei');
-            return isset($targetTime) ? true : false;
-        } catch(InvalidArgumentException $exception) {
-            return false;
-        }
+        return "{$date} $times[1]";
     }
-
 
     // get delay time
     private function getDelayTime(string $time): int
     {
+
+        $time = $this->checkForAliasDay($time);
+
         \Log::info('time = ' . ($time));
         $current    = Carbon::now('Asia/Taipei');
         $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
