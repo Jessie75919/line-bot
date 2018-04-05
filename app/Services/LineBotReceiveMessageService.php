@@ -6,6 +6,9 @@ namespace App\Services;
 
 use App\Memory;
 use function dd;
+use const false;
+use function substr;
+use const true;
 
 class LineBotReceiveMessageService
 {
@@ -24,6 +27,7 @@ class LineBotReceiveMessageService
     const RESPONSE         = 'response';
     const GENERAL_RESPONSE = '好喔～好喔～';
     const REMINDER         = 'reminder';
+    const STATE            = "state";
 
 
     /**
@@ -93,11 +97,15 @@ class LineBotReceiveMessageService
      * @param string $mode
      * @return bool
      */
-    public function isNeed(string $keyword, string $mode): bool
+    public function isCmd(string $keyword, string $mode): bool
     {
         $talkCmd   = ['講話', '說話', '開口'];
         $shutUpCmd = ['閉嘴', '安靜', '吵死了'];
 
+        if(substr($keyword, 0, 3) != 'cc') {
+            return false;
+        }
+        
         $cmd = substr($keyword, 3);
         \Log::info('cmd = ' . $cmd);
 
@@ -108,6 +116,8 @@ class LineBotReceiveMessageService
             case self::SHUT_UP:
                 return in_array($cmd, $shutUpCmd);
                 break;
+            case self::STATE:
+                return $cmd == '狀態';
         }
     }
 
@@ -153,16 +163,20 @@ class LineBotReceiveMessageService
             return self::REMINDER;
         }
 
+        if($this->isCmd($this->userMessage, self::STATE)) {
+            return self::STATE;
+        }
+
         // check need to talk
         if(!$this->isTalk()) {
-            if($this->isNeed($this->userMessage, self::TALK)) {
+            if($this->isCmd($this->userMessage, self::TALK)) {
                 return self::SPEAK;
             }
             return false;
         }
 
         // check need to shut up
-        if($this->isNeed($this->userMessage, self::SHUT_UP)) {
+        if($this->isCmd($this->userMessage, self::SHUT_UP)) {
             return self::SHUT_UP;
         }
 
@@ -209,6 +223,12 @@ class LineBotReceiveMessageService
                 return $this->botResponseService->responsePurpose();
                 break;
 
+            case self::STATE:
+                $this->botResponseService =
+                    new LineBotResponseService($this->channelId, self::STATE, $this->userMessage);
+                return $this->botResponseService->responsePurpose();
+                break;
+
             case self::LEARN:
                 $this->botLearnService =
                     new LineBotLearnService($this->channelId, $this->processContent);
@@ -218,7 +238,6 @@ class LineBotReceiveMessageService
                     return $this->botResponseService->responsePurpose();
                 }
                 break;
-
             case self::REMINDER:
 
                 $successMessage = "好喔～我會在 [{$this->processContent[0]}] 的時候提醒您 [{$this->processContent[1]}]";
@@ -302,6 +321,12 @@ class LineBotReceiveMessageService
                 }
                 break;
         }
+    }
+
+
+    private function isState():bool
+    {
+
     }
 
 

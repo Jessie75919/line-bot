@@ -78,6 +78,17 @@ class LineBotResponseService
                 $this->setTalk(0);
                 return $this->response(self::GENERAL_RESPONSE);
                 break;
+            case 'state':
+                $isTalk = Memory::where('channel_id', $this->channelId)->first()->is_talk;
+                $stateText = "我的channel_id為 [ {$this->channelId }";
+
+                if($isTalk == 0){
+                    $stateText .= "[ 目前處於閉嘴狀態 ]";
+                }else {
+                    $stateText .= "[ 目前處於可以講話狀態 ]";
+                }
+                return $this->response($stateText);
+                break;
         }
     }
 

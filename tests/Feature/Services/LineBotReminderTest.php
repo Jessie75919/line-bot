@@ -20,7 +20,6 @@ class LineBotReminderTest extends TestCase
      */
     public function testExample()
     {
-
         $package = [
             'events' => [
                     [
@@ -54,30 +53,6 @@ class LineBotReminderTest extends TestCase
         );
 
         $response->assertStatus(200);
-
-        /*
-                                                                  [type] => message
-2018-04-05T01:49:20.173024+00:00 app[web.1]:                     [replyToken] => 73425dfaf88644ada8a43de2cb3d37fd
-2018-04-05T01:49:20.174692+00:00 app[web.1]:                     [source] => Array
-2018-04-05T01:49:20.175017+00:00 app[web.1]:                         (
-2018-04-05T01:49:20.176570+00:00 app[web.1]:                             [groupId] => C31f1bf838bea0857e40b13c7ea3e94a8
-2018-04-05T01:49:20.176997+00:00 app[web.1]:                             [userId] => Ub3cb8c2273727454ec52e48cf2388158
-2018-04-05T01:49:20.177196+00:00 app[web.1]:                             [type] => group
-2018-04-05T01:49:20.177371+00:00 app[web.1]:                         )
-2018-04-05T01:49:20.180581+00:00 app[web.1]:
-2018-04-05T01:49:20.180841+00:00 app[web.1]:                     [timestamp] => 1522892959409
-2018-04-05T01:49:20.181071+00:00 app[web.1]:                     [message] => Array
-2018-04-05T01:49:20.181271+00:00 app[web.1]:                         (
-2018-04-05T01:49:20.184730+00:00 app[web.1]:                             [id] => 7742096355881
-2018-04-05T01:49:20.184509+00:00 app[web.1]:                             [type] => text
-2018-04-05T01:49:20.184938+00:00 app[web.1]:                             [text] => ？
-2018-04-05T01:49:20.185820+00:00 app[web.1]:                         )
-2018-04-05T01:49:20.189687+00:00 app[web.1]:
-2018-04-05T01:49:20.189862+00:00 app[web.1]:                 )
-
-
-
-         */
 
 
     }

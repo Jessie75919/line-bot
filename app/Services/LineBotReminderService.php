@@ -8,27 +8,11 @@
 
 namespace App\Services;
 
-/*  message pattern =>  提醒;TIME;MESSAGE
-# input : receive to-do-message
-    args : (channelId, [ time, messages])
----------------------------------------------
-# process : store to message
-    - store to DB ?
-    - the specific time - get current time = delayed time
-    - set a delayed queue job with delayed time
----------------------------------------------
-# output : send the message in specific time
-*/
+
 use App\Jobs\TodoJob;
 use Carbon\Carbon;
-use function dd;
-use function dispatch;
-use function explode;
 use const false;
 use InvalidArgumentException;
-use Mockery\Exception;
-use function now;
-use const true;
 
 class LineBotReminderService
 {
@@ -46,7 +30,6 @@ class LineBotReminderService
         \Log::info('message = ' . print_r($message, true));
         $this->channelId = $channelId;
         $this->message   = $message;
-
     }
 
 
@@ -62,7 +45,6 @@ class LineBotReminderService
 
     private function validTimeFormat($time):bool
     {
-
         $time = $this->checkForAliasDay($time);
 
         try {
@@ -99,7 +81,6 @@ class LineBotReminderService
     // get delay time
     private function getDelayTime(string $time): int
     {
-
         $time = $this->checkForAliasDay($time);
 
         \Log::info('time = ' . ($time));
@@ -116,7 +97,6 @@ class LineBotReminderService
 
     private function setQueue($delayTime): bool
     {
-
         try {
             \Log::info("setQueueJob for {$this->channelId} , {$this->message[1]}");
             dispatch(new TodoJob($this->channelId, $this->message[1]))
