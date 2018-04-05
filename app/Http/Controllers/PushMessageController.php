@@ -9,10 +9,10 @@ use App\Services\LineBotPushService;
 use function dd;
 use Illuminate\Http\Request;
 use LINE\LINEBot;
+use function redirect;
 
 class PushMessageController extends Controller
 {
-    private $lineBot;
     /** @var  LineBotPushService */
     private $lineBotPushService;
 
@@ -22,9 +22,7 @@ class PushMessageController extends Controller
      */
     public function __construct()
     {
-        $this->lineBot = app(LINEBot::class);
         $this->lineBotPushService = app(LineBotPushService::class);
-
     }
 
 
@@ -37,16 +35,11 @@ class PushMessageController extends Controller
 
         $message = $request->message;
 
-        \Log::info('message = '.$message);
-
-
-
         foreach($channelIds as $channelId) {
-            \Log::info('channel_id = '.$channelId->channel_id);
             $this->lineBotPushService->pushMessage($channelId->channel_id, $message);
        }
        
-       return 200;
+       return redirect('pushConsole');
     }
 
 }

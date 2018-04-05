@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::post('/webhook', 'LineController@index');
-Route::post('/pushMessage', 'PushMessageController@index');
+Route::post('/pushMessage', 'PushMessageController@index')->name('pushConsole');
 
 Auth::routes();
 

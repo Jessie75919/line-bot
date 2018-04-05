@@ -37,8 +37,8 @@ class LineBotLearnService
      */
     public function learnCommand():bool
     {
-        $key     = trim($this->learnContent['key']);
-        $message = trim($this->learnContent['message']);
+        $key     = trim($this->learnContent[0]);
+        $message = trim($this->learnContent[1]);
 
         \Log::info('key = '. $key);
         \Log::info('message = '.$message);

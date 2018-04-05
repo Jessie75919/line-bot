@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Memory;
+use function dd;
 
 class LineBotReceiveMessageService
 {
@@ -14,13 +15,15 @@ class LineBotReceiveMessageService
     private $isTalk;
     private $botResponseService;
     private $botLearnService;
-    private $learnContent;
+    private $processContent;
+    private $botRemindService;
     const SPEAK            = 'speak';
     const SHUT_UP          = 'shutUp';
     const LEARN            = 'learn';
     const TALK             = 'talk';
     const RESPONSE         = 'response';
     const GENERAL_RESPONSE = '好喔～好喔～';
+    const REMINDER         = 'reminder';
 
 
     /**
@@ -30,7 +33,8 @@ class LineBotReceiveMessageService
     {
     }
 
-    public function handle($package)
+
+    public function handle($package): void
     {
         \Log::info('package = ' . print_r($package, true));
 
@@ -109,12 +113,12 @@ class LineBotReceiveMessageService
 
 
     /**
-     * @param string $learnWord
+     * @param string $keyWord
      * @return bool
      */
-    public function isLearningCommand($learnWord): bool
+    public function isCommand($cmd, $keyWord): bool
     {
-        return trim($learnWord) == '學' ? true : false;
+        return trim($keyWord) == $cmd ? true : false;
     }
 
 
@@ -154,13 +158,24 @@ class LineBotReceiveMessageService
         $dissectData = $this->dissectMessage();
 
         // check need to learn
-        if($this->isLearningCommand($dissectData[0])) {
-            $this->learnContent = [
-                'key'     => $dissectData[1],
-                'message' => $dissectData[2]
+        if($this->isCommand('學',$dissectData[0])) {
+            $this->processContent = [
+                $dissectData[1],
+                $dissectData[2]
             ];
             return self::LEARN;
         }
+
+        // check need to keep to-do-list
+        if($this->isCommand('提醒',$dissectData[0])) {
+            $this->processContent = [
+                $dissectData[1],
+                $dissectData[2]
+            ];
+            return self::REMINDER;
+        }
+
+
         return self::TALK;
     }
 
@@ -169,7 +184,7 @@ class LineBotReceiveMessageService
      * @param $purpose
      * @return string
      */
-    public function dispatch($purpose):string
+    public function dispatch($purpose): string
     {
         switch($purpose) {
             case self::SPEAK:
@@ -177,11 +192,13 @@ class LineBotReceiveMessageService
                     new LineBotResponseService($this->channelId, self::SPEAK);
                 return $this->botResponseService->responsePurpose();
                 break;
+
             case self::SHUT_UP:
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::SHUT_UP);
                 return $this->botResponseService->responsePurpose();
                 break;
+
             case self::TALK:
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::TALK, $this->userMessage);
@@ -190,10 +207,28 @@ class LineBotReceiveMessageService
 
             case self::LEARN:
                 $this->botLearnService =
-                    new LineBotLearnService($this->channelId, $this->learnContent);
+                    new LineBotLearnService($this->channelId, $this->processContent);
                 if($this->botLearnService->learnCommand()) {
                     $this->botResponseService =
                         new LineBotResponseService($this->channelId, self::RESPONSE, self::GENERAL_RESPONSE);
+                    return $this->botResponseService->responsePurpose();
+                }
+                break;
+
+            case self::REMINDER:
+
+                $successMessage = "好喔～我會在{$this->processContent[0]}的時候提醒您{$this->processContent[1]}";
+                $errorMessage = "喔輸入格式好像有點問題喔～麻煩請用：『提醒;2018-03-04 09:30;吃早餐』的格式喔。";
+
+                $this->botRemindService =
+                    new LineBotReminderService($this->channelId, $this->processContent);
+                if($this->botRemindService->handle()) {
+                    $this->botResponseService =
+                        new LineBotResponseService($this->channelId, self::RESPONSE, $successMessage);
+                    return $this->botResponseService->responsePurpose();
+                }else {
+                    $this->botResponseService =
+                        new LineBotResponseService($this->channelId, self::RESPONSE, $errorMessage);
                     return $this->botResponseService->responsePurpose();
                 }
                 break;
@@ -204,11 +239,13 @@ class LineBotReceiveMessageService
     /** for the first time user which not has record in DB
      * @param $channelId
      */
-    private function init($channelId):void
+    private function init($channelId): void
     {
         $memory = Memory::where('channel_id', $channelId)->first();
 
-        if($memory) { return; }
+        if($memory) {
+            return;
+        }
 
         Memory::create([
             'channel_id' => $channelId,
@@ -222,6 +259,8 @@ class LineBotReceiveMessageService
      */
     private function getData($package)
     {
+//        dd($package);
+
         /** @var  array */
         $data = $package['events']['0'];
 
@@ -260,8 +299,6 @@ class LineBotReceiveMessageService
                 break;
         }
     }
-
-
 
 
 }
