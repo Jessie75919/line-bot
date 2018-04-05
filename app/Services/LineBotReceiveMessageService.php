@@ -142,6 +142,17 @@ class LineBotReceiveMessageService
      */
     public function checkPurpose(): string
     {
+        $dissectData = $this->dissectMessage();
+
+        // check need to keep to-do-list
+        if($this->isCommand('提醒',$dissectData[0])) {
+            $this->processContent = [
+                $dissectData[1],
+                $dissectData[2]
+            ];
+            return self::REMINDER;
+        }
+
         // check need to talk
         if(!$this->isTalk()) {
             if($this->isNeed($this->userMessage, self::TALK)) {
@@ -155,7 +166,7 @@ class LineBotReceiveMessageService
             return self::SHUT_UP;
         }
 
-        $dissectData = $this->dissectMessage();
+
 
         // check need to learn
         if($this->isCommand('學',$dissectData[0])) {
@@ -166,14 +177,7 @@ class LineBotReceiveMessageService
             return self::LEARN;
         }
 
-        // check need to keep to-do-list
-        if($this->isCommand('提醒',$dissectData[0])) {
-            $this->processContent = [
-                $dissectData[1],
-                $dissectData[2]
-            ];
-            return self::REMINDER;
-        }
+
 
 
         return self::TALK;
@@ -217,8 +221,8 @@ class LineBotReceiveMessageService
 
             case self::REMINDER:
 
-                $successMessage = "好喔～我會在{$this->processContent[0]}的時候提醒您{$this->processContent[1]}";
-                $errorMessage = "喔輸入格式好像有點問題喔～麻煩請用：『提醒;2018-03-04 09:30;吃早餐』的格式喔。";
+                $successMessage = "好喔～我會在 [{$this->processContent[0]}] 的時候提醒您 [{$this->processContent[1]}]";
+                $errorMessage = "喔 !? 輸入格式好像有點問題喔～ 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
 
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->processContent);

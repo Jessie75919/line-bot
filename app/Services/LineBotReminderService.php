@@ -23,6 +23,7 @@ use App\Jobs\TodoJob;
 use Carbon\Carbon;
 use function dd;
 use function dispatch;
+use function explode;
 use const false;
 use InvalidArgumentException;
 use Mockery\Exception;
@@ -61,8 +62,26 @@ class LineBotReminderService
 
     private function validTimeFormat($time):bool
     {
+        $times = explode(' ', $time);
+        $date = null ;
+
+        switch($times[0]) {
+            case '今天':
+                $date = Carbon::now('Asia/Taipei')->toDateString();
+                break;
+            case '明天':
+                $date = Carbon::now('Asia/Taipei')->addDay(1)->toDateString();
+                break;
+            case '後天':
+                $date = Carbon::now('Asia/Taipei')->addDay(2)->toDateString();
+                break;
+            default:
+                $date = $times[0];
+                break;
+        }
+
         try {
-            $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
+            $targetTime = Carbon::createFromFormat('Y-m-d H:i',"{$date} $times[1]", 'Asia/Taipei');
             return isset($targetTime) ? true : false;
         } catch(InvalidArgumentException $exception) {
             return false;
