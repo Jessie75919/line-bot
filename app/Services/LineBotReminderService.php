@@ -33,6 +33,7 @@ class LineBotReminderService
     private $message;
     private $isNeedPlus12;
     private $targetTime;
+    private $todoListId;
     const PAST_TIME_ERROR = 'PAST_TIME_ERROR';
     const FORMAT_ERROR    = 'FORMAT_ERROR';
     const SUCCESS         = 'SUCCESS';
@@ -65,8 +66,8 @@ class LineBotReminderService
 
         $delayTime = $this->getDelayTime($this->message[0]);
 
-        if(is_string($todoListId = $this->storeToDB())){
-            return $this->setQueue($delayTime,$todoListId) ? self::SUCCESS : self::ERROR;
+        if($this->storeToDB()){
+            return $this->setQueue($delayTime,$this->todoListId) ? self::SUCCESS : self::ERROR;
         }
 
         return self::ERROR;
@@ -277,7 +278,9 @@ class LineBotReminderService
                 'is_sent'            => 0
             ]);
             \Log::info("todoId => {$todo->id}");
-            return $todo->id;
+
+            $this->todoListId = $todo->id;
+            return true;
         } catch (\Exception $e) {
             return false;
         }
