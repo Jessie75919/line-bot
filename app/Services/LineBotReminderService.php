@@ -49,7 +49,7 @@ class LineBotReminderService
     }
 
 
-    public function handle(): string 
+    public function handle(): string
     {
         if(!$this->validTimeFormat($this->message[0])) {
             return self::FORMAT_ERROR;
