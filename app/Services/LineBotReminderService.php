@@ -55,7 +55,8 @@ class LineBotReminderService
             return self::FORMAT_ERROR;
         }
 
-        if(!$this->validTimeBefore($this->message[0])) {
+        if($this->validTimeInThePast($this->message[0])) {
+            \Log::info("validTimeInThePast => { true }");
             return self::PAST_TIME_ERROR;
         }
 
@@ -70,6 +71,8 @@ class LineBotReminderService
     {
         $time = $this->checkForAliasDay($time);
 
+        \Log::info("time in validTimeFormat => {$time}");
+
         try {
             $targetTime = Carbon::createFromFormat('Y-m-d H:i',$time, 'Asia/Taipei');
             return isset($targetTime) ? true : false;
@@ -82,6 +85,7 @@ class LineBotReminderService
     private function checkForAliasDay($time):string
     {
         $times = explode(' ', $time);
+         \Log::info("times => " . print_r($times , true));
         $date  = null;
 
         if(count($times) == 2) {
@@ -115,9 +119,14 @@ class LineBotReminderService
 
         //今天 早上 9點45分
         $this->isNeedPlus12 = $this->isNeedToPlus12($times[1]);
+        \Log::info("isNeedToPlus12 => {$this->isNeedPlus12}");
         $time = $this->timeAnalyze($times[2]);
 
-        return "{$date} $time";
+        $dateTime = "{$date} $time";
+
+        \Log::info("dateTime => {$dateTime}");
+
+        return $dateTime;
     }
 
     // get delay time
@@ -155,13 +164,22 @@ class LineBotReminderService
     }
 
 
-    public function validTimeBefore($time):bool
+    public function validTimeInThePast($time):bool
     {
-        $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
-        if($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
+        \Log::info("time in validTimeBefore => {$time}");
+
+        $time = $this->checkForAliasDay($time);
+
+        try {
+            $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
+            if($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
+                return true;
+            }
+            return false;
+        } catch(Exception $e) {
+            $e->getMessage();
             return false;
         }
-        return true;
     }
 
 
@@ -194,7 +212,7 @@ class LineBotReminderService
 
     private function timeAnalyze($time):string
     {
-        $time = strlen((trim($time)));
+        $time = trim($time);
 
         \Log::info("time => {$time}");
 
