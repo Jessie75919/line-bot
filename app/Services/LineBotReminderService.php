@@ -16,6 +16,7 @@ use function count;
 use Exception;
 use const false;
 use InvalidArgumentException;
+use function is_string;
 use const null;
 use function preg_match;
 use function preg_replace;
@@ -64,9 +65,10 @@ class LineBotReminderService
 
         $delayTime = $this->getDelayTime($this->message[0]);
 
-        if($todoListId = $this->storeToDB()){
+        if(is_string($todoListId = $this->storeToDB())){
             return $this->setQueue($delayTime,$todoListId) ? self::SUCCESS : self::ERROR;
         }
+
         return self::ERROR;
     }
 
@@ -264,7 +266,7 @@ class LineBotReminderService
     }
 
 
-    private function storeToDB():bool 
+    private function storeToDB()
     {
         try {
             $todo = TodoList::create([
