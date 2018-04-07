@@ -58,21 +58,18 @@ class LineBotReminderService
     {
 
         if($this->validTimeInThePast($this->message[0])) {
-                \Log::info("validTimeInThePast => { true }");
-                return self::PAST_TIME_ERROR;
+            \Log::info("validTimeInThePast => { true }");
+            return self::PAST_TIME_ERROR;
         }
 
         $delayTime = $this->getDelayTime();
 
-        if($this->storeToDB()){
-            return $this->setQueue($delayTime,$this->todoListId) ? self::SUCCESS : self::ERROR;
+        if($this->storeToDB()) {
+            return $this->setQueue($delayTime, $this->todoListId) ? self::SUCCESS : self::ERROR;
         }
 
         return self::ERROR;
     }
-
-
-
 
 
     private function checkForAliasDay($time)
@@ -86,58 +83,28 @@ class LineBotReminderService
                 // 如果不是2018開頭 ==> 今天...
                 if(strpos($times[0], '20') === false) {
                     $isNeedPlus12 = $this->isNeedToPlus12($times[0]);
-                    $time = $this->timeAnalyze($times[1]);
-                    $dateTime = "{$date} $time";
-                    $targetTime = $isNeedPlus12
-                        ? Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addHours(12)
-                        : Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
-                    $this->targetTime = $targetTime;
-                    return $targetTime;
+                    $time         = $this->timeAnalyze($times[1]);
+                    $dateTime     = "{$date} $time";
+                    return $this->createTargetTime($dateTime, $isNeedPlus12, 0);
                 } else { // 2018-07-02 格式開頭
                     $dateTime = "$times[0] $times[1]";
-                    \Log::info("dateTime => {$dateTime}");
-                    $targetTime = Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
-                    $this->targetTime = $targetTime;
-                    return $targetTime ;
+                    return $this->createTargetTime($dateTime, false, 0);
                 }
             }
 
             $addDays = null;
 
             if(count($times) === 3) {
-                switch($times[0]) {
-                    case '今天':
-                        $addDays = 0;
-                        break;
-                    case '明天':
-                        $addDays = 1;
-                        break;
-                    case '後天':
-                        $addDays = 2;
-                        break;
-                    default:
-                        $addDays = 0;
-                        break;
-                }
+                $addDays = $this->getAddDaysCount($times[0]);
             }
 
             //今天 早上 9點45分
             $isNeedPlus12 = $this->isNeedToPlus12($times[1]);
             \Log::info("isNeedToPlus12 => {$isNeedPlus12}");
-
             $time     = $this->timeAnalyze($times[2]);
             $dateTime = "{$date} $time";
-            
 
-            $targetTime = $isNeedPlus12
-                ? Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addDays($addDays)->addHours(12)
-                : Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addDays($addDays);
-
-            \Log::info("targetTime => " . print_r($targetTime , true));
-            
-            $this->targetTime = $targetTime;
-
-            return $targetTime;
+            return $this->createTargetTime($dateTime, $isNeedPlus12, $addDays);
         } catch(Exception $e) {
             \Log::error("Error :: {$e->getMessage()}");
             return self::ERROR;
@@ -148,7 +115,7 @@ class LineBotReminderService
     // get delay time
     private function getDelayTime(): int
     {
-        $current    = Carbon::now('Asia/Taipei');
+        $current = Carbon::now('Asia/Taipei');
 
         \Log::info('$current = ' . print_r($current, true));
         \Log::info('targetTime = ' . print_r($this->targetTime, true));
@@ -164,7 +131,7 @@ class LineBotReminderService
         try {
             \Log::info("setQueueJob for {$this->channelId} , {$this->message[1]}");
 
-            dispatch(new TodoJob($this->channelId, $this->message[1],$todoListId))
+            dispatch(new TodoJob($this->channelId, $this->message[1], $todoListId))
                 ->delay(now('Asia/Taipei')->addSeconds($delayTime));
             return true;
 
@@ -182,7 +149,7 @@ class LineBotReminderService
         try {
             $targetTime = $this->checkForAliasDay($time);
             if($targetTime != self::FORMAT_ERROR) {
-                \Log::info("targetTime(validTimeInThePast) => " . print_r($targetTime , true));
+                \Log::info("targetTime(validTimeInThePast) => " . print_r($targetTime, true));
                 if($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
                     return true;
                 }
@@ -224,7 +191,6 @@ class LineBotReminderService
     private function timeAnalyze($time): string
     {
         $time = trim($time);
-
         \Log::info("time => {$time}");
 
         // check 5點
@@ -248,7 +214,6 @@ class LineBotReminderService
         \Log::info("processed time => {$time}");
 
         return $time;
-
     }
 
 
@@ -272,9 +237,40 @@ class LineBotReminderService
 
             $this->todoListId = $todo->id;
             return true;
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
             return false;
         }
+    }
+
+
+    private function createTargetTime(string $dateTime, bool $isNeedPlus12Hours, int $addDays)
+    {
+        $targetTime = $isNeedPlus12Hours
+            ? Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addDays($addDays)->addHours(12)
+            : Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addDays($addDays);
+
+        $this->targetTime = $targetTime;
+        return $targetTime;
+    }
+
+
+    private function getAddDaysCount(string $dateAlias): int
+    {
+        switch($dateAlias) {
+            case '今天':
+                $addDays = 0;
+                break;
+            case '明天':
+                $addDays = 1;
+                break;
+            case '後天':
+                $addDays = 2;
+                break;
+            default:
+                $addDays = 0;
+                break;
+        }
+        return $addDays;
     }
 
 

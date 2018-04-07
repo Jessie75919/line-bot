@@ -42,7 +42,7 @@ class LineController extends Controller
 //        $package = ($request->all())[0]; // for test
         $package = $request->json()->all();
 
-        
+
         $this->botReceiveMessageService->handle($package);
 //
         /** @var string $replyToken */

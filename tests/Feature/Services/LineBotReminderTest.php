@@ -16,8 +16,20 @@ class LineBotReminderTest extends TestCase
      */
     public function testForTodayMorning()
     {
-        self::markTestSkipped();
         $cmd = '提醒;今天 早上 8:45;泡咖啡';
+
+        $package = $this->getPackage($cmd);
+
+        $response = $this->call('post', 'webhook', [$package]
+        );
+
+        $this->assertTrue($response->isSuccessful());
+
+    }
+
+    public function testForTodayMorningChineseTime()
+    {
+        $cmd = '提醒;今天 早上 8點48分;泡咖啡';
 
         $package = $this->getPackage($cmd);
 
@@ -36,7 +48,7 @@ class LineBotReminderTest extends TestCase
     public function testForNoWithTodayAlias()
     {
 
-        $cmd = '提醒;晚上 10點45分;進房間睡覺';
+        $cmd = '提醒;早上 8點37分;別賴床囉！';
 
         $package = $this->getPackage($cmd);
 
@@ -72,7 +84,7 @@ class LineBotReminderTest extends TestCase
     public function testForSpecificDateTime()
     {
 
-        $cmd = '提醒;2018-04-07 22:50;走出';
+        $cmd = '提醒;2018-04-08 10:00;休息一下囉';
 
         $package = $this->getPackage($cmd);
 
