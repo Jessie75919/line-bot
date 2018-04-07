@@ -7,7 +7,7 @@ use Tests\TestCase;
 class LineBotReminderTest extends TestCase
 {
 
-    private $cmd = '提醒；晚上 7點03分；好累喔。';
+    private $cmd = '提醒;明天 早上 8:30;起床';
     /**
      * A basic test example.
      *

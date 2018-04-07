@@ -13,6 +13,7 @@ use App\Jobs\TodoJob;
 use App\TodoList;
 use Carbon\Carbon;
 use function count;
+use function dd;
 use Exception;
 use const false;
 use InvalidArgumentException;
@@ -100,20 +101,21 @@ class LineBotReminderService
                 }
             }
 
+            $addDays = null;
 
             if(count($times) === 3) {
                 switch($times[0]) {
                     case '今天':
-                        $date = Carbon::now('Asia/Taipei')->toDateString();
+                        $addDays = 0;
                         break;
                     case '明天':
-                        $date = Carbon::now('Asia/Taipei')->addDay(1)->toDateString();
+                        $addDays = 1;
                         break;
                     case '後天':
-                        $date = Carbon::now('Asia/Taipei')->addDay(2)->toDateString();
+                        $addDays = 2;
                         break;
                     default:
-                        $date = $times[0];
+                        $addDays = 0;
                         break;
                 }
             }
@@ -123,16 +125,22 @@ class LineBotReminderService
             \Log::info("isNeedToPlus12 => {$isNeedPlus12}");
 
             $time     = $this->timeAnalyze($times[2]);
-            $dateTime = "{$date} $time";
 
-            \Log::info("dateTime => {$dateTime}");
+            \Log::info("hellow => {hellow}");
+
+            $x = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addHours(3);
+            \Log::info("$x => {$x->toDateString()}");
+
             $targetTime = $isNeedPlus12
-                ? Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addHours(12)
-                : Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
+                ? Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addDays($addDays)->addHours(12)
+                : Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addDays($addDays);
 
+
+            \Log::info("targetTime => " . print_r($targetTime , true));
+            
             $this->targetTime = $targetTime;
 
-            return false;
+            return $targetTime;
         } catch(Exception $e) {
             return self::FORMAT_ERROR;
         }
@@ -174,8 +182,9 @@ class LineBotReminderService
         \Log::info("time in validTimeInThePast => {$time}");
 
         try {
-            $this->checkForAliasDay($time);
-            if($this->targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
+            $targetTime = $this->checkForAliasDay($time);
+
+            if($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
                 return true;
             }
             return false;
