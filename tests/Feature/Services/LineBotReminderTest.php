@@ -13,8 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class LineBotReminderTest extends TestCase
 {
 
-    private $cmd = '提醒;今天 上午 9點36分;吃早~';
-
+    private $cmd = '提醒;今EFEFOJ;吃早餐~';
     /**
      * A basic test example.
      *

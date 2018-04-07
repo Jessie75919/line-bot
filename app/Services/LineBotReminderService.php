@@ -69,9 +69,14 @@ class LineBotReminderService
 
     private function validTimeFormat($time):bool
     {
+        \Log::info("time in validTimeFormat => {$time}");
+
+
         $time = $this->checkForAliasDay($time);
 
-        \Log::info("time in validTimeFormat => {$time}");
+        if($time == self::FORMAT_ERROR) {
+            return false;
+        }
 
         try {
             $targetTime = Carbon::createFromFormat('Y-m-d H:i',$time, 'Asia/Taipei');
@@ -84,49 +89,56 @@ class LineBotReminderService
 
     private function checkForAliasDay($time):string
     {
-        $times = explode(' ', $time);
-         \Log::info("times => " . print_r($times , true));
-        $date  = null;
 
-        if(count($times) == 2) {
-            // 如果不是2018開頭 ==> 今天...
-            if(strpos($times[0], '20') === false) {
-                $date = Carbon::now('Asia/Taipei')->toDateString();
+        try {
 
-                return "{$date} $times[1]";
-            }else { // 2018-07-02 格式開頭
-                return "$times[0] $times[1]";
-            }
-        }
+            $times = explode(' ', $time);
+            \Log::info("times => " . print_r($times, true));
+            $date = null;
 
-
-        if(count($times) === 3) {
-            switch($times[0]) {
-                case '今天':
+            if(count($times) == 2) {
+                // 如果不是2018開頭 ==> 今天...
+                if(strpos($times[0], '20') === false) {
                     $date = Carbon::now('Asia/Taipei')->toDateString();
-                    break;
-                case '明天':
-                    $date = Carbon::now('Asia/Taipei')->addDay(1)->toDateString();
-                    break;
-                case '後天':
-                    $date = Carbon::now('Asia/Taipei')->addDay(2)->toDateString();
-                    break;
-                default:
-                    $date = $times[0];
-                    break;
+
+                    return "{$date} $times[1]";
+                } else { // 2018-07-02 格式開頭
+                    return "$times[0] $times[1]";
+                }
             }
+
+
+            if(count($times) === 3) {
+                switch($times[0]) {
+                    case '今天':
+                        $date = Carbon::now('Asia/Taipei')->toDateString();
+                        break;
+                    case '明天':
+                        $date = Carbon::now('Asia/Taipei')->addDay(1)->toDateString();
+                        break;
+                    case '後天':
+                        $date = Carbon::now('Asia/Taipei')->addDay(2)->toDateString();
+                        break;
+                    default:
+                        $date = $times[0];
+                        break;
+                }
+            }
+
+            //今天 早上 9點45分
+            $this->isNeedPlus12 = $this->isNeedToPlus12($times[1]);
+            \Log::info("isNeedToPlus12 => {$this->isNeedPlus12}");
+            $time = $this->timeAnalyze($times[2]);
+
+            $dateTime = "{$date} $time";
+
+            \Log::info("dateTime => {$dateTime}");
+
+            return $dateTime;
+        } catch(Exception $e) {
+            return self::FORMAT_ERROR;
         }
 
-        //今天 早上 9點45分
-        $this->isNeedPlus12 = $this->isNeedToPlus12($times[1]);
-        \Log::info("isNeedToPlus12 => {$this->isNeedPlus12}");
-        $time = $this->timeAnalyze($times[2]);
-
-        $dateTime = "{$date} $time";
-
-        \Log::info("dateTime => {$dateTime}");
-
-        return $dateTime;
     }
 
     // get delay time
