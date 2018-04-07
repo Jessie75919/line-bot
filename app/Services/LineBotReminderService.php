@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Jobs\TodoJob;
+use App\TodoList;
 use Carbon\Carbon;
 use function count;
 use Exception;
@@ -30,6 +31,7 @@ class LineBotReminderService
     private $channelId;
     private $message;
     private $isNeedPlus12;
+    private $targetTime;
     const PAST_TIME_ERROR = 'PAST_TIME_ERROR';
     const FORMAT_ERROR    = 'FORMAT_ERROR';
     const SUCCESS         = 'SUCCESS';
@@ -62,12 +64,14 @@ class LineBotReminderService
 
         $delayTime = $this->getDelayTime($this->message[0]);
 
-        return $this->setQueue($delayTime) ? self::SUCCESS : self::ERROR;
-
+        if($todoListId = $this->storeToDB()){
+            return $this->setQueue($delayTime,$todoListId) ? self::SUCCESS : self::ERROR;
+        }
+        return self::ERROR;
     }
 
 
-    private function validTimeFormat($time):bool
+    private function validTimeFormat($time): bool
     {
         \Log::info("time in validTimeFormat => {$time}");
 
@@ -79,7 +83,7 @@ class LineBotReminderService
         }
 
         try {
-            $targetTime = Carbon::createFromFormat('Y-m-d H:i',$time, 'Asia/Taipei');
+            $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
             return isset($targetTime) ? true : false;
         } catch(InvalidArgumentException $exception) {
             return false;
@@ -87,7 +91,7 @@ class LineBotReminderService
     }
 
 
-    private function checkForAliasDay($time):string
+    private function checkForAliasDay($time): string
     {
 
         try {
@@ -100,8 +104,8 @@ class LineBotReminderService
                 // 如果不是2018開頭 ==> 今天...
                 if(strpos($times[0], '20') === false) {
                     $date = Carbon::now('Asia/Taipei')->toDateString();
-
-                    return "{$date} $times[1]";
+                    $time = $this->timeAnalyze($times[1]);
+                    return "{$date} $time";
                 } else { // 2018-07-02 格式開頭
                     return "$times[0] $times[1]";
                 }
@@ -128,8 +132,8 @@ class LineBotReminderService
             //今天 早上 9點45分
             $this->isNeedPlus12 = $this->isNeedToPlus12($times[1]);
             \Log::info("isNeedToPlus12 => {$this->isNeedPlus12}");
-            $time = $this->timeAnalyze($times[2]);
 
+            $time     = $this->timeAnalyze($times[2]);
             $dateTime = "{$date} $time";
 
             \Log::info("dateTime => {$dateTime}");
@@ -141,6 +145,7 @@ class LineBotReminderService
 
     }
 
+
     // get delay time
     private function getDelayTime(string $time): int
     {
@@ -149,8 +154,9 @@ class LineBotReminderService
         \Log::info('time = ' . ($time));
         $current    = Carbon::now('Asia/Taipei');
         $targetTime = $this->isNeedPlus12
-                    ? Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addHours(12)
-                    : Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
+            ? Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addHours(12)
+            : Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
+        $this->targetTime = $targetTime;
 
         \Log::info('$current = ' . print_r($current, true));
         \Log::info('targetTime = ' . print_r($targetTime, true));
@@ -161,11 +167,12 @@ class LineBotReminderService
     }
 
 
-    private function setQueue($delayTime): bool
+    private function setQueue($delayTime, $todoListId): bool
     {
         try {
             \Log::info("setQueueJob for {$this->channelId} , {$this->message[1]}");
-            dispatch(new TodoJob($this->channelId, $this->message[1]))
+
+            dispatch(new TodoJob($this->channelId, $this->message[1],$todoListId))
                 ->delay(now('Asia/Taipei')->addSeconds($delayTime));
             return true;
 
@@ -176,7 +183,7 @@ class LineBotReminderService
     }
 
 
-    public function validTimeInThePast($time):bool
+    public function validTimeInThePast($time): bool
     {
         \Log::info("time in validTimeBefore => {$time}");
 
@@ -195,7 +202,7 @@ class LineBotReminderService
     }
 
 
-    public  function isNeedToPlus12($timeInterval):bool
+    public function isNeedToPlus12($timeInterval): bool
     {
         switch($timeInterval) {
             case '早上':
@@ -220,30 +227,28 @@ class LineBotReminderService
     }
 
 
-
-
-    private function timeAnalyze($time):string
+    private function timeAnalyze($time): string
     {
         $time = trim($time);
 
         \Log::info("time => {$time}");
 
         // check 5點
-        $pattern = '/([0-1]*[0-9]+)點$/' ;
+        $pattern = '/([0-1]*[0-9]+)點$/';
         if($this->regularExpressionCheck($pattern, $time) == 1) {
             $time = preg_replace($pattern, "$1:00", $time);
         }
 
         // check 5點半
-        $pattern = '/([0-1]*[0-9]+)點半$/' ;
+        $pattern = '/([0-1]*[0-9]+)點半$/';
         if($this->regularExpressionCheck($pattern, $time) == 1) {
-            $time =  preg_replace($pattern, "$1:30", $time);
+            $time = preg_replace($pattern, "$1:30", $time);
         }
 
         // check 5點30分
-        $pattern = '/([0-1]*[0-9]+)點([0-1]*[0-9]+)分$/' ;
+        $pattern = '/([0-1]*[0-9]+)點([0-1]*[0-9]+)分$/';
         if($this->regularExpressionCheck($pattern, $time) == 1) {
-            $time =  preg_replace($pattern, "$1:$2", $time);
+            $time = preg_replace($pattern, "$1:$2", $time);
         }
 
         \Log::info("processed time => {$time}");
@@ -253,9 +258,27 @@ class LineBotReminderService
     }
 
 
-    private function regularExpressionCheck($pattern, $time):int
+    private function regularExpressionCheck($pattern, $time): int
     {
         return preg_match($pattern, $time);
+    }
+
+
+    private function storeToDB():bool 
+    {
+        try {
+            $todo = TodoList::create([
+                'send_channel_id'    => $this->channelId,
+                'receive_channel_id' => $this->channelId,
+                'message'            => $this->message[1],
+                'send_time'          => $this->targetTime,
+                'is_sent'            => 0
+            ]);
+            \Log::info("todoId => {$todo->id}");
+            return $todo->id;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 

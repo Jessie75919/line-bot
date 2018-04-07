@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Services\LineBotPushService;
+use App\TodoList;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -18,18 +19,21 @@ class TodoJob implements ShouldQueue
     private $message;
     /** @var  LineBotPushService */
     private $lineBotPushService;
+    private $todoListId;
 
 
     /**
      * TodoJob constructor.
      * @param $channelId
      * @param $message
+     * @param $todoListId
      */
-    public function __construct($channelId, $message )
+    public function __construct($channelId, $message , $todoListId)
     {
         $this->lineBotPushService = app(LineBotPushService::class);
         $this->channelId = $channelId;
         $this->message   = $message;
+        $this->todoListId = $todoListId;
     }
 
 
@@ -40,7 +44,12 @@ class TodoJob implements ShouldQueue
      */
     public function handle()
     {
-        \Log::info("get the job to send message : {$this->message}");
+        \Log::info("todoListId => {$this->todoListId}");
+
+        $todo = TodoList::find($this->todoListId);
+        $todo->is_sent = 1;
+        $todo->save();
         $this->lineBotPushService->pushMessage($this->channelId, $this->message);
+        \Log::info("job to send message : {$this->message} was done");
     }
 }
