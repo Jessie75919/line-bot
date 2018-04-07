@@ -3,6 +3,7 @@
 namespace Tests\Feature\Services;
 
 use function dd;
+use LINE\LINEBot\Response;
 use Tests\TestCase;
 
 class LineBotReminderTest extends TestCase
@@ -17,6 +18,26 @@ class LineBotReminderTest extends TestCase
     public function testForTodayMorning()
     {
         $cmd = '提醒;今天 早上 8:45;泡咖啡';
+
+        $package = $this->getPackage($cmd);
+
+        $response = $this->call('post', 'webhook', [$package]
+        );
+
+        $this->assertTrue($response->isSuccessful());
+
+    }
+
+
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testForRandomString()
+    {
+        $cmd = '提醒;feifjojaeofjo;泡咖啡';
 
         $package = $this->getPackage($cmd);
 
