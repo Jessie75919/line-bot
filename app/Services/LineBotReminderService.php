@@ -31,7 +31,7 @@ class LineBotReminderService
 {
     private $channelId;
     private $message;
-    private $isNeedPlus12;
+    /** @var  Carbon $targetTime */
     private $targetTime;
     private $todoListId;
     const PAST_TIME_ERROR = 'PAST_TIME_ERROR';
@@ -55,16 +55,13 @@ class LineBotReminderService
 
     public function handle(): string
     {
-        if(!$this->validTimeFormat($this->message[0])) {
-            return self::FORMAT_ERROR;
-        }
 
         if($this->validTimeInThePast($this->message[0])) {
-            \Log::info("validTimeInThePast => { true }");
-            return self::PAST_TIME_ERROR;
+                \Log::info("validTimeInThePast => { true }");
+                return self::PAST_TIME_ERROR;
         }
 
-        $delayTime = $this->getDelayTime($this->message[0]);
+        $delayTime = $this->getDelayTime();
 
         if($this->storeToDB()){
             return $this->setQueue($delayTime,$this->todoListId) ? self::SUCCESS : self::ERROR;
@@ -74,29 +71,11 @@ class LineBotReminderService
     }
 
 
-    private function validTimeFormat($time): bool
+
+
+
+    private function checkForAliasDay($time)
     {
-        \Log::info("time in validTimeFormat => {$time}");
-
-
-        $time = $this->checkForAliasDay($time);
-
-        if($time == self::FORMAT_ERROR) {
-            return false;
-        }
-
-        try {
-            $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
-            return isset($targetTime) ? true : false;
-        } catch(InvalidArgumentException $exception) {
-            return false;
-        }
-    }
-
-
-    private function checkForAliasDay($time): string
-    {
-
         try {
 
             $times = explode(' ', $time);
@@ -107,10 +86,17 @@ class LineBotReminderService
                 // 如果不是2018開頭 ==> 今天...
                 if(strpos($times[0], '20') === false) {
                     $date = Carbon::now('Asia/Taipei')->toDateString();
+                    $isNeedPlus12 = $this->isNeedToPlus12($times[0]);
                     $time = $this->timeAnalyze($times[1]);
-                    return "{$date} $time";
+                    $dateTime = "{$date} $time";
+                    $this->targetTime = $isNeedPlus12
+                        ? Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addHours(12)
+                        : Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
+                    return false;
                 } else { // 2018-07-02 格式開頭
-                    return "$times[0] $times[1]";
+                    $dateTime = "$times[0] $times[1]";
+                    $this->targetTime = Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
+                    return false ;
                 }
             }
 
@@ -133,38 +119,35 @@ class LineBotReminderService
             }
 
             //今天 早上 9點45分
-            $this->isNeedPlus12 = $this->isNeedToPlus12($times[1]);
-            \Log::info("isNeedToPlus12 => {$this->isNeedPlus12}");
+            $isNeedPlus12 = $this->isNeedToPlus12($times[1]);
+            \Log::info("isNeedToPlus12 => {$isNeedPlus12}");
 
             $time     = $this->timeAnalyze($times[2]);
             $dateTime = "{$date} $time";
 
             \Log::info("dateTime => {$dateTime}");
+            $targetTime = $isNeedPlus12
+                ? Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addHours(12)
+                : Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
 
-            return $dateTime;
+            $this->targetTime = $targetTime;
+
+            return false;
         } catch(Exception $e) {
             return self::FORMAT_ERROR;
         }
-
     }
 
 
     // get delay time
-    private function getDelayTime(string $time): int
+    private function getDelayTime(): int
     {
-        $time = $this->checkForAliasDay($time);
-
-        \Log::info('time = ' . ($time));
         $current    = Carbon::now('Asia/Taipei');
-        $targetTime = $this->isNeedPlus12
-            ? Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addHours(12)
-            : Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
-        $this->targetTime = $targetTime;
 
         \Log::info('$current = ' . print_r($current, true));
-        \Log::info('targetTime = ' . print_r($targetTime, true));
+        \Log::info('targetTime = ' . print_r($this->targetTime, true));
 
-        $diffTime = $targetTime->diffInSeconds($current);
+        $diffTime = $this->targetTime->diffInSeconds($current);
         \Log::info(" = {$diffTime}");
         return $diffTime;
     }
@@ -188,13 +171,11 @@ class LineBotReminderService
 
     public function validTimeInThePast($time): bool
     {
-        \Log::info("time in validTimeBefore => {$time}");
-
-        $time = $this->checkForAliasDay($time);
+        \Log::info("time in validTimeInThePast => {$time}");
 
         try {
-            $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
-            if($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
+            $this->checkForAliasDay($time);
+            if($this->targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
                 return true;
             }
             return false;

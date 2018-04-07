@@ -2,18 +2,12 @@
 
 namespace Tests\Feature\Services;
 
-use function dd;
-use LINE\LINEBot;
-use Psy\Util\Json;
-use function request;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LineBotReminderTest extends TestCase
 {
 
-    private $cmd = '提醒；2018-04-07 18:21；耍廢';
+    private $cmd = '提醒；晚上 7點03分；好累喔。';
     /**
      * A basic test example.
      *
@@ -52,9 +46,5 @@ class LineBotReminderTest extends TestCase
 
         $response = $this->call('post', 'webhook', [$package]
         );
-
-        $response->assertStatus(200);
-
-
     }
 }
