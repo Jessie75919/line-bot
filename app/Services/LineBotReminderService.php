@@ -78,26 +78,24 @@ class LineBotReminderService
     private function checkForAliasDay($time)
     {
         try {
-
             $times = explode(' ', $time);
             \Log::info("times => " . print_r($times, true));
-            $date = null;
+            $date = Carbon::now('Asia/Taipei')->toDateString();
 
             if(count($times) == 2) {
                 // 如果不是2018開頭 ==> 今天...
                 if(strpos($times[0], '20') === false) {
-                    $date = Carbon::now('Asia/Taipei')->toDateString();
                     $isNeedPlus12 = $this->isNeedToPlus12($times[0]);
                     $time = $this->timeAnalyze($times[1]);
                     $dateTime = "{$date} $time";
-                    $this->targetTime = $isNeedPlus12
+                    $targetTime = $isNeedPlus12
                         ? Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addHours(12)
                         : Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
-                    return false;
+                    return $targetTime;
                 } else { // 2018-07-02 格式開頭
                     $dateTime = "$times[0] $times[1]";
-                    $this->targetTime = Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
-                    return false ;
+                    $targetTime = Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
+                    return $targetTime ;
                 }
             }
 
@@ -125,16 +123,12 @@ class LineBotReminderService
             \Log::info("isNeedToPlus12 => {$isNeedPlus12}");
 
             $time     = $this->timeAnalyze($times[2]);
-
-            \Log::info("hellow => {hellow}");
-
-            $x = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addHours(3);
-            \Log::info("$x => {$x->toDateString()}");
+            $dateTime = "{$date} $time";
+            
 
             $targetTime = $isNeedPlus12
-                ? Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addDays($addDays)->addHours(12)
-                : Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addDays($addDays);
-
+                ? Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addDays($addDays)->addHours(12)
+                : Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addDays($addDays);
 
             \Log::info("targetTime => " . print_r($targetTime , true));
             
@@ -142,7 +136,8 @@ class LineBotReminderService
 
             return $targetTime;
         } catch(Exception $e) {
-            return self::FORMAT_ERROR;
+            \Log::error("Error :: {$e->getMessage()}");
+            return self::ERROR;
         }
     }
 
@@ -183,10 +178,13 @@ class LineBotReminderService
 
         try {
             $targetTime = $this->checkForAliasDay($time);
-
-            if($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
-                return true;
+            if($targetTime != self::FORMAT_ERROR) {
+                \Log::info("targetTime(validTimeInThePast) => " . print_r($targetTime , true));
+                if($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
+                    return true;
+                }
             }
+
             return false;
         } catch(Exception $e) {
             $e->getMessage();
