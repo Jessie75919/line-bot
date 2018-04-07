@@ -42,6 +42,7 @@ class LineController extends Controller
 //        $package = ($request->all())[0]; // for test
         $package = $request->json()->all();
 
+        
         $this->botReceiveMessageService->handle($package);
 //
         /** @var string $replyToken */
@@ -52,6 +53,8 @@ class LineController extends Controller
 
         $responseText = $this->botReceiveMessageService->dispatch($purpose);
 
-        return $this->lineBot->replyText($replyToken, $responseText);
+        $finalResponse = $this->lineBot->replyText($replyToken, $responseText);
+
+        return response()->json($finalResponse);
     }
 }

@@ -91,10 +91,13 @@ class LineBotReminderService
                     $targetTime = $isNeedPlus12
                         ? Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei')->addHours(12)
                         : Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
+                    $this->targetTime = $targetTime;
                     return $targetTime;
                 } else { // 2018-07-02 格式開頭
                     $dateTime = "$times[0] $times[1]";
+                    \Log::info("dateTime => {$dateTime}");
                     $targetTime = Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
+                    $this->targetTime = $targetTime;
                     return $targetTime ;
                 }
             }
