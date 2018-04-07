@@ -11,13 +11,29 @@ namespace App\Services;
 
 use App\Jobs\TodoJob;
 use Carbon\Carbon;
+use function count;
+use Exception;
 use const false;
 use InvalidArgumentException;
+use const null;
+use function preg_match;
+use function preg_replace;
+use function strlen;
+use function strpos;
+use function substr;
+use function time;
+use function trim;
+use const true;
 
 class LineBotReminderService
 {
     private $channelId;
     private $message;
+    private $isNeedPlus12;
+    const PAST_TIME_ERROR = 'PAST_TIME_ERROR';
+    const FORMAT_ERROR    = 'FORMAT_ERROR';
+    const SUCCESS         = 'SUCCESS';
+    const ERROR           = 'ERROR';
 
 
     /**
@@ -35,11 +51,18 @@ class LineBotReminderService
 
     public function handle(): bool
     {
-        if($this->validTimeFormat($this->message[0])) {
-            $delayTime = $this->getDelayTime($this->message[0]);
-            return $this->setQueue($delayTime);
+        if(!$this->validTimeFormat($this->message[0])) {
+            return self::FORMAT_ERROR;
         }
-        return false;
+
+        if(!$this->validTimeBefore($this->message[0])) {
+            return self::PAST_TIME_ERROR;
+        }
+
+        $delayTime = $this->getDelayTime($this->message[0]);
+
+        return $this->setQueue($delayTime) ? self::SUCCESS : self::ERROR;
+
     }
 
 
@@ -59,23 +82,42 @@ class LineBotReminderService
     private function checkForAliasDay($time):string
     {
         $times = explode(' ', $time);
-        $date = null ;
+        $date  = null;
 
-        switch($times[0]) {
-            case '今天':
+        if(count($times) == 2) {
+            // 如果不是2018開頭 ==> 今天...
+            if(strpos($times[0], '20') === false) {
                 $date = Carbon::now('Asia/Taipei')->toDateString();
-                break;
-            case '明天':
-                $date = Carbon::now('Asia/Taipei')->addDay(1)->toDateString();
-                break;
-            case '後天':
-                $date = Carbon::now('Asia/Taipei')->addDay(2)->toDateString();
-                break;
-            default:
-                $date = $times[0];
-                break;
+
+                return "{$date} $times[1]";
+            }else { // 2018-07-02 格式開頭
+                return "$times[0] $times[1]";
+            }
         }
-        return "{$date} $times[1]";
+
+
+        if(count($times) === 3) {
+            switch($times[0]) {
+                case '今天':
+                    $date = Carbon::now('Asia/Taipei')->toDateString();
+                    break;
+                case '明天':
+                    $date = Carbon::now('Asia/Taipei')->addDay(1)->toDateString();
+                    break;
+                case '後天':
+                    $date = Carbon::now('Asia/Taipei')->addDay(2)->toDateString();
+                    break;
+                default:
+                    $date = $times[0];
+                    break;
+            }
+        }
+
+        //今天 早上 9點45分
+        $this->isNeedPlus12 = $this->isNeedToPlus12($times[1]);
+        $time = $this->timeAnalyze($times[2]);
+
+        return "{$date} $time";
     }
 
     // get delay time
@@ -85,7 +127,10 @@ class LineBotReminderService
 
         \Log::info('time = ' . ($time));
         $current    = Carbon::now('Asia/Taipei');
-        $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
+        $targetTime = $this->isNeedPlus12
+                    ? Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei')->addHours(12)
+                    : Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
+
         \Log::info('$current = ' . print_r($current, true));
         \Log::info('targetTime = ' . print_r($targetTime, true));
 
@@ -107,7 +152,76 @@ class LineBotReminderService
             \Log::error("error => {$e->getMessage()}");
             return false;
         }
+    }
 
+
+    public function validTimeBefore($time):bool
+    {
+        $targetTime = Carbon::createFromFormat('Y-m-d H:i', $time, 'Asia/Taipei');
+        if($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public  function isNeedToPlus12($timeInterval):bool
+    {
+        switch($timeInterval) {
+            case '早上':
+                return false;
+                break;
+            case '上午':
+                return false;
+                break;
+            case '中午':
+                return false;
+                break;
+            case '下午':
+                return true;
+                break;
+            case '晚上':
+                return true;
+                break;
+            default:
+                return false;
+                break;
+        }
+    }
+
+
+
+
+    private function timeAnalyze($time):string
+    {
+        $time = strlen((trim($time)));
+
+        // check 5點
+        $pattern = '/([0-1]*[0-9]+)點$' ;
+        if($this->regularExpressionCheck($pattern, $time) == 1) {
+            return preg_replace($pattern, "$1:00", $time);
+        }
+
+        // check 5點半
+        $pattern = '/([0-1]*[0-9]+)點半$' ;
+        if($this->regularExpressionCheck($pattern, $time) == 1) {
+            return preg_replace($pattern, "$1:30", $time);
+        }
+
+        // check 5點30分
+        $pattern = '/([0-1]*[0-9]+)點([0-1]*[0-9]+)分$' ;
+        if($this->regularExpressionCheck($pattern, $time) == 1) {
+            return preg_replace($pattern, "$1:$2", $time);
+        }
+
+
+
+    }
+
+
+    private function regularExpressionCheck($pattern, $time):int
+    {
+        return preg_match($pattern, $time);
     }
 
 

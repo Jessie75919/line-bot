@@ -240,20 +240,31 @@ class LineBotReceiveMessageService
                 break;
             case self::REMINDER:
 
-                $successMessage = "好喔～我會在 [{$this->processContent[0]}] 的時候提醒您 [{$this->processContent[1]}]";
-                $errorMessage = "喔 !? 輸入格式好像有點問題喔～ 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
+                $successMessage       = "好喔～我會在 [{$this->processContent[0]}] 的時候提醒您 [{$this->processContent[1]}]";
+                $errorMessageFormat   = "喔 !? 輸入格式好像有點問題喔～ 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
+                $errorMessagePastTime = "喔 !? 輸入的時間好像有點問題。請輸入『 未來 』的時間才能提醒你喔。";
 
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->processContent);
-                if($this->botRemindService->handle()) {
-                    $this->botResponseService =
-                        new LineBotResponseService($this->channelId, self::RESPONSE, $successMessage);
-                    return $this->botResponseService->responsePurpose();
-                }else {
-                    $this->botResponseService =
-                        new LineBotResponseService($this->channelId, self::RESPONSE, $errorMessage);
-                    return $this->botResponseService->responsePurpose();
+
+                switch($this->botRemindService->handle()) {
+                    case 'SUCCESS':
+                        $this->botResponseService =
+                            new LineBotResponseService($this->channelId, self::RESPONSE, $successMessage);
+                        return $this->botResponseService->responsePurpose();
+                        break;
+                    case 'PAST_TIME_ERROR':
+                        $this->botResponseService =
+                            new LineBotResponseService($this->channelId, self::RESPONSE, $errorMessagePastTime);
+                        return $this->botResponseService->responsePurpose();
+                        break;
+                    case 'FORMAT_ERROR':
+                        $this->botResponseService =
+                            new LineBotResponseService($this->channelId, self::RESPONSE, $errorMessageFormat);
+                        return $this->botResponseService->responsePurpose();
+                        break;
                 }
+
                 break;
         }
     }

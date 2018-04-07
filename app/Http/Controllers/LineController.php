@@ -39,20 +39,19 @@ class LineController extends Controller
 
     public function index(Request $request)
     {
-//        $package = ($request->all())[0]; // for test
+        $package = ($request->all())[0]; // for test
 
-        $package = $request->json()->all();
+//        $package = $request->json()->all();
         $this->botReceiveMessageService->handle($package);
 
         /** @var string $replyToken */
         $replyToken = $this->botReceiveMessageService->getReplyToken();
 
         /** @var string $purpose */
-        $purpose    = $this->botReceiveMessageService->checkPurpose();
+        $purpose = $this->botReceiveMessageService->checkPurpose();
 
-        /** @var LINEBot\Response $response */
-        $response   = $this->botReceiveMessageService->dispatch($purpose);
+        $responseText = $this->botReceiveMessageService->dispatch($purpose);
 
-        return $this->lineBot->replyText($replyToken, $response);
+        return $this->lineBot->replyText($replyToken, $responseText);
     }
 }
