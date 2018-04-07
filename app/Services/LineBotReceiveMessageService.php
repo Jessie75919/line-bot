@@ -247,7 +247,11 @@ class LineBotReceiveMessageService
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->processContent);
 
-                switch($this->botRemindService->handle()) {
+                $result = $this->botRemindService->handle();
+                
+                \Log::info("result => {$result}");
+                
+                switch($result) {
                     case 'SUCCESS':
                         $this->botResponseService =
                             new LineBotResponseService($this->channelId, self::RESPONSE, $successMessage);
