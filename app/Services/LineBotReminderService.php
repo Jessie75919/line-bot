@@ -196,25 +196,29 @@ class LineBotReminderService
     {
         $time = strlen((trim($time)));
 
+        \Log::info("time => {$time}");
+
         // check 5點
         $pattern = '/([0-1]*[0-9]+)點$/' ;
         if($this->regularExpressionCheck($pattern, $time) == 1) {
-            return preg_replace($pattern, "$1:00", $time);
+            $time = preg_replace($pattern, "$1:00", $time);
         }
 
         // check 5點半
         $pattern = '/([0-1]*[0-9]+)點半$/' ;
         if($this->regularExpressionCheck($pattern, $time) == 1) {
-            return preg_replace($pattern, "$1:30", $time);
+            $time =  preg_replace($pattern, "$1:30", $time);
         }
 
         // check 5點30分
         $pattern = '/([0-1]*[0-9]+)點([0-1]*[0-9]+)分$/' ;
         if($this->regularExpressionCheck($pattern, $time) == 1) {
-            return preg_replace($pattern, "$1:$2", $time);
+            $time =  preg_replace($pattern, "$1:$2", $time);
         }
 
+        \Log::info("processed time => {$time}");
 
+        return $time;
 
     }
 
