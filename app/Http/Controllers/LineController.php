@@ -39,8 +39,8 @@ class LineController extends Controller
 
     public function index(Request $request)
     {
-        $package = ($request->all())[0]; // for test
-//        $package = $request->json()->all();
+//        $package = ($request->all())[0]; // for test
+        $package = $request->json()->all();
 
         $this->botReceiveMessageService->handle($package);
 //
