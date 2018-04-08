@@ -47,8 +47,7 @@ class TodoJob implements ShouldQueue
         \Log::info("todoListId => {$this->todoListId}");
         $todo = TodoList::find($this->todoListId);
         if($todo) {
-            $todo->is_sent = 1;
-            $todo->save();
+            $todo->delete();
             $this->lineBotPushService->pushMessage($this->channelId, $this->message);
             \Log::info("job to send message : {$this->message} was done");
         }
