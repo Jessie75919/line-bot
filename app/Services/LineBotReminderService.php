@@ -37,6 +37,9 @@ class LineBotReminderService
     const FORMAT_ERROR    = 'FORMAT_ERROR';
     const SUCCESS         = 'SUCCESS';
     const ERROR           = 'ERROR';
+    const STATE           = "STATE";
+    const REMINDER_STATE  = "Reminder-State";
+    const REMINDER        = 'reminder';
 
 
     /**
@@ -52,32 +55,48 @@ class LineBotReminderService
     }
 
 
-    public function handle(): string
+    public function handle( $mode = 'reminder'): string
     {
 
-        // get TargetTime
-        try {
-            /** @var Carbon $targetTime */
-            $targetTime = $this->getTargetTime($this->message[0]);
-             \Log::info("targetTime => " . print_r($targetTime , true));
-        } catch(\Exception $e) {
-            $e->getMessage();
-            return self::FORMAT_ERROR;
+        switch($mode) {
+
+            case self::REMINDER_STATE:
+                $responseText = null;
+                $todos        = $this->getAllTodoLists();
+                foreach($todos as $todo) {
+                    $responseText .= "編號：{$todo->id} \n 提醒內容：{$todo->message} \n 提醒時間：{$todo->send_time} \n ";
+                    $responseText .= "---------------- \n";
+                }
+                \Log::info("responseText => {$responseText}");
+
+                return self::STATE;
+                break;
+
+            case self::REMINDER:
+                // get TargetTime
+                try {
+                    /** @var Carbon $targetTime */
+                    $targetTime = $this->getTargetTime($this->message[0]);
+                    \Log::info("targetTime => " . print_r($targetTime, true));
+                } catch(\Exception $e) {
+                    $e->getMessage();
+                    return self::FORMAT_ERROR;
+                }
+
+
+                if($this->validTimeInThePast($targetTime)) {
+                    \Log::info("validTimeInThePast => { true }");
+                    return self::PAST_TIME_ERROR;
+                }
+
+                $delayTime = $this->getDelayTime($targetTime);
+
+                if($this->storeToDB($targetTime)) {
+                    return $this->setQueue($delayTime, $this->todoListId) ? self::SUCCESS : self::ERROR;
+                }
+                return self::ERROR;
+
         }
-
-
-        if($this->validTimeInThePast($targetTime)) {
-            \Log::info("validTimeInThePast => { true }");
-            return self::PAST_TIME_ERROR;
-        }
-
-        $delayTime = $this->getDelayTime($targetTime);
-
-        if($this->storeToDB($targetTime)) {
-            return $this->setQueue($delayTime, $this->todoListId) ? self::SUCCESS : self::ERROR;
-        }
-
-        return self::ERROR;
     }
 
 
@@ -266,13 +285,22 @@ class LineBotReminderService
     }
 
 
-    private function dateTimeAnalyze($date, $dateAlias, $time):array
+    private function dateTimeAnalyze($date, $dateAlias, $time): array
     {
         $isNeedPlus12 = $this->isNeedToPlus12($dateAlias);
         \Log::info("isNeedToPlus12 => {$isNeedPlus12}");
         $time = $this->timeAnalyze($time);
 
         return ["{$date} {$time}", $isNeedPlus12];
+    }
+
+
+    private function getAllTodoLists()
+    {
+        return TodoList::where('send_channel_id', $this->channelId)
+                       ->where('is_sent', 0)
+                       ->where('send_time','>', Carbon::now('Asia/Taipei'))
+                       ->get(['id', 'message', 'send_time']);
     }
 
 

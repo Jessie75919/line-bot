@@ -28,6 +28,7 @@ class LineBotReceiveMessageService
     const GENERAL_RESPONSE = '好喔～好喔～';
     const REMINDER         = 'reminder';
     const STATE            = "state";
+    const REMINDER_STATE   = "Reminder-State";
 
 
     /**
@@ -152,6 +153,18 @@ class LineBotReceiveMessageService
      */
     public function checkPurpose(): string
     {
+
+        // check all to-do-list which are not done.
+        $semicolons = [';','；'];
+        foreach($semicolons as $semicolon) {
+            $pattern = "/提醒{$semicolon}所有提醒/";
+            if(preg_match($pattern, $this->userMessage) == 1) {
+                return self::REMINDER_STATE;
+            }
+        }
+
+
+
         $dissectData = $this->dissectMessage();
 
         // check need to keep to-do-list
@@ -238,8 +251,18 @@ class LineBotReceiveMessageService
                     return $this->botResponseService->responsePurpose();
                 }
                 break;
-            case self::REMINDER:
 
+            case self::REMINDER_STATE:
+                $this->botRemindService =
+                    new LineBotReminderService($this->channelId, $this->userMessage);
+
+                $responseText = $this->botRemindService->handle(self::REMINDER_STATE);
+                $this->botResponseService =
+                    new LineBotResponseService($this->channelId, self::RESPONSE, $responseText);
+                return $this->botResponseService->responsePurpose();
+                break;
+
+            case self::REMINDER:
                 $successMessage       = "好喔～我會在 [{$this->processContent[0]}] 的時候提醒您 [{$this->processContent[1]}]";
                 $errorMessageFormat   = "喔 !? 輸入格式好像有點問題喔～ 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
                 $errorMessagePastTime = "喔 !? 輸入的時間好像有點問題。請輸入『 未來 』的時間才能提醒你喔。";
@@ -248,7 +271,7 @@ class LineBotReceiveMessageService
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->processContent);
 
-                $result = $this->botRemindService->handle();
+                $result = $this->botRemindService->handle(self::REMINDER);
                 
                 \Log::info("result => {$result}");
                 
@@ -343,12 +366,5 @@ class LineBotReceiveMessageService
                 break;
         }
     }
-
-
-    private function isState():bool
-    {
-
-    }
-
 
 }

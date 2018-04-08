@@ -29,6 +29,25 @@ class LineBotReminderTest extends TestCase
     }
 
 
+    /**
+     * A basic test example.
+     * @test
+     * @return void
+     */
+    public function testForGetState()
+    {
+        $cmd = '提醒;所有提醒';
+
+        $package = $this->getPackage($cmd);
+
+        $response = $this->call('post', 'webhook', [$package]
+        );
+
+        $this->assertTrue($response->isSuccessful());
+
+    }
+
+
 
     /**
      * A basic test example.
@@ -50,7 +69,7 @@ class LineBotReminderTest extends TestCase
 
     public function testForTodayMorningChineseTime()
     {
-        $cmd = '提醒;今天 早上 8點48分;泡咖啡';
+        $cmd = '提醒;今天 晚上 6點00分;吃飯飯';
 
         $package = $this->getPackage($cmd);
 
