@@ -36,7 +36,7 @@ class LineBotReminderTest extends TestCase
      */
     public function testForGetState()
     {
-        $cmd = '提醒;所有提醒';
+        $cmd = '提醒;all';
 
         $package = $this->getPackage($cmd);
 
@@ -89,7 +89,7 @@ class LineBotReminderTest extends TestCase
      */
     public function testForDeleteReminder()
     {
-        $cmd = '提醒;刪除;36';
+        $cmd = '提醒;del;55';
 
         $package = $this->getPackage($cmd);
 

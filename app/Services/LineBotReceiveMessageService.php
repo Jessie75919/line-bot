@@ -158,21 +158,16 @@ class LineBotReceiveMessageService
     {
 
         // check all to-do-list which are not done.
-        $semicolons = [';','；'];
-        foreach($semicolons as $semicolon) {
-            $pattern = "/提醒{$semicolon}所有提醒/";
-            if(preg_match($pattern, $this->userMessage) == 1) {
-                return self::REMINDER_STATE;
-            }
+        $pattern = "/(提醒(;|；)(所有提醒|all))/";
+        if(preg_match($pattern, $this->userMessage) == 1) {
+            return self::REMINDER_STATE;
         }
 
-        foreach($semicolons as $semicolon) {
-            $pattern = "/提醒{$semicolon}刪除{$semicolon}[0-9]*[1-9]*[1-9]*$/";
-            if(preg_match($pattern, $this->userMessage) == 1) {
-                $dissectData = $this->dissectMessage();
-                $this->userMessage = $dissectData[2];
-                return self::REMINDER_DELETE;
-            }
+        $pattern = "/(提醒(;|；)(刪除|del))(;|；)([0-9]*[1-9]*[1-9]*$)/";
+        if(preg_match($pattern, $this->userMessage) == 1) {
+            $dissectData = $this->dissectMessage();
+            $this->userMessage = $dissectData[2];
+            return self::REMINDER_DELETE;
         }
 
 
