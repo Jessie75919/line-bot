@@ -265,8 +265,6 @@ class LineBotReceiveMessageService
                 break;
 
             case self::REMINDER_STATE:
-
-
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->userMessage);
                 $responseText = $this->botRemindService->handle(self::REMINDER_STATE);
@@ -278,8 +276,8 @@ class LineBotReceiveMessageService
 
 
             case self::REMINDER_DELETE:
-                $deleteSuccess = "你的提醒編號：{$this->userMessage} 已經被刪除囉！";
-                $deleteFail    = "你的提醒編號：{$this->userMessage} 好像沒有刪除成功喔。";
+                $deleteSuccess = "你的提醒編號：{$this->userMessage}已經被刪除囉！";
+                $deleteFail    = "你的提醒編號：{$this->userMessage}好像沒有刪除成功喔。";
 
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->userMessage);
@@ -293,7 +291,7 @@ class LineBotReceiveMessageService
                 break;
 
             case self::REMINDER:
-                $successMessage       = " 好喔～\n 我會在 [{$this->processContent[0]}] 的時候\n 提醒您 [{$this->processContent[1]}]";
+                $successMessage       = " 好喔～\n 提醒時間：\n {$this->processContent[0]}\n 提醒內容： \n [{$this->processContent[1]}";
                 $errorMessageFormat   = " 喔 !? 輸入格式好像有點問題喔～ \n 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
                 $errorMessagePastTime = " 喔 !? 輸入的時間好像有點問題。\n 請輸入『 未來 』的時間才能提醒你喔。";
                 $errorMessage         = " 喔 !? 好像哪裡有點問題喔？";

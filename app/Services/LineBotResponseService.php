@@ -80,12 +80,12 @@ class LineBotResponseService
                 break;
             case 'state':
                 $isTalk = Memory::where('channel_id', $this->channelId)->first()->is_talk;
-                $stateText = "我的 channel_id 為 [ {$this->channelId }, ";
+                $stateText = "channel_id : \n [ {$this->channelId } \n";
 
                 if($isTalk == 0){
-                    $stateText .= "目前處於 [ 閉嘴狀態 ]";
+                    $stateText .= "目前處於 \n [ 閉嘴狀態 ]";
                 }else {
-                    $stateText .= " 目前處於 [可以講話狀態 ]";
+                    $stateText .= " 目前處於 \n [可以講話狀態 ]";
                 }
                 return $this->response($stateText);
                 break;
