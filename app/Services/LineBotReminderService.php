@@ -18,6 +18,8 @@ use function explode;
 use const false;
 use Illuminate\Bus\Dispatcher;
 use Illuminate\Queue\Queue;
+use function preg_match;
+use function preg_replace;
 use const true;
 
 class LineBotReminderService
@@ -112,6 +114,10 @@ class LineBotReminderService
                 $dateData = $this->dateTimeAnalyze($date, $times[0], $times[1]);
                 return $this->createTargetTime($dateData[0], $dateData[1], 0);
             } else { // 2018-07-02 格式開頭
+                $pattern = "/([0-1]*[0-9]+)：([0-1]*[0-9]+)/";
+                if(preg_match($pattern, $times[1]) == 1) {
+                    $times[1] = preg_replace($pattern, "$1:$2", $times[1]);
+                }
                 $dateTime = "$times[0] $times[1]";
                 return $this->createTargetTime($dateTime, false, 0);
             }
