@@ -69,7 +69,7 @@ class LineBotReminderService
                 }
                 \Log::info("responseText => {$responseText}");
 
-                return self::STATE;
+                return $responseText;
                 break;
 
             case self::REMINDER:

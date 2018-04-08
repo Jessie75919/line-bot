@@ -27,7 +27,7 @@ class LineBotResponseService
         $this->purpose   = $purpose;
         $this->content   = $content;
 
-        $this->responsePurpose();
+        $this->responseToUser();
     }
 
 
@@ -60,7 +60,7 @@ class LineBotResponseService
     /**
      * @return string
      */
-    public function responsePurpose(): string
+    public function responseToUser(): string
     {
         switch($this->purpose) {
             case 'response' :

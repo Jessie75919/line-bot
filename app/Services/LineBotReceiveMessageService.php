@@ -221,25 +221,25 @@ class LineBotReceiveMessageService
             case self::SPEAK:
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::SPEAK);
-                return $this->botResponseService->responsePurpose();
+                return $this->botResponseService->responseToUser();
                 break;
 
             case self::SHUT_UP:
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::SHUT_UP);
-                return $this->botResponseService->responsePurpose();
+                return $this->botResponseService->responseToUser();
                 break;
 
             case self::TALK:
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::TALK, $this->userMessage);
-                return $this->botResponseService->responsePurpose();
+                return $this->botResponseService->responseToUser();
                 break;
 
             case self::STATE:
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::STATE, $this->userMessage);
-                return $this->botResponseService->responsePurpose();
+                return $this->botResponseService->responseToUser();
                 break;
 
             case self::LEARN:
@@ -248,7 +248,7 @@ class LineBotReceiveMessageService
                 if($this->botLearnService->learnCommand()) {
                     $this->botResponseService =
                         new LineBotResponseService($this->channelId, self::RESPONSE, self::GENERAL_RESPONSE);
-                    return $this->botResponseService->responsePurpose();
+                    return $this->botResponseService->responseToUser();
                 }
                 break;
 
@@ -259,7 +259,7 @@ class LineBotReceiveMessageService
                 $responseText = $this->botRemindService->handle(self::REMINDER_STATE);
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::RESPONSE, $responseText);
-                return $this->botResponseService->responsePurpose();
+                return $this->botResponseService->responseToUser();
                 break;
 
             case self::REMINDER:
@@ -279,22 +279,22 @@ class LineBotReceiveMessageService
                     case 'SUCCESS':
                         $this->botResponseService =
                             new LineBotResponseService($this->channelId, self::RESPONSE, $successMessage);
-                        return $this->botResponseService->responsePurpose();
+                        return $this->botResponseService->responseToUser();
                         break;
                     case 'PAST_TIME_ERROR':
                         $this->botResponseService =
                             new LineBotResponseService($this->channelId, self::RESPONSE, $errorMessagePastTime);
-                        return $this->botResponseService->responsePurpose();
+                        return $this->botResponseService->responseToUser();
                         break;
                     case 'FORMAT_ERROR':
                         $this->botResponseService =
                             new LineBotResponseService($this->channelId, self::RESPONSE, $errorMessageFormat);
-                        return $this->botResponseService->responsePurpose();
+                        return $this->botResponseService->responseToUser();
                         break;
                     case 'ERROR':
                         $this->botResponseService =
                             new LineBotResponseService($this->channelId, self::RESPONSE, $errorMessage);
-                        return $this->botResponseService->responsePurpose();
+                        return $this->botResponseService->responseToUser();
                         break;
                 }
 
