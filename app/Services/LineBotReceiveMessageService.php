@@ -278,8 +278,8 @@ class LineBotReceiveMessageService
 
 
             case self::REMINDER_DELETE:
-                $deleteSuccess = "你的提醒 編號：{$this->userMessage}已經被刪除囉！";
-                $deleteFail    = "你的提醒 編號：{$this->userMessage}好像沒有刪除成功喔。";
+                $deleteSuccess = "你的提醒編號：{$this->userMessage} 已經被刪除囉！";
+                $deleteFail    = "你的提醒編號：{$this->userMessage} 好像沒有刪除成功喔。";
 
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->userMessage);

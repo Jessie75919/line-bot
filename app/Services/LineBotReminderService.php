@@ -15,6 +15,8 @@ use Carbon\Carbon;
 use Exception;
 use function explode;
 use const false;
+use Illuminate\Bus\Dispatcher;
+use Illuminate\Queue\Queue;
 use const true;
 
 class LineBotReminderService
@@ -142,7 +144,8 @@ class LineBotReminderService
             \Log::info("setQueueJob for {$this->channelId} , {$this->message[1]}");
 
             dispatch(new TodoJob($this->channelId, $this->message[1], $todoListId))
-                ->delay(now('Asia/Taipei')->addSeconds($delayTime));
+                        ->delay(now('Asia/Taipei')->addSeconds($delayTime));
+
             return true;
 
         } catch(Exception $e) {

@@ -73,7 +73,7 @@ class LineBotReminderTest extends TestCase
      */
     public function testForTodayMorningChineseTime()
     {
-        $cmd = '提醒;今天 晚上 6點00分;吃飯飯';
+        $cmd = '提醒;今天 晚上 8點30分;大便便';
 
         $package = $this->getPackage($cmd);
 
