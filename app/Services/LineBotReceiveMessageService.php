@@ -6,6 +6,8 @@ namespace App\Services;
 
 use App\Memory;
 use function dd;
+use function exp;
+use function explode;
 use const false;
 use function substr;
 use const true;
@@ -29,6 +31,7 @@ class LineBotReceiveMessageService
     const REMINDER         = 'reminder';
     const STATE            = "state";
     const REMINDER_STATE   = "Reminder-State";
+    const REMINDER_DELETE  = "Reminder-Delete";
 
 
     /**
@@ -163,6 +166,15 @@ class LineBotReceiveMessageService
             }
         }
 
+        foreach($semicolons as $semicolon) {
+            $pattern = "/提醒{$semicolon}刪除提醒{$semicolon}[0-9]*[1-9]*[1-9]*$/";
+            if(preg_match($pattern, $this->userMessage) == 1) {
+                $dissectData = $this->dissectMessage();
+                $this->userMessage = $dissectData[2];
+                return self::REMINDER_DELETE;
+            }
+        }
+
 
 
         $dissectData = $this->dissectMessage();
@@ -253,20 +265,36 @@ class LineBotReceiveMessageService
                 break;
 
             case self::REMINDER_STATE:
+                $deleteSuccess = "你的提醒 編號：{$this->userMessage}已經被刪除囉！";
+                $deleteFail    = "你的提醒 編號：{$this->userMessage}好像沒有刪除成功喔。";
+
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->userMessage);
 
-                $responseText = $this->botRemindService->handle(self::REMINDER_STATE);
+                $result = $this->botRemindService->handle(self::REMINDER_STATE);
+
+                $responseText = $result ? $deleteSuccess : $deleteFail;
+                $this->botResponseService =
+                    new LineBotResponseService($this->channelId, self::RESPONSE, $responseText);
+                return $this->botResponseService->responseToUser();
+                break;
+
+
+            case self::REMINDER_DELETE:
+                $this->botRemindService =
+                    new LineBotReminderService($this->channelId, $this->userMessage);
+
+                $deleteMessage = $this->botRemindService->handle(self::REMINDER_STATE);
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::RESPONSE, $responseText);
                 return $this->botResponseService->responseToUser();
                 break;
 
             case self::REMINDER:
-                $successMessage       = "好喔～我會在 [{$this->processContent[0]}] 的時候提醒您 [{$this->processContent[1]}]";
-                $errorMessageFormat   = "喔 !? 輸入格式好像有點問題喔～ 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
-                $errorMessagePastTime = "喔 !? 輸入的時間好像有點問題。請輸入『 未來 』的時間才能提醒你喔。";
-                $errorMessage         = "喔 !? 好像哪裡有點問題喔？";
+                $successMessage       = " 好喔～\n 我會在 [{$this->processContent[0]}] 的時候\n 提醒您 [{$this->processContent[1]}]";
+                $errorMessageFormat   = " 喔 !? 輸入格式好像有點問題喔～ \n 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
+                $errorMessagePastTime = " 喔 !? 輸入的時間好像有點問題。\n 請輸入『 未來 』的時間才能提醒你喔。";
+                $errorMessage         = " 喔 !? 好像哪裡有點問題喔？";
 
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->processContent);

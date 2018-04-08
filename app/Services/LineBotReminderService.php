@@ -12,20 +12,9 @@ namespace App\Services;
 use App\Jobs\TodoJob;
 use App\TodoList;
 use Carbon\Carbon;
-use function count;
-use function dd;
 use Exception;
+use function explode;
 use const false;
-use InvalidArgumentException;
-use function is_string;
-use const null;
-use function preg_match;
-use function preg_replace;
-use function strlen;
-use function strpos;
-use function substr;
-use function time;
-use function trim;
 use const true;
 
 class LineBotReminderService
@@ -40,6 +29,7 @@ class LineBotReminderService
     const STATE           = "STATE";
     const REMINDER_STATE  = "Reminder-State";
     const REMINDER        = 'reminder';
+    const REMINDER_DELETE = "Reminder-Delete";
 
 
     /**
@@ -55,22 +45,24 @@ class LineBotReminderService
     }
 
 
-    public function handle( $mode = 'reminder'): string
+    public function handle($mode = 'reminder'): string
     {
 
         switch($mode) {
-
             case self::REMINDER_STATE:
                 $responseText = null;
                 $todos        = $this->getAllTodoLists();
                 foreach($todos as $todo) {
-                    $responseText .= "編號：{$todo->id} \n 提醒內容：{$todo->message} \n 提醒時間：{$todo->send_time} \n ";
-                    $responseText .= "---------------- \n";
+                    $responseText .= " 編號：{$todo->id} \n 提醒內容：{$todo->message} \n 提醒時間：{$todo->send_time} \n ";
+                    $responseText .= " \n";
                 }
                 \Log::info("responseText => {$responseText}");
 
                 return $responseText;
                 break;
+
+            case self::REMINDER_DELETE:
+                return $this->deleteReminder($this->message);
 
             case self::REMINDER:
                 // get TargetTime
@@ -299,8 +291,19 @@ class LineBotReminderService
     {
         return TodoList::where('send_channel_id', $this->channelId)
                        ->where('is_sent', 0)
-                       ->where('send_time','>', Carbon::now('Asia/Taipei'))
+                       ->where('send_time', '>', Carbon::now('Asia/Taipei'))
                        ->get(['id', 'message', 'send_time']);
+    }
+
+
+    private function deleteReminder($id)
+    {
+        try {
+            TodoList::where('id', $id)->delete();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 
