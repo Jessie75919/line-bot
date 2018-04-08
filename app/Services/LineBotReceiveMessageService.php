@@ -167,7 +167,7 @@ class LineBotReceiveMessageService
         }
 
         foreach($semicolons as $semicolon) {
-            $pattern = "/提醒{$semicolon}刪除提醒{$semicolon}[0-9]*[1-9]*[1-9]*$/";
+            $pattern = "/提醒{$semicolon}刪除{$semicolon}[0-9]*[1-9]*[1-9]*$/";
             if(preg_match($pattern, $this->userMessage) == 1) {
                 $dissectData = $this->dissectMessage();
                 $this->userMessage = $dissectData[2];
@@ -265,15 +265,12 @@ class LineBotReceiveMessageService
                 break;
 
             case self::REMINDER_STATE:
-                $deleteSuccess = "你的提醒 編號：{$this->userMessage}已經被刪除囉！";
-                $deleteFail    = "你的提醒 編號：{$this->userMessage}好像沒有刪除成功喔。";
+
 
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->userMessage);
+                $responseText = $this->botRemindService->handle(self::REMINDER_STATE);
 
-                $result = $this->botRemindService->handle(self::REMINDER_STATE);
-
-                $responseText = $result ? $deleteSuccess : $deleteFail;
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::RESPONSE, $responseText);
                 return $this->botResponseService->responseToUser();
@@ -281,10 +278,15 @@ class LineBotReceiveMessageService
 
 
             case self::REMINDER_DELETE:
+                $deleteSuccess = "你的提醒 編號：{$this->userMessage}已經被刪除囉！";
+                $deleteFail    = "你的提醒 編號：{$this->userMessage}好像沒有刪除成功喔。";
+
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->userMessage);
 
-                $deleteMessage = $this->botRemindService->handle(self::REMINDER_STATE);
+                $result = $this->botRemindService->handle(self::REMINDER_DELETE);
+                $responseText = $result ? $deleteSuccess : $deleteFail;
+
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::RESPONSE, $responseText);
                 return $this->botResponseService->responseToUser();

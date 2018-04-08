@@ -67,9 +67,29 @@ class LineBotReminderTest extends TestCase
 
     }
 
+
+    /**
+     * @test
+     */
     public function testForTodayMorningChineseTime()
     {
         $cmd = '提醒;今天 晚上 6點00分;吃飯飯';
+
+        $package = $this->getPackage($cmd);
+
+        $response = $this->call('post', 'webhook', [$package]
+        );
+
+        $this->assertTrue($response->isSuccessful());
+
+    }
+
+    /**
+     * @test
+     */
+    public function testForDeleteReminder()
+    {
+        $cmd = '提醒;刪除;36';
 
         $package = $this->getPackage($cmd);
 
