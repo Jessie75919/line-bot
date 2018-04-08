@@ -12,6 +12,7 @@ namespace App\Services;
 use App\Jobs\TodoJob;
 use App\TodoList;
 use Carbon\Carbon;
+use function count;
 use Exception;
 use function explode;
 use const false;
@@ -54,6 +55,11 @@ class LineBotReminderService
             case self::REMINDER_STATE:
                 $responseText = null;
                 $todos        = $this->getAllTodoLists();
+
+                if(count($todos) == 0) {
+                    return '目前沒有任何提醒喔！';
+                }
+
                 foreach($todos as $todo) {
                     $responseText .= " 編號：{$todo->id} \n 提醒內容：{$todo->message} \n 提醒時間：{$todo->send_time} \n ";
                     $responseText .= " \n";
