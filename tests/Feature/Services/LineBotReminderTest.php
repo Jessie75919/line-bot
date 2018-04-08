@@ -84,13 +84,12 @@ class LineBotReminderTest extends TestCase
     /**
      * @test
      */
-    public function testForTomorrowMorningAlias()
+    public function testForSpecificDateTime()
     {
 
-        $cmd = '提醒;明天 早上 9:00;Coding Start';
+        $cmd = '提醒;2018-04-08 10:00;休息一下囉';
 
         $package = $this->getPackage($cmd);
-
 
         $response = $this->call('post', 'webhook', [$package]
         );
@@ -102,12 +101,13 @@ class LineBotReminderTest extends TestCase
     /**
      * @test
      */
-    public function testForSpecificDateTime()
+    public function testForTimeWithBigColon()
     {
 
-        $cmd = '提醒;2018-04-08 10:00;休息一下囉';
+        $cmd = '提醒;明天 下午 2：10;記得測試一下喔';
 
         $package = $this->getPackage($cmd);
+
 
         $response = $this->call('post', 'webhook', [$package]
         );

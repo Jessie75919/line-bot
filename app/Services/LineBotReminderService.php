@@ -206,6 +206,12 @@ class LineBotReminderService
 
         \Log::info("processed time => {$time}");
 
+        // check 5：30
+        $pattern = '/([0-1]*[0-9]+)：([0-1]*[0-9]+)/';
+        if(preg_match($pattern, $time) == 1) {
+            $time = preg_replace($pattern, "$1:$2", $time);
+        }
+
         return $time;
     }
 
