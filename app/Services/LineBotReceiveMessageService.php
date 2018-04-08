@@ -291,7 +291,7 @@ class LineBotReceiveMessageService
                 break;
 
             case self::REMINDER:
-                $successMessage       = " 提醒時間：\n {$this->processContent[0]}\n \n 提醒內容： \n {$this->processContent[1]}";
+                $successMessage       = " [提醒時間]\n {$this->processContent[0]}\n =========================== \n [提醒內容]\n {$this->processContent[1]}";
                 $errorMessageFormat   = " 喔 !? 輸入格式好像有點問題喔～ \n 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
                 $errorMessagePastTime = " 喔 !? 輸入的時間好像有點問題。\n 請輸入『 未來 』的時間才能提醒你喔。";
                 $errorMessage         = " 喔 !? 好像哪裡有點問題喔？";
