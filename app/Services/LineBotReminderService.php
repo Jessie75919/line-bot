@@ -27,6 +27,10 @@ class LineBotReminderService
     private $channelId;
     private $message;
     private $todoListId;
+
+
+
+
     const PAST_TIME_ERROR = 'PAST_TIME_ERROR';
     const FORMAT_ERROR    = 'FORMAT_ERROR';
     const SUCCESS         = 'SUCCESS';
@@ -50,7 +54,7 @@ class LineBotReminderService
     }
 
 
-    public function handle($mode = 'reminder'): string
+    public function handle($mode = 'reminder')
     {
 
         switch($mode) {
@@ -82,22 +86,25 @@ class LineBotReminderService
                     \Log::info("targetTime => " . print_r($targetTime, true));
                 } catch(\Exception $e) {
                     $e->getMessage();
-                    return self::FORMAT_ERROR;
+                    return [self::FORMAT_ERROR,''];
                 }
 
 
                 if($this->validTimeInThePast($targetTime)) {
                     \Log::info("validTimeInThePast => { true }");
-                    return self::PAST_TIME_ERROR;
+                    return [self::PAST_TIME_ERROR ,''];
                 }
 
                 $delayTime = $this->getDelayTime($targetTime);
 
                 if($this->storeToDB($targetTime)) {
-                    return $this->setQueue($delayTime, $this->todoListId) ? self::SUCCESS : self::ERROR;
-                }
-                return self::ERROR;
+                    $isSuccess = $this->setQueue($delayTime, $this->todoListId) ? self::SUCCESS : self::ERROR ;
 
+                    return [
+                        $isSuccess , $targetTime->toDayDateTimeString()
+                    ];
+                }
+                return [self::ERROR,''];
         }
     }
 

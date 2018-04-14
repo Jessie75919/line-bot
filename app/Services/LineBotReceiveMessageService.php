@@ -109,7 +109,7 @@ class LineBotReceiveMessageService
         if(substr($keyword, 0, 2) != 'cc') {
             return false;
         }
-        
+
         $cmd = substr($keyword, 3);
         \Log::info('cmd = ' . $cmd);
 
@@ -165,17 +165,16 @@ class LineBotReceiveMessageService
 
         $pattern = "/(提醒(;|；)(刪除|del))(;|；)([0-9]*[1-9]*[1-9]*$)/";
         if(preg_match($pattern, $this->userMessage) == 1) {
-            $dissectData = $this->dissectMessage();
+            $dissectData       = $this->dissectMessage();
             $this->userMessage = $dissectData[2];
             return self::REMINDER_DELETE;
         }
 
 
-
         $dissectData = $this->dissectMessage();
 
         // check need to keep to-do-list
-        if($this->isCommand('提醒',$dissectData[0])) {
+        if($this->isCommand('提醒', $dissectData[0])) {
             $this->processContent = [
                 $dissectData[1],
                 $dissectData[2]
@@ -201,17 +200,14 @@ class LineBotReceiveMessageService
         }
 
 
-
         // check need to learn
-        if($this->isCommand('學',$dissectData[0])) {
+        if($this->isCommand('學', $dissectData[0])) {
             $this->processContent = [
                 $dissectData[1],
                 $dissectData[2]
             ];
             return self::LEARN;
         }
-
-
 
 
         return self::TALK;
@@ -262,7 +258,7 @@ class LineBotReceiveMessageService
             case self::REMINDER_STATE:
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->userMessage);
-                $responseText = $this->botRemindService->handle(self::REMINDER_STATE);
+                $responseText           = $this->botRemindService->handle(self::REMINDER_STATE);
 
                 $this->botResponseService =
                     new LineBotResponseService($this->channelId, self::RESPONSE, $responseText);
@@ -277,7 +273,7 @@ class LineBotReceiveMessageService
                 $this->botRemindService =
                     new LineBotReminderService($this->channelId, $this->userMessage);
 
-                $result = $this->botRemindService->handle(self::REMINDER_DELETE);
+                $result       = $this->botRemindService->handle(self::REMINDER_DELETE);
                 $responseText = $result ? $deleteSuccess : $deleteFail;
 
                 $this->botResponseService =
@@ -286,18 +282,18 @@ class LineBotReceiveMessageService
                 break;
 
             case self::REMINDER:
-                $successMessage       = " [提醒時間]\n {$this->processContent[0]}\n============= \n [提醒內容]\n {$this->processContent[1]}";
+                $this->botRemindService =
+                    new LineBotReminderService($this->channelId, $this->processContent);
+
+                list($result, $responseText) = $this->botRemindService->handle(self::REMINDER);
+
+                $successMessage       = " [提醒時間]\n {$responseText}\n============= \n [提醒內容]\n {$this->processContent[1]}";
                 $errorMessageFormat   = " 喔 !? 輸入格式好像有點問題喔～ \n 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
                 $errorMessagePastTime = " 喔 !? 輸入的時間好像有點問題。\n 請輸入『 未來 』的時間才能提醒你喔。";
                 $errorMessage         = " 喔 !? 好像哪裡有點問題喔？";
 
-                $this->botRemindService =
-                    new LineBotReminderService($this->channelId, $this->processContent);
-
-                $result = $this->botRemindService->handle(self::REMINDER);
-                
                 \Log::info("result => {$result}");
-                
+
                 switch($result) {
                     case 'SUCCESS':
                         $this->botResponseService =
@@ -349,7 +345,7 @@ class LineBotReceiveMessageService
      */
     private function getData($package)
     {
-//        dd($package);
+        //        dd($package);
 
         /** @var  array */
         $data = $package['events']['0'];
