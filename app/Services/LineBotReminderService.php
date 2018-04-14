@@ -101,7 +101,7 @@ class LineBotReminderService
                     $isSuccess = $this->setQueue($delayTime, $this->todoListId) ? self::SUCCESS : self::ERROR ;
 
                     return [
-                        $isSuccess , $targetTime->toDayDateTimeString()
+                        $isSuccess , $targetTime->format('Y-m-d H:i')
                     ];
                 }
                 return [self::ERROR,''];
@@ -114,6 +114,7 @@ class LineBotReminderService
         $times = explode(' ', $time);
         \Log::info("times => " . print_r($times, true));
         $date = Carbon::now('Asia/Taipei')->toDateString();
+        $B = Carbon::now()->format($format)
 
         if(count($times) == 2) {
             // 如果不是2018開頭 ==> 今天...
