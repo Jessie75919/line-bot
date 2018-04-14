@@ -114,7 +114,6 @@ class LineBotReminderService
         $times = explode(' ', $time);
         \Log::info("times => " . print_r($times, true));
         $date = Carbon::now('Asia/Taipei')->toDateString();
-        $B = Carbon::now()->format($format)
 
         if(count($times) == 2) {
             // 如果不是2018開頭 ==> 今天...
