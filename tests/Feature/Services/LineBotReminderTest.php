@@ -17,12 +17,43 @@ class LineBotReminderTest extends TestCase
      */
     public function testForTodayMorning()
     {
+
         $cmd = '提醒;今天 早上 8:45;泡咖啡';
-
         $package = $this->getPackage($cmd);
-
         $response = $this->call('post', 'webhook', [$package]
         );
+
+        $this->assertTrue($response->isSuccessful());
+
+    }
+
+
+    public function testForWeekday()
+    {
+        $cmd      = '提醒;星期四 早上 8:45;泡咖啡';
+        $package  = $this->getPackage($cmd);
+        $response = $this->call('post', 'webhook', [$package]);
+
+        $this->assertTrue($response->isSuccessful());
+
+    }
+
+    public function testForNextWeekday()
+    {
+        $cmd      = '提醒;下星期四 早上 8:45;泡咖啡';
+        $package  = $this->getPackage($cmd);
+        $response = $this->call('post', 'webhook', [$package]);
+
+        $this->assertTrue($response->isSuccessful());
+
+    }
+
+
+    public function testForNextNextWeekday()
+    {
+        $cmd      = '提醒;下下星期四 早上 8:45;泡咖啡';
+        $package  = $this->getPackage($cmd);
+        $response = $this->call('post', 'webhook', [$package]);
 
         $this->assertTrue($response->isSuccessful());
 
@@ -36,6 +67,7 @@ class LineBotReminderTest extends TestCase
      */
     public function testForGetState()
     {
+
         $cmd = '提醒;all';
 
         $package = $this->getPackage($cmd);
@@ -56,6 +88,7 @@ class LineBotReminderTest extends TestCase
      */
     public function testForRandomString()
     {
+
         $cmd = '提醒;feifjojaeofjo;泡咖啡';
 
         $package = $this->getPackage($cmd);
@@ -73,6 +106,7 @@ class LineBotReminderTest extends TestCase
      */
     public function testForTodayMorningChineseTime()
     {
+
         $cmd = '提醒;今天 晚上 8點30分;大便便';
 
         $package = $this->getPackage($cmd);
@@ -89,6 +123,7 @@ class LineBotReminderTest extends TestCase
      */
     public function testForDeleteReminder()
     {
+
         $cmd = '提醒;del;55';
 
         $package = $this->getPackage($cmd);

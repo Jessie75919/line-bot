@@ -20,6 +20,7 @@ use Illuminate\Bus\Dispatcher;
 use Illuminate\Queue\Queue;
 use function preg_match;
 use function preg_replace;
+use function print_r;
 use const true;
 
 class LineBotReminderService
@@ -27,8 +28,6 @@ class LineBotReminderService
     private $channelId;
     private $message;
     private $todoListId;
-
-
 
 
     const PAST_TIME_ERROR = 'PAST_TIME_ERROR';
@@ -86,25 +85,26 @@ class LineBotReminderService
                     \Log::info("targetTime => " . print_r($targetTime, true));
                 } catch(\Exception $e) {
                     $e->getMessage();
-                    return [self::FORMAT_ERROR,''];
+                    return [self::FORMAT_ERROR, ''];
                 }
 
 
                 if($this->validTimeInThePast($targetTime)) {
                     \Log::info("validTimeInThePast => { true }");
-                    return [self::PAST_TIME_ERROR ,''];
+                    return [self::PAST_TIME_ERROR, ''];
                 }
 
                 $delayTime = $this->getDelayTime($targetTime);
 
                 if($this->storeToDB($targetTime)) {
-                    $isSuccess = $this->setQueue($delayTime, $this->todoListId) ? self::SUCCESS : self::ERROR ;
+                    $isSuccess = $this->setQueue($delayTime, $this->todoListId) ? self::SUCCESS : self::ERROR;
 
                     return [
-                        $isSuccess , $targetTime->format('Y-m-d H:i')
+                        $isSuccess,
+                        $targetTime->format('Y-m-d H:i')
                     ];
                 }
-                return [self::ERROR,''];
+                return [self::ERROR, ''];
         }
     }
 
@@ -113,11 +113,14 @@ class LineBotReminderService
     {
         $times = explode(' ', $time);
         \Log::info("times => " . print_r($times, true));
-        $date = Carbon::now('Asia/Taipei')->toDateString();
+        $date            = Carbon::now('Asia/Taipei')->toDateString();
+        $addDays         = null;
+        $patternForToday = "/^今天$/";
+
 
         if(count($times) == 2) {
-            // 如果不是2018開頭 ==> 今天...
-            if(strpos($times[0], '20') === false) {
+            // 今天...
+            if(preg_match($patternForToday, $times[0]) === 1) {
                 $dateData = $this->dateTimeAnalyze($date, $times[0], $times[1]);
                 return $this->createTargetTime($dateData[0], $dateData[1], 0);
             } else { // 2018-07-02 格式開頭
@@ -129,11 +132,34 @@ class LineBotReminderService
                 return $this->createTargetTime($dateTime, false, 0);
             }
         }
-
-        $addDays = null;
+        $patternForThisWeek     = "/星期|禮拜(\w+)/";
+        $patternForNextWeek     = "/^下{1}(星期|禮拜){1}(\w?)/";
+        $patternForNextNextWeek = "/^下下(星期|禮拜){1}(\w?)/";
 
         if(count($times) === 3) {
-            $addDays = $this->getAddDaysCount($times[0]);
+            // 星期六 / 禮拜六
+            if(preg_match($patternForThisWeek, $times[0]) === 1) {
+                $weekDay = preg_replace($patternForThisWeek, "$1", $times[0]);
+                $addDays = $this->getAddDaysCountByWeekday($weekDay);
+                if($addDays == -1) {
+                    return Carbon::now('Asia/Taipei')->subDays(1);
+                }
+            } // 下禮拜六 / 下星期六
+            else if(preg_match($patternForNextWeek, $times[0]) === 1) {
+                //  下禮拜六
+                $weekDay = preg_replace($patternForNextWeek, "$2", $times[0]);
+                \Log::info("patternForNextWeek weekDay => {$weekDay}");
+                $addDays = $this->getAddDaysCountByWeekday($weekDay);
+                $addDays += 7;
+            } //  下下禮拜六
+            else if(preg_match($patternForNextNextWeek, $times[0]) === 1) {
+                $weekDay = preg_replace($patternForNextNextWeek, "$2", $times[0]);
+                $addDays = $this->getAddDaysCountByWeekday($weekDay);
+                $addDays += 14;
+            } // 明天 / 後天
+            else {
+                $addDays = $this->getAddDaysCount($times[0]);
+            }
         }
 
         //今天 早上 9點45分
@@ -163,7 +189,7 @@ class LineBotReminderService
             \Log::info("setQueueJob for {$this->channelId} , {$this->message[1]}");
 
             dispatch(new TodoJob($this->channelId, $this->message[1], $todoListId))
-                        ->delay(now('Asia/Taipei')->addSeconds($delayTime));
+                ->delay(now('Asia/Taipei')->addSeconds($delayTime));
 
             return true;
 
@@ -323,9 +349,54 @@ class LineBotReminderService
         try {
             TodoList::where('id', $id)->delete();
             return true;
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
             return false;
         }
+    }
+
+
+    private function getAddDaysCountByWeekday(string $weekDay): int
+    {
+        $targetDay = null;
+        $addDays   = null;
+
+        \Log::info("getAddDaysCountByWeekday => {$weekDay}");
+
+        // get current day's weekday
+        $nowDay = Carbon::now('Asia/Taipei')->dayOfWeek;
+
+        switch($weekDay) {
+            case '一':
+                $targetDay = 1;
+                break;
+            case '二':
+                $targetDay = 2;
+                break;
+            case '三':
+                $targetDay = 3;
+                break;
+            case '四':
+                $targetDay = 4;
+                break;
+            case '五':
+                $targetDay = 5;
+                break;
+            case '六':
+                $targetDay = 6;
+                break;
+            case '日':
+                $targetDay = 0;
+                break;
+        }
+
+        // Today : Mon. =>  Target : Fri.
+        if($nowDay <= $targetDay) {
+            $addDays = $targetDay - $nowDay;
+        } else {
+            $addDays = -1;
+        }
+
+        return $addDays;
     }
 
 
