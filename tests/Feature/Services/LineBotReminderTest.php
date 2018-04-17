@@ -40,7 +40,7 @@ class LineBotReminderTest extends TestCase
 
     public function testForNextWeekday()
     {
-        $cmd      = '提醒;下星期四 早上 8:45;泡咖啡';
+        $cmd      = '提醒;下星期三 早上 8:45;泡咖啡';
         $package  = $this->getPackage($cmd);
         $response = $this->call('post', 'webhook', [$package]);
 
@@ -51,7 +51,7 @@ class LineBotReminderTest extends TestCase
 
     public function testForNextNextWeekday()
     {
-        $cmd      = '提醒;下下星期四 早上 8:45;泡咖啡';
+        $cmd      = '提醒;下下星期三 早上 8:45;泡咖啡';
         $package  = $this->getPackage($cmd);
         $response = $this->call('post', 'webhook', [$package]);
 
