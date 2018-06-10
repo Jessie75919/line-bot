@@ -9,6 +9,8 @@ use function dd;
 use function exp;
 use function explode;
 use const false;
+use function preg_match;
+use function preg_replace;
 use function substr;
 use const true;
 
@@ -171,16 +173,24 @@ class LineBotReceiveMessageService
         }
 
 
-        $dissectData = $this->dissectMessage();
-
-        // check need to keep to-do-list
-        if($this->isCommand('提醒', $dissectData[0])) {
-            $this->processContent = [
-                $dissectData[1],
-                $dissectData[2]
-            ];
+        $pattern = "/(^提醒)(.*)/";
+        if (preg_match($pattern, $this->userMessage)) {
+            $remindMsg = preg_replace($pattern, '$1', '提醒明天下午2點半吃下午茶');
+            $this->processContent = $remindMsg;
             return self::REMINDER;
         }
+
+
+        // check need to keep to-do-list
+//        if($this->isCommand('提醒', $dissectData[0])) {
+//            $this->processContent = [
+//                $dissectData[1],
+//                $dissectData[2]
+//            ];
+//            return self::REMINDER;
+//        }
+
+        $dissectData = $this->dissectMessage();
 
         if($this->isCmd($this->userMessage, self::STATE)) {
             return self::STATE;

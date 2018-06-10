@@ -78,6 +78,10 @@ class LineBotReminderService
                 return $this->deleteReminder($this->message);
 
             case self::REMINDER:
+
+
+                $this->dissectMessage();
+
                 // get TargetTime
                 try {
                     /** @var Carbon $targetTime */
@@ -397,6 +401,28 @@ class LineBotReminderService
         }
 
         return $addDays;
+    }
+
+
+    private function dissectMessage()
+    {
+        // 提醒明天下午2點10分[吃下午茶]
+        // 提醒20180502 3點10分[吃下午茶]
+        $pattern = "/(^提醒)(.*分)(.*)/";
+
+        // 提醒明天下午2點半[吃下午茶]
+        // 提醒20180502 3點半[吃下午茶]
+        $pattern = "/(^提醒)(.*半)(.*)/";
+
+        // 提醒明天下午2點[吃下午茶]
+        $pattern = "/(^提醒)(.*點)(.*)/";
+
+        // 提醒20180502 1530[吃下午茶]
+
+
+
+        preg_match($pattern, '提醒明天下午2點半吃下午茶');
+        preg_replace($pattern, '$2,$3', '提醒明天下午2點半吃下午茶');
     }
 
 
