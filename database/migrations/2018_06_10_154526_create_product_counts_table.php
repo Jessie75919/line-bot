@@ -19,6 +19,9 @@ class CreateProductCountsTable extends Migration
             $table->unsignedInteger('sales_channel_id')->comment('通路id');
             $table->unsignedInteger('count')->comment('數量');
             $table->timestamps();
+
+            $table->index('product_id');
+            $table->index('sales_channel_id');
         });
     }
 

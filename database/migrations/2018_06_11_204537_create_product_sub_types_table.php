@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductTypesTable extends Migration
+class CreateProductSubTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,16 @@ class CreateProductTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_types', function (Blueprint $table) {
+        Schema::create('product_sub_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->comment('產品類別名稱');
-            $table->unsignedInteger('order')->nullable()->comment('類別排序順位');
+            $table->string('name')->comment('產品子類別名稱');
             $table->unsignedInteger('shop_id')->comment('商家id');
+            $table->unsignedInteger('product_type_id')->comment('產品類別id');
+            $table->unsignedInteger('order')->nullable()->comment('類別排序順位');
             $table->timestamps();
+
+            $table->index('product_type_id');
+            $table->index('shop_id');
         });
     }
 
@@ -29,6 +33,6 @@ class CreateProductTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_types');
+        Schema::dropIfExists('product_sub_types');
     }
 }
