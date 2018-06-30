@@ -11,8 +11,6 @@
 |
 */
 
-use Illuminate\Http\Request;
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -23,7 +21,6 @@ Route::post('/pushMessage', 'PushMessageController@index')->name('pushConsole');
 //Auth::routes();
 
 Route::get('/pushConsole', 'HomeController@index');
-
 
 
 

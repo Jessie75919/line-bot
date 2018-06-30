@@ -8,6 +8,7 @@ use App\Models\ProductSubType;
 use App\Models\ProductType;
 use App\Models\SaleChannel;
 use App\Models\Shop;
+use App\Models\Tag;
 use App\Models\User;
 use Faker\Generator as Faker;
 
@@ -158,4 +159,8 @@ function autoIncrement()
 }
 
 
-
+$factory->define(Tag::class, function (Faker $faker) {
+    return [
+        'name' => $faker->word,
+    ];
+});

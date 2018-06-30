@@ -4,6 +4,7 @@ namespace App\Models;
 
 ;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed          $product_count
  * @property mixed          $shop
  * @property mixed          $product_sub_type
+ * @property mixed          $tags
+ * @mixin Eloquent
  */
 class Product extends Model
 {
@@ -53,6 +56,12 @@ class Product extends Model
     public function shop()
     {
         return $this->belongsTo(Shop::class);
+    }
+
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 
 
