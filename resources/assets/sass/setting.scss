@@ -1,0 +1,305 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Mandali');
+/*----------顏色設定----------*/
+
+$cWhite: #fff;
+$cBlack: #000;
+$cGray333: #333;
+$cGray666:#666666;
+$cGray999:#999999;
+$cGrayccc:#cccccc;
+$cGrayddd:#dddddd;
+$cGrayeee:#eeeeee;
+$cGraye5:#e5e5e5;
+$cGrayf5:#f5f5f5;
+$cGold: #c69d6d;
+$cGreen: #81af85;
+$cBlue: #88c1bd;
+$cRed: #c93e3e;
+$cPink:#f4a9a0;
+$cShadow:rgba(51,
+51,
+51,
+0.1);
+/*----------基本設定----------*/
+
+* {
+    position: relative;
+    box-sizing: border-box;
+    /*&:after {content: '';clear: both;display: block;}*/
+}
+
+html {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: "Mandali", Arial, "微軟正黑體", "Microsoft JhengHei", "新細明體";
+    background: $cGrayeee;
+    font-size: 1em;
+    line-height: 1.5em;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow-x: hidden;
+    outline: none;
+}
+
+a {
+    color: $cBlue;
+    text-decoration: none;
+    transition: ease 0.3s;
+    outline: none;
+}
+
+a:hover {
+    text-decoration: none;
+    color: $cRed;
+}
+
+::selection {
+    background-color: $cPink;
+    color: $cWhite;
+}
+
+::-moz-selection {
+    background-color: $cPink;
+    color: $cWhite;
+}
+
+img {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+}
+
+h1 {
+    font-size: 1.5em;
+    line-height: 26px;
+    padding: 10px 0px 5px 0px;
+    letter-spacing: 1px;
+}
+
+h2 {
+    font-size: 1.3em;
+    line-height: 24px;
+    padding: 10px 0px 5px 0px;
+    letter-spacing: 1px;
+}
+
+h3 {
+    font-size: 1.1em;
+    padding: 10px 0px 5px 0px;
+    letter-spacing: 1px;
+}
+
+h4 {
+    font-size: 1em;
+    padding: 10px 0px 5px 0px;
+    letter-spacing: 1px;
+}
+
+p {
+    padding: 5px 0px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-radius: 5px;
+    overflow: hidden;
+    thead {
+        background-color: $cPink;
+        tr,
+        th,
+        td {
+            color: $cWhite;
+            font-weight: bold;
+        }
+    }
+    tbody tr {
+        transition: ease 0.3s;
+        &:nth-child(odd) {
+            background-color: $cGrayf5;
+        }
+        &:hover {
+            background-color: $cGrayeee;
+        }
+    }
+    tr {
+        border-bottom: $cGrayeee solid 1px;
+        &:last-child {
+            border: none;
+        }
+    }
+    th,
+    td {
+        padding: 10px 10px;
+        text-align: center;
+        white-space: nowrap;
+    }
+}
+
+ul {
+    margin-left: 20px;
+    padding-top: 10px;
+    display: block;
+    li {
+        display: block;
+        list-style: disc;
+        padding: 0px 0px 8px 0px;
+        margin: 0;
+    }
+}
+
+ol {
+    margin-left: 20px;
+    padding-top: 10px;
+    display: block;
+    li {
+        display: block;
+        list-style: decimal;
+        padding: 0px 0px 8px 0px;
+        margin: 0;
+    }
+}
+
+i {
+    padding: 0 5px;
+}
+
+sub,
+sup {
+    font-size: 0.7em;
+}
+
+/*scroll bar*/
+
+/* width */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+    background: $cGrayeee;
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+    background: $cGrayccc;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+    background: $cGrayddd;
+}
+
+/*----------表單設定----------*/
+
+input,
+textarea,
+select {
+    font-family: "Mandali", Arial, "微軟正黑體", "Microsoft JhengHei", "新細明體";
+    border: $cGrayccc solid 1px;
+    background: $cWhite;
+    padding: 3px 10px;
+    margin: 0 0 3px 0;
+    font-size: 1em;
+    color: $cBlack;
+    box-sizing: border-box;
+    border-radius: 10px;
+    transition: ease 0.3s;
+    outline: none;
+}
+
+input:hover,
+input:focus,
+textarea:hover,
+textarea:focus,
+select:hover,
+select:focus {
+    border: $cPink solid 1px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="tel"],
+input[type="email"] {
+    width: 100%;
+}
+
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+    border: none;
+    background: $cBlue;
+    color: $cWhite;
+    width: auto;
+    min-width: 100px;
+    margin: 5px 2px;
+    border-radius: 20px;
+    cursor: pointer;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover {
+    background-color: $cPink;
+}
+
+textarea {
+    width: 100%;
+    line-height: 20px;
+    display: block;
+}
+
+select {
+    width: 100%;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    position: relative;
+    margin-right: 10px;
+    transform: scale(1.3, 1.3);
+    width: auto;
+    min-width: auto;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color: $cGray999;
+}
+
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+    color: $cGray999;
+}
+
+input::-moz-placeholder,
+textarea:-moz-placeholder {
+    color: $cGray999;
+}
+
+input:-ms-input-placeholder,
+textarea:-moz-placeholder {
+    color: $cGray999;
+}

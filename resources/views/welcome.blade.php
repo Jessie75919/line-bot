@@ -22,10 +22,11 @@
 </head>
 <body>
 <div id="app">
-    <navbar></navbar>
-    <div class="container">
-        <products></products>
-    </div>
+    <h1>OK</h1>
+    {{--<navbar></navbar>--}}
+    {{--<div class="container">--}}
+        {{--<products></products>--}}
+    {{--</div>--}}
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

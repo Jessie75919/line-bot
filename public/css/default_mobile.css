@@ -1,0 +1,112 @@
+@charset "UTF-8";
+
+@media only screen and (max-width: 1200px) {
+  .container .panel .panelBody.col75p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col60p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col50p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col40p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col30p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col25p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col20p {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 910px) {
+  /*---------------share---------------*/
+
+  /*header*/
+
+  header .open {
+    position: relative;
+    top: auto;
+    left: auto;
+    float: left;
+    margin: 15px 0 0 20px;
+  }
+
+  /*側邊攔*/
+
+  /*----------主要內容----------*/
+
+@-webkit-keyframes nofull {
+    from {
+      width: 100%;
+      float: right;
+    }
+
+    to {
+      width: 100%;
+      float: right;
+      /*margin-right: -250px;*/
+    }
+}
+
+  .container.full {
+    width: 100%;
+  }
+
+@-webkit-keyframes full {
+    from {
+      width: 100%;
+      /*margin-right: -250px;*/
+    }
+
+    to {
+      width: 100%;
+      /*margin-right: 0px;*/
+    }
+}
+
+  .container.start {
+    -webkit-animation: none;
+            animation: none;
+  }
+
+  /*----------其他內容設定----------*/
+
+  .editListBtn {
+    width: 94%;
+    right: 3%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  /*header*/
+
+  header .headerRight {
+    width: auto;
+  }
+
+  header .headerRight > ul > li a {
+    font-size: 1.3em;
+    padding: 10px;
+  }
+
+  header .headerRight > ul > li a > span {
+    display: none;
+  }
+
+  header .headerRight > ul > li a > span.remind {
+    display: block;
+  }
+}
+

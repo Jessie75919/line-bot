@@ -15,7 +15,7 @@ class CreateProductSubTypesTable extends Migration
     {
         Schema::create('product_sub_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->comment('產品子類別名稱');
+            $table->string('name',20)->comment('產品子類別名稱');
             $table->unsignedInteger('shop_id')->comment('商家id');
             $table->unsignedInteger('product_type_id')->comment('產品類別id');
             $table->unsignedInteger('order')->nullable()->comment('類別排序順位');

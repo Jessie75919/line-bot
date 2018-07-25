@@ -1,0 +1,131 @@
+@charset "UTF-8";
+@media only screen and (max-width: 1200px) {
+    .container {
+        .panel {
+            .panelBody {
+                &.col75p {
+                    width: 100%;
+                }
+                &.col60p {
+                    width: 100%;
+                }
+                &.col50p {
+                    width: 100%;
+                }
+                &.col40p {
+                    width: 100%;
+                }
+                &.col30p {
+                    width: 100%;
+                }
+                &.col25p {
+                    width: 100%;
+                }
+                &.col20p {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 910px) {
+    /*---------------share---------------*/
+    /*header*/
+    header {
+        .open {
+            position: relative;
+            top: auto;
+            left: auto;
+            float: left;
+            margin: 15px 0 0 20px;
+        }
+    }
+    /*側邊攔*/
+    /*----------主要內容----------*/
+    .container {
+        @-webkit-keyframes nofull {
+            from {
+                width: 100%;
+                float: right;
+            }
+            to {
+                width: 100%;
+                float: right;
+                /*margin-right: -250px;*/
+            }
+        }
+        &.full {
+            width: 100%;
+        }
+        @-webkit-keyframes full {
+            from {
+                width: 100%;
+                /*margin-right: -250px;*/
+            }
+            to {
+                width: 100%;
+                /*margin-right: 0px;*/
+            }
+        }
+        &.start {
+            animation: none;
+        }
+    }
+    /*----------其他內容設定----------*/
+    .editListBtn {
+        width: 94%;
+        right: 3%;
+        @-webkit-keyframes editListBtnNoFull {
+            from {
+                width: 94%;
+            }
+            to {
+                width: 94%;
+            }
+        }
+        @-webkit-keyframes editListBtnFull {
+            from {
+                width: 94%;
+            }
+            to {
+                width: 94%;
+            }
+        }
+    }
+}
+
+
+
+@media only screen and (max-width: 600px) {
+    /*header*/
+    header {
+        .headerRight {
+            width: auto;
+            > ul {
+                > li {
+                    a {
+                        font-size: 1.3em;
+                        padding: 10px;
+                        > span {
+                            display: none;
+                        }
+                        > span.remind {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /*----------其他內容設定----------*/
+    /*表單*/
+    .formList {
+        .formName {
+            width: 100%;
+        }
+        .formInfo {
+            width: 100%;
+        }
+    }
+}

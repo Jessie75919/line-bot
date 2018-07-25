@@ -17,7 +17,8 @@ class CreateRandomDatabase extends Seeder
         'order_items',
         'sale_channels',
         'tags',
-        'product_tag'
+        'product_tag',
+        'product_images',
     ];
 
 
@@ -46,7 +47,11 @@ class CreateRandomDatabase extends Seeder
 
     private function createDummyData()
     {
-        factory(\App\Models\Shop::class, 50)->create();
+
+        foreach (range(1, 50) as $item) {
+            factory(\App\Models\Shop::class)->create();
+        }
+
         factory(\App\Models\User::class, 50)->create();
         factory(\App\Models\ProductType::class, 10)->create();
         factory(\App\Models\ProductSubType::class, 10)->create();
@@ -55,6 +60,7 @@ class CreateRandomDatabase extends Seeder
         factory(\App\Models\SaleChannel::class, 50)->create();
         factory(\App\Models\ProductCount::class, 10)->create();
         factory(\App\Models\Order::class, 3)->create();
+        factory(\App\Models\ProductImage::class, 50)->create();
 
         $this->createProductTags(50);
     }

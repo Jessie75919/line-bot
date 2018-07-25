@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed          $product_types
  * @property mixed          $sale_channels
  * @property mixed          $users
+ * @property mixed          $tags
  */
 class Shop extends Model
 {
@@ -47,5 +48,10 @@ class Shop extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function tags()
+    {
+        return $this->hasMany(Tag::class);
     }
 }

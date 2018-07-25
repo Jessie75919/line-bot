@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed          $shop
  * @property mixed          $product_sub_type
  * @property mixed          $tags
+ * @property mixed          $order_item
+ * @property mixed          $product_images
  * @mixin Eloquent
  */
 class Product extends Model
@@ -26,7 +28,6 @@ class Product extends Model
         'shop_id',
         'name',
         'price',
-        'image',
         'description',
         'order',
         'is_launch',
@@ -59,9 +60,47 @@ class Product extends Model
     }
 
 
+    public function productImages()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+
+    public function orderItem()
+    {
+        return $this->belongsTo(OrderItem::class);
+    }
+
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+
+    public function pathUrl()
+    {
+        return "productsConsole/{$this->id}";
+    }
+
+
+    public function thumbnailUrl($category)
+    {
+        $image = $this->productImages
+            ->where('category', $category)
+            ->where('order', 0)
+            ->first();
+
+        return isset($image) ? $image->image_url : "";
+    }
+
+
+    public function imagesUrl($category)
+    {
+        return $this->productImages
+            ->where('category', $category)
+            ->sortBy('order')
+            ->pluck('image_url');
     }
 
 

@@ -11,8 +11,21 @@ namespace App\Models;
 
 use Eloquent;
 
+/**
+ * @property mixed $products
+ * @property mixed $shops
+ */
 class Tag extends Eloquent
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'shop_id'];
 
+    public function shops()
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class);
+    }
 }

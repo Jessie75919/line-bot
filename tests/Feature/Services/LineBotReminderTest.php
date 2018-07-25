@@ -15,7 +15,7 @@ class LineBotReminderTest extends TestCase
      *
      * @return void
      */
-    public function testForTodayMorning()
+    public function ForTodayMorning()
     {
 
         $cmd = '提醒;今天 早上 8:45;泡咖啡';
@@ -28,7 +28,7 @@ class LineBotReminderTest extends TestCase
     }
 
 
-    public function testForWeekday()
+    public function ForWeekday()
     {
         $cmd      = '提醒;星期四 早上 8:45;泡咖啡';
         $package  = $this->getPackage($cmd);
@@ -38,7 +38,7 @@ class LineBotReminderTest extends TestCase
 
     }
 
-    public function testForNextWeekday()
+    public function ForNextWeekday()
     {
         $cmd      = '提醒;下星期三 早上 8:45;泡咖啡';
         $package  = $this->getPackage($cmd);
@@ -49,7 +49,7 @@ class LineBotReminderTest extends TestCase
     }
 
 
-    public function testForNextNextWeekday()
+    public function ForNextNextWeekday()
     {
         $cmd      = '提醒;下下星期三 早上 8:45;泡咖啡';
         $package  = $this->getPackage($cmd);
@@ -62,10 +62,10 @@ class LineBotReminderTest extends TestCase
 
     /**
      * A basic test example.
-     * @test
+
      * @return void
      */
-    public function testForGetState()
+    public function ForGetState()
     {
 
         $cmd = '提醒;all';
@@ -86,7 +86,7 @@ class LineBotReminderTest extends TestCase
      *
      * @return void
      */
-    public function testForRandomString()
+    public function ForRandomString()
     {
 
         $cmd = '提醒;feifjojaeofjo;泡咖啡';
@@ -102,9 +102,9 @@ class LineBotReminderTest extends TestCase
 
 
     /**
-     * @test
+
      */
-    public function testForTodayMorningChineseTime()
+    public function ForTodayMorningChineseTime()
     {
 
         $cmd = '提醒;今天 晚上 8點30分;大便便';
@@ -119,9 +119,9 @@ class LineBotReminderTest extends TestCase
     }
 
     /**
-     * @test
+     *
      */
-    public function testForDeleteReminder()
+    public function ForDeleteReminder()
     {
 
         $cmd = '提醒;del;55';
@@ -140,7 +140,7 @@ class LineBotReminderTest extends TestCase
      *
      * @return void
      */
-    public function testForNoWithTodayAlias()
+    public function ForNoWithTodayAlias()
     {
 
         $cmd = '提醒;早上 8點37分;別賴床囉！';
@@ -156,9 +156,9 @@ class LineBotReminderTest extends TestCase
 
 
     /**
-     * @test
+     *
      */
-    public function testForSpecificDateTime()
+    public function ForSpecificDateTime()
     {
 
         $cmd = '提醒;2018-04-08 10:00;休息一下囉';
@@ -173,9 +173,9 @@ class LineBotReminderTest extends TestCase
     }
 
     /**
-     * @test
+
      */
-    public function testForTimeWithBigColon()
+    public function ForTimeWithBigColon()
     {
 
         $cmd = '提醒;明天 下午 2：10;記得測試一下喔';

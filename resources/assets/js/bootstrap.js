@@ -1,6 +1,5 @@
-
 window._ = require('lodash');
-window.Popper = require('popper.js').default;
+//window.Popper = require('popper.js').default;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -11,8 +10,17 @@ window.Popper = require('popper.js').default;
 try {
     window.$ = window.jQuery = require('jquery');
 
-    require('bootstrap');
-} catch (e) {}
+    require("jquery-ui");
+
+    window.$.ajaxSetup({
+        headers : {
+            'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+//    require('bootstrap');
+} catch(e) {
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -21,6 +29,10 @@ try {
  */
 
 window.axios = require('axios');
+
+window.Dropzone = require('dropzone');
+window.Sortable = require('sortablejs');
+
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -32,7 +44,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
-if (token) {
+if(token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');

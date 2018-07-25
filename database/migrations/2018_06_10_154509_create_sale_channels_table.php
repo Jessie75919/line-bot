@@ -15,9 +15,11 @@ class CreateSaleChannelsTable extends Migration
     {
         Schema::create('sale_channels', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->comment('通路名稱');
+            $table->string('name',30)->comment('通路名稱');
             $table->unsignedInteger('shop_id')->comment('商品id');
             $table->timestamps();
+
+            $table->index('shop_id');
         });
     }
 

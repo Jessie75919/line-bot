@@ -4,6 +4,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductCount;
+use App\Models\ProductImage;
 use App\Models\ProductSubType;
 use App\Models\ProductType;
 use App\Models\SaleChannel;
@@ -24,8 +25,10 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(Shop::class, function (Faker $faker) {
+    $sn = Shop::all()->max('id') + 1;
     return [
         'name'         => $faker->company,
+        'shop_sn'      => 'HM' . sprintf('%08s', $sn) ,
         'email'        => $faker->email,
         'password'     => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'phone'        => $faker->phoneNumber,
@@ -76,17 +79,16 @@ $factory->define(ProductSubType::class, function (Faker $faker) {
 $factory->define(Product::class, function (Faker $faker) {
     return [
         'product_type_id'     => function () {
-            return ProductType::all()->random(1)[0]->id;
+            return ProductType::all()->random(1)->first()->id;
         },
         'product_sub_type_id' => function () {
-            return ProductSubType::all()->random(1)[0]->id;
+            return ProductSubType::all()->random(1)->first()->id;
         },
         'shop_id'             => function () {
-            return Shop::all()->random(1)[0]->id;
+            return Shop::all()->random(1)->first()->id;
         },
         'name'                => $faker->word,
         'price'               => $faker->randomNumber(3),
-        'image'               => $faker->imageUrl(),
         'description'         => $faker->paragraph(1),
         'order'               => $faker->randomDigit,
         'is_launch'           => $faker->randomElement([0, 1]),
@@ -117,6 +119,21 @@ $factory->define(ProductCount::class, function (Faker $faker) {
 });
 
 
+$factory->define(ProductImage::class, function (Faker $faker) {
+    $product  = Product::all()->random(1)[0];
+    $category = $faker->randomElement(['product', 'blog', 'banner']);
+
+    return [
+        'product_id' => $product->id,
+        'image_url'  => $faker->imageUrl(),
+        'category'   => $category,
+        'file_name'  => "{$category}_" . md5(uniqid(rand(), true)),
+        'order'      => $faker->randomNumber(1),
+        'status'     => $faker->randomElement([0, 1]),
+    ];
+});
+
+
 $factory->define(OrderItem::class, function (Faker $faker) {
     $product = factory(Product::class)->create();
     $count   = $faker->numberBetween(1, 350);
@@ -129,21 +146,12 @@ $factory->define(OrderItem::class, function (Faker $faker) {
     ];
 });
 
-$id = autoIncrement();
 
-$factory->define(Order::class, function (Faker $faker) use ($id) {
-    $id->next();
-    $total      = 0;
-    $orderItems = factory(OrderItem::class, $faker->randomDigit)
-        ->create(['order_id' => $id->current()]);
-
-    foreach ($orderItems as $orderItem) {
-        $total += $orderItem->sub_total;
-    }
+$factory->define(Order::class, function (Faker $faker) {
 
     return [
         'shop_id'          => Shop::all()->random(1)[0]->id,
-        'total'            => $total,
+        'total'            => 0,
         'order_time'       => \Carbon\Carbon::now()->toDateTimeString(),
         'sales_channel_id' => function () {
             return SaleChannel::all()->random(1)[0]->id;
@@ -151,16 +159,10 @@ $factory->define(Order::class, function (Faker $faker) use ($id) {
     ];
 });
 
-function autoIncrement()
-{
-    for ($i = 0 ; $i < 1000 ; $i++) {
-        yield $i;
-    }
-}
-
 
 $factory->define(Tag::class, function (Faker $faker) {
     return [
-        'name' => $faker->word,
+        'name'    => $faker->word,
+        'shop_id' => Shop::all()->random(1)[0]->id,
     ];
 });

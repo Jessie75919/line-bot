@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int            $id
  * @property \Carbon\Carbon $updated_at
  * @property mixed          $order
+ * @property mixed          $product
  */
 class OrderItem extends Model
 {
@@ -26,5 +27,10 @@ class OrderItem extends Model
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, 'id','product_id');
     }
 }

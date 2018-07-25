@@ -15,10 +15,12 @@ class CreateProductTypesTable extends Migration
     {
         Schema::create('product_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->comment('產品類別名稱');
+            $table->string('name',30)->comment('產品類別名稱');
             $table->unsignedInteger('order')->nullable()->comment('類別排序順位');
             $table->unsignedInteger('shop_id')->comment('商家id');
             $table->timestamps();
+
+            $table->index('shop_id');
         });
     }
 

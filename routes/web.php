@@ -1,26 +1,36 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+$routeName = "/productsConsole";
 
-Route::get('/', function () {
-    return view('welcome');
+//Route::get("/", function () {
+//    return view("consoles.products.index");
+//});
+Route::get("/test", function () {
+    return view("consoles.products.test");
+})->name("test");
+
+Route::post("/webhook", "LineController@index");
+//Route::post("/pushMessage", "PushMessageController@index")->name("pushConsole");
+
+Auth::routes();
+
+//Route::get("/pushConsole", "HomeController@index");
+
+Route::group(["middleware" => ["sanitize", "auth"]], function () {
+    Route::get("/productsConsole", "ProductConsoleController@index")->name("productsConsole.index");
+    Route::get("/productsConsole/search", "ProductConsoleController@search");
+    Route::get("/productsConsole/create", "ProductConsoleController@create")->name('productsConsole.create');
+    Route::get("/productsConsole/{product}", "ProductConsoleController@show");
+    Route::get("/productsConsole/{product}/edit", "ProductConsoleController@edit");
+    Route::post("/productsConsole", "ProductConsoleController@store")->name('productsConsole.store');
+    Route::put("/productsConsole/{product}", "ProductConsoleController@update");
+    Route::delete("/productsConsole/{product}", "ProductConsoleController@destroy")->name("productsConsole.destroy");
+    Route::get("/productsConsole/{product}/clone", "ProductConsoleController@clone");
 });
 
-Route::post('/webhook', 'LineController@index');
-Route::post('/pushMessage', 'PushMessageController@index')->name('pushConsole');
-
-//Auth::routes();
-
-Route::get('/pushConsole', 'HomeController@index');
+Route::get("/login", function () {
+    return view("auth.login");
+})->name("login");
 
 
 
