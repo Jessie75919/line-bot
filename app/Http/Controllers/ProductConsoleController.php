@@ -6,15 +6,19 @@ use App\Models\Product;
 use App\Repository\Pos\ProductImageRepository;
 use App\Repository\Pos\ProductRepository;
 use App\Repository\Pos\ProductTypeRepository;
+use App\Repository\Pos\TagRepository;
 use App\Services\Pos\FTPStorageService;
 use App\Services\Pos\ShopService;
 use App\Traits\GetShopIdFromUser;
+use function count;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\App;
 use function compact;
 use function explode;
 use function is_numeric;
+use function response;
+use function var_dump;
 use function view;
 
 class ProductConsoleController extends Controller
@@ -47,7 +51,51 @@ class ProductConsoleController extends Controller
      */
     public function create()
     {
-        return view('consoles.products.create');
+        $shopId       = $this->getShopId();
+        $productTypes = ProductTypeRepository::getProductTypesByShopId($shopId);
+
+        return view(
+            'consoles.products.create',
+            compact('productTypes', 'shopId')
+        );
+    }
+
+
+    public function store(Request $request)
+    {
+        $productName     = $request->name;
+        $productPrice    = $request->price;
+        $productTypeId   = $request->productTypeId;
+        $is_launched     = $request->is_launched;
+        $ckeditorContent = $request->ckeditorContent;
+        $tags            = $request->tags;
+
+
+        // create product
+        $product = ProductRepository::createProduct([
+            'product_type_id' => $productTypeId,
+            'shop_id'         => $this->getShopId(),
+            'name'            => $productName,
+            'price'           => $productPrice,
+            'order'           => 0,
+            'description'     => $ckeditorContent,
+            'is_launch'       => (int)$is_launched,
+            'is_sold_out'     => 0,
+            'is_hottest'      => 0,
+        ]);
+
+        if (count($tags) != 0) {
+            foreach ($tags as $tag) {
+                $existedTag = TagRepository::getTagsByName($tag);
+                if (!$existedTag) {
+                    $existedTag = TagRepository::saveTag($this->getShopId(), $tag);
+                }
+                $product->tags()->attach($existedTag->id);
+            }
+        }
+
+
+        return response()->json(['id' => $product->id], 200);
     }
 
 
@@ -56,19 +104,22 @@ class ProductConsoleController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @param ProductImageRepository    $productImageRepository
      * @param FTPStorageService         $ftpStorageService
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function store(
+    public function storeImages(
         Request $request,
         ProductImageRepository $productImageRepository,
         FTPStorageService $ftpStorageService
     ) {
+
+
+
         $shopId = $this->getShopId();
         /** @var ShopService $shopService */
         $shopService   = App::makeWith(ShopService::class, ['shopId' => $shopId]);
         $orders        = explode(',', $request->order); // 3,2,1
         $files         = $request->file;  // baff, logo, jc
-        $productId     = 1;
+        $productId     = (int)$request->productId;
         $startingOrder = $productImageRepository->lastOrder($productId) + 1;
 
         foreach ($orders as $index => $order) {
@@ -88,10 +139,12 @@ class ProductConsoleController extends Controller
                 $fileName,
                 ShopService::PRODUCT,
                 $downloadUrl,
-                0,
+                1,
                 $startingOrder + $index
             );
         }
+
+        return response('images save', 200);
     }
 
 

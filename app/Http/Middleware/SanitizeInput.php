@@ -7,6 +7,8 @@ use Closure;
 use function dd;
 use Illuminate\Support\Collection;
 use \Illuminate\Http\Request ;
+use Log;
+use function var_dump;
 
 class SanitizeInput
 {
@@ -32,6 +34,7 @@ class SanitizeInput
     private function sanitizeInput(Request $request): Collection
     {
         return collect($request->all())->map(function ($item) {
+            \Log::info($item);
             if (is_string($item)) {
                 return strip_tags($item);
             }

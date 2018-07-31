@@ -16,12 +16,12 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('product_type_id')->comment('產品類別id');
-            $table->unsignedInteger('product_sub_type_id')->comment('產品子類別id');
+            $table->unsignedInteger('product_sub_type_id')->nullable()->comment('產品子類別id');
             $table->unsignedInteger('shop_id')->comment('商家id');
             $table->string('name',40)->comment('商品名稱');
             $table->unsignedInteger('price')->comment('商品價格');
             $table->unsignedInteger('order')->nullable()->comment('商品排序順位');
-            $table->string('description', 255)->nullable()->comment('商品敘述');
+            $table->mediumText('description')->nullable()->comment('商品敘述');
             $table->boolean('is_launch')->default('0')->comment('是否上架');
             $table->boolean('is_sold_out')->default('0')->comment('是否完售');
             $table->boolean('is_hottest')->default('0')->comment('是否為熱門商品');

@@ -13,7 +13,7 @@ class BaseRepository
     {
         return $entity::where($colName, $id)
                       ->orderBy('order', 'asc')
-                      ->orderBy('name', 'asc')
+                      ->orderBy('updated_at', 'desc')
                       ->get();
     }
 
@@ -22,7 +22,7 @@ class BaseRepository
     {
         return $entity::where($colName, $id)
                       ->orderBy('order', 'asc')
-                      ->orderBy('name', 'asc')
+                      ->orderBy('updated_at', 'desc')
                       ->paginate($paginationNumber);
     }
 
@@ -43,6 +43,12 @@ class BaseRepository
     public static function getInstanceById($entity, $id)
     {
         return $entity::find($id);
+    }
+
+
+    public static function create($entity, $data)
+    {
+        return $entity::create($data);
     }
 
 

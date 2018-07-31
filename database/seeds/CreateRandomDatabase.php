@@ -57,12 +57,24 @@ class CreateRandomDatabase extends Seeder
         factory(\App\Models\ProductSubType::class, 10)->create();
         factory(\App\Models\Tag::class, 10)->create();
         factory(\App\Models\Product::class, 50)->create();
+        factory(\App\Models\Product::class, 50)->create(['shop_id' => 1]);
         factory(\App\Models\SaleChannel::class, 50)->create();
         factory(\App\Models\ProductCount::class, 10)->create();
         factory(\App\Models\Order::class, 3)->create();
         factory(\App\Models\ProductImage::class, 50)->create();
 
-        $this->createProductTags(50);
+        $this->createProductTags(100);
+
+
+        factory('App\Models\User')->create([
+            'name'           => config('auth.developer_name'),
+            'shop_id'        => 1,
+            'email'          => config('auth.developer_email'),
+            'password'       => bcrypt(config('auth.developer_pw')),
+            'admin_level'    => 'boss',
+            'remember_token' => str_random(10),
+        ]);
+
     }
 
 

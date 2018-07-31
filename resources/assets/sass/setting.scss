@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css?family=Mandali');
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,700');
 /*----------顏色設定----------*/
 
 $cWhite: #fff;
@@ -18,9 +18,9 @@ $cBlue: #88c1bd;
 $cRed: #c93e3e;
 $cPink:#f4a9a0;
 $cShadow:rgba(51,
-51,
-51,
-0.1);
+        51,
+        51,
+        0.1);
 /*----------基本設定----------*/
 
 * {
@@ -36,7 +36,8 @@ html {
 }
 
 body {
-    font-family: "Mandali", Arial, "微軟正黑體", "Microsoft JhengHei", "新細明體";
+    position: relative;
+    font-family: "Quicksand", Arial, "微軟正黑體", "Microsoft JhengHei", "新細明體";
     background: $cGrayeee;
     font-size: 1em;
     line-height: 1.5em;
@@ -150,11 +151,11 @@ table {
 }
 
 ul {
-    margin-left: 20px;
+    margin-left: 30px;
     padding-top: 10px;
     display: block;
     li {
-        display: block;
+        display: list-item;
         list-style: disc;
         padding: 0px 0px 8px 0px;
         margin: 0;
@@ -162,11 +163,11 @@ ul {
 }
 
 ol {
-    margin-left: 20px;
+    margin-left: 30px;
     padding-top: 10px;
     display: block;
     li {
-        display: block;
+        display: list-item;
         list-style: decimal;
         padding: 0px 0px 8px 0px;
         margin: 0;
@@ -214,10 +215,10 @@ sup {
 input,
 textarea,
 select {
-    font-family: "Mandali", Arial, "微軟正黑體", "Microsoft JhengHei", "新細明體";
+    font-family: "Quicksand", Arial, "微軟正黑體", "Microsoft JhengHei", "新細明體";
     border: $cGrayccc solid 1px;
     background: $cWhite;
-    padding: 3px 10px;
+    padding: 10px;
     margin: 0 0 3px 0;
     font-size: 1em;
     color: $cBlack;
@@ -272,7 +273,8 @@ textarea {
 }
 
 select {
-    width: 100%;
+    width: auto;
+    min-width: 200px;
 }
 
 input[type="checkbox"],

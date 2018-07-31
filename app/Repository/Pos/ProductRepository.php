@@ -60,6 +60,12 @@ class ProductRepository extends BaseRepository
     }
 
 
+    public static function createProduct($data)
+    {
+        return self::create(self::entity, $data);
+    }
+
+
     public static function deleteProductById($id)
     {
         return self::deleteById(self::entity, $id);

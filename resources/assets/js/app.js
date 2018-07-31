@@ -7,5 +7,9 @@ require('./bootstrap');
 
 import 'jquery-ui/ui/widgets/sortable.js'
 import 'jquery-ui/ui/widgets/autocomplete.js';
+import 'jquery-validation';
+
+
+
 
 

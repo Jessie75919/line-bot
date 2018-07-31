@@ -88,7 +88,7 @@ class Product extends Model
     {
         $image = $this->productImages
             ->where('category', $category)
-            ->where('order', 0)
+            ->sortBy('order')
             ->first();
 
         return isset($image) ? $image->image_url : "";

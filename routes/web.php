@@ -22,11 +22,14 @@ Route::group(["middleware" => ["sanitize", "auth"]], function () {
     Route::get("/productsConsole/create", "ProductConsoleController@create")->name('productsConsole.create');
     Route::get("/productsConsole/{product}", "ProductConsoleController@show");
     Route::get("/productsConsole/{product}/edit", "ProductConsoleController@edit");
-    Route::post("/productsConsole", "ProductConsoleController@store")->name('productsConsole.store');
+    Route::post("/productsConsole/storeImages", "ProductConsoleController@storeImages")->name('productsConsole.storeImages');
     Route::put("/productsConsole/{product}", "ProductConsoleController@update");
     Route::delete("/productsConsole/{product}", "ProductConsoleController@destroy")->name("productsConsole.destroy");
     Route::get("/productsConsole/{product}/clone", "ProductConsoleController@clone");
 });
+
+Route::post("/productsConsole", "ProductConsoleController@store")->name('productsConsole.store')->middleware('auth');;
+
 
 Route::get("/login", function () {
     return view("auth.login");

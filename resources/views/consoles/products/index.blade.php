@@ -25,7 +25,7 @@
                 <h2>單元列表一覽</h2>
                 <!--編輯按鈕區塊-->
                 <div class="editListBtn">
-                    <a href="add.htm"><i class="fas fa-plus"></i>新增內容</a>
+                    <a href="/productsConsole/create"><i class="fas fa-plus"></i>新增內容</a>
                     <a href="#" id="update_order"><i class="fas fa-redo-alt"></i>更新排序</a>
                     <a href="#" id="delete_selected"><i class="fas fa-trash-alt"></i>刪除勾選</a>
 
@@ -106,6 +106,7 @@
                             <th>排序</th>
                             <th>縮圖</th>
                             <th>品名</th>
+                            <th>價格</th>
                             <th>類別</th>
                             <th>狀態</th>
                             <th>功能</th>
@@ -126,6 +127,8 @@
                                 <td><img src="{{$product->thumbnailUrl('product')}}"></td>
 
                                 <td>{{$product->name}}</td>
+
+                                <td>{{$product->price}}</td>
 
                                 <td>{{$product->productType->name}}</td>
 

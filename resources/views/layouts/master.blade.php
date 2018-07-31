@@ -10,6 +10,7 @@
 <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>window.Laravel = {csrfToken : "{{ csrf_token() }}"};  </script>
+    <script src="{{ mix('/js/app.js') }}"></script>
     <script src="{{ mix('/js/all.js') }}"></script>
     <link rel="stylesheet" href="{{ mix('/css/all.css') }}">
 </head>
