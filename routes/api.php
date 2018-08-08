@@ -24,6 +24,10 @@ Route::group(['middleware' => ['sanitize']], function () {
 	Route::post('products/update_order', 'Api\ProductController@updateOrder');
 	Route::post('products/multi_delete', 'Api\ProductController@multiDelete');
 
+
+	/* ProductImage */
+    Route::delete('productImage/{productImage}', 'Api\ProductImageController@delete');
+
     /* Tag API */
 	Route::get('tag/shop/{shop}', 'Api\TagsController@index');
 	Route::get('tag/product/{product}', 'Api\TagsController@getProductTags');

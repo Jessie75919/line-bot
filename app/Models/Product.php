@@ -104,4 +104,12 @@ class Product extends Model
     }
 
 
+    public function getImages($category)
+    {
+        return $this->productImages
+            ->where('category', $category)
+            ->sortBy('order');
+    }
+
+
 }

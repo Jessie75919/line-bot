@@ -92,6 +92,18 @@ class ProductControllerTest extends ApiTester
     }
 
 
+    /** @test */
+    public function user_can_delete_image_by_id()
+    {
+        $image    = factory('App\Models\ProductImage')->create(['product_id' => 1]);
+        $imageId  = $image->id;
+        $response = $this->deleteJson('api/v1/productImage/' . $imageId);
+        $response->assertJson([
+            'message' => "{$imageId} is deleted",
+        ]);
+    }
+
+
     protected function getStub()
     {
         return [

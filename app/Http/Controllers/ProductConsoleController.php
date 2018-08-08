@@ -10,15 +10,14 @@ use App\Repository\Pos\TagRepository;
 use App\Services\Pos\FTPStorageService;
 use App\Services\Pos\ShopService;
 use App\Traits\GetShopIdFromUser;
-use function count;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\App;
 use function compact;
+use function count;
 use function explode;
 use function is_numeric;
 use function response;
-use function var_dump;
 use function view;
 
 class ProductConsoleController extends Controller
@@ -113,7 +112,6 @@ class ProductConsoleController extends Controller
     ) {
 
 
-
         $shopId = $this->getShopId();
         /** @var ShopService $shopService */
         $shopService   = App::makeWith(ShopService::class, ['shopId' => $shopId]);
@@ -161,12 +159,14 @@ class ProductConsoleController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * @param  int $id
+     * @param Product $product
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Product $product)
     {
-        return view('consoles.products.index');
+        $shopId       = $this->getShopId();
+        $productTypes = ProductTypeRepository::getProductTypesByShopId($shopId);
+        return view('consoles.products.edit', compact('product', 'productTypes', 'shopId'));
     }
 
 

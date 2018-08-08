@@ -1,6 +1,7 @@
 <!--header 拆成共用-->
 <header>
-    <figure class="logo"><a href="{{route('productsConsole.index')}}"><img src="../images/share/logo.svg" alt="CHU.C" title="CHU.C"></a>
+    <figure class="logo"><a href="{{route('productsConsole.index')}}">
+            <img src="/images/share/logo.svg" alt="CHU.C" title="CHU.C"></a>
     </figure>
     <div class="open"><i class="fas fa-bars" title="MENU"></i></div>
     <!--上方選單-->
