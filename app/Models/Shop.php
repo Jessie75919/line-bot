@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed          $sale_channels
  * @property mixed          $users
  * @property mixed          $tags
+ * @property mixed          $product_images
  */
 class Shop extends Model
 {
@@ -53,5 +54,10 @@ class Shop extends Model
     public function tags()
     {
         return $this->hasMany(Tag::class);
+    }
+    
+    public function productImages()
+    {
+        return $this->hasManyThrough(ProductImage::class, Product::class);
     }
 }

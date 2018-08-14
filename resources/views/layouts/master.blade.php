@@ -5,6 +5,9 @@
         <meta charset="UTF-8">
         <meta content="width=device-width, initial-scale=1" name="viewport">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>網站管理系統</title>
+        <link rel="SHORTCUT ICON" href="/images/share/favicon.ico"/>
+        <link rel="icon" href="/images/share/favicon.ico" type="image/ico"/>
 @show
 
 <!-- CSRF Token -->
@@ -16,11 +19,11 @@
 </head>
 <body>
 
-@include('consoles.products.components.header')
+@include('consoles.components.header')
 
 <main>
 
-    @include('consoles.products.components.sidebar')
+    @include('consoles.components.sidebar')
 
     @yield('content')
 

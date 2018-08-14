@@ -13,8 +13,6 @@ use Illuminate\Http\Request;
 
 class TagsController extends ApiController
 {
-    use GetShopIdFromUser;
-
     protected $tagTransformer;
 
 

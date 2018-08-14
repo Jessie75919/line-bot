@@ -66,6 +66,12 @@ class ProductRepository extends BaseRepository
     }
 
 
+    public static function UpdateProductById($id, $data)
+    {
+        return self::updateById(self::entity, $id, $data);
+    }
+
+
     public static function deleteProductById($id)
     {
         return self::deleteById(self::entity, $id);

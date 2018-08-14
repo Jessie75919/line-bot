@@ -3,20 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductImage;
+use App\Repository\Pos\ProductCountRepository;
 use App\Repository\Pos\ProductImageRepository;
 use App\Repository\Pos\ProductRepository;
 use App\Repository\Pos\ProductTypeRepository;
 use App\Repository\Pos\TagRepository;
 use App\Services\Pos\FTPStorageService;
-use App\Services\Pos\ShopService;
 use App\Traits\GetShopIdFromUser;
+use DB;
+use function dd;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use function compact;
 use function count;
 use function explode;
 use function is_numeric;
+use Mockery\Exception;
+use function redirect;
 use function response;
 use function view;
 
@@ -31,17 +36,17 @@ class ProductConsoleController extends Controller
      */
     public function index()
     {
-        $shopId = $this->getShopId();
-        if (!is_numeric($shopId)) {
-            return $shopId;
+        $shop = $this->getShop();
+        if (!$shop) {
+            throw new Exception('Not Found Shop From this User');
         }
 
         /** @var LengthAwarePaginator $products */
-        $products     = ProductRepository::getPaginationByShopId($shopId, $this->paginationNumber);
-        $productTypes = ProductTypeRepository::getProductTypesByShopId($shopId);
+        $products     = ProductRepository::getPaginationByShopId($shop->id, $this->paginationNumber);
+        $productTypes = $shop->productTypes;
 
 
-        return view('consoles.products.index', compact('products', 'productTypes'));
+        return view('consoles.products.content.index', compact('products', 'productTypes'));
     }
 
 
@@ -50,11 +55,11 @@ class ProductConsoleController extends Controller
      */
     public function create()
     {
-        $shopId       = $this->getShopId();
+        $shopId       = $this->getShop('id');
         $productTypes = ProductTypeRepository::getProductTypesByShopId($shopId);
 
         return view(
-            'consoles.products.create',
+            'consoles.products.content.create',
             compact('productTypes', 'shopId')
         );
     }
@@ -66,95 +71,55 @@ class ProductConsoleController extends Controller
         $productPrice    = $request->price;
         $productTypeId   = $request->productTypeId;
         $is_launched     = $request->is_launched;
+        $quantity        = $request->quantity;
         $ckeditorContent = $request->ckeditorContent;
         $tags            = $request->tags;
 
+        try {
+            DB::beginTransaction();
 
-        // create product
-        $product = ProductRepository::createProduct([
-            'product_type_id' => $productTypeId,
-            'shop_id'         => $this->getShopId(),
-            'name'            => $productName,
-            'price'           => $productPrice,
-            'order'           => 0,
-            'description'     => $ckeditorContent,
-            'is_launch'       => (int)$is_launched,
-            'is_sold_out'     => 0,
-            'is_hottest'      => 0,
-        ]);
+            $product = ProductRepository::createProduct([
+                'product_type_id' => $productTypeId,
+                'shop_id'         => $this->getShop('id'),
+                'name'            => $productName,
+                'price'           => $productPrice,
+                'order'           => 0,
+                'description'     => $ckeditorContent,
+                'is_launch'       => (int)$is_launched,
+                'is_sold_out'     => 0,
+                'is_hottest'      => 0,
+            ]);
 
-        if (count($tags) != 0) {
-            foreach ($tags as $tag) {
-                $existedTag = TagRepository::getTagsByName($tag);
-                if (!$existedTag) {
-                    $existedTag = TagRepository::saveTag($this->getShopId(), $tag);
+            $saleChannelId = $product->shop->saleChannels->first()->id;
+            ProductCountRepository::create($product->id, $saleChannelId, $quantity);
+
+            if (count($tags) != 0) {
+                foreach ($tags as $tag) {
+                    $existedTag = TagRepository::getTagsByName($tag);
+                    if (!$existedTag) {
+                        $existedTag = TagRepository::saveTag($this->getShop('id'), $tag);
+                    }
+                    $product->tags()->attach($existedTag->id);
                 }
-                $product->tags()->attach($existedTag->id);
             }
+            DB::commit();
+            return response()->json(['id' => $product->id], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['id' => $product->id], 200);
         }
-
-
-        return response()->json(['id' => $product->id], 200);
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     * @param  \Illuminate\Http\Request $request
-     * @param ProductImageRepository    $productImageRepository
-     * @param FTPStorageService         $ftpStorageService
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
-     */
-    public function storeImages(
-        Request $request,
-        ProductImageRepository $productImageRepository,
-        FTPStorageService $ftpStorageService
-    ) {
-
-
-        $shopId = $this->getShopId();
-        /** @var ShopService $shopService */
-        $shopService   = App::makeWith(ShopService::class, ['shopId' => $shopId]);
-        $orders        = explode(',', $request->order); // 3,2,1
-        $files         = $request->file;  // baff, logo, jc
-        $productId     = (int)$request->productId;
-        $startingOrder = $productImageRepository->lastOrder($productId) + 1;
-
-        foreach ($orders as $index => $order) {
-
-            $file = $files[$order - 1];
-            $ext  = $file->getClientOriginalExtension();
-
-            $downloadUrl = $ftpStorageService
-                ->setShopService($shopService)
-                ->setFileExtension($ext)
-                ->storeFileAs($file);
-
-            $fileName = $ftpStorageService->getFileName();
-
-            $productImageRepository->create(
-                $productId,
-                $fileName,
-                ShopService::PRODUCT,
-                $downloadUrl,
-                1,
-                $startingOrder + $index
-            );
-        }
-
-        return response('images save', 200);
-    }
-
-
-    /**
-     * Display the specified resource.
-     * @param $product
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function show(Product $product)
-    {
-        return view('consoles.products.show', compact('product'));
-    }
+//    /**
+//     * Display the specified resource.
+//     * @param $product
+//     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+//     */
+//    public function show(Product $product)
+//    {
+//        return view('consoles.products.content.show', compact('product'));
+//    }
 
 
     /**
@@ -164,35 +129,80 @@ class ProductConsoleController extends Controller
      */
     public function edit(Product $product)
     {
-        $shopId       = $this->getShopId();
+        $shopId       = $this->getShop('id');
         $productTypes = ProductTypeRepository::getProductTypesByShopId($shopId);
-        return view('consoles.products.edit', compact('product', 'productTypes', 'shopId'));
+        return view('consoles.products.content.edit', compact('product', 'productTypes', 'shopId'));
     }
 
 
     /**
      * Update the specified resource in storage.
      * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param int                       $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $product)
     {
-        //
+        try {
+            DB::beginTransaction();
+            ProductRepository::UpdateProductById($product, [
+                'name'            => $request->name,
+                'price'           => $request->price,
+                'product_type_id' => $request->productTypeId,
+                'is_launch'       => (int)$request->is_launch,
+                'description'     => $request->ckeditorContent
+            ]);
+
+            ProductCountRepository::updateCountByProductId($product, $request->quantity);
+
+            foreach ($request->imgOrder as $img) {
+                $id                  = explode('_', $img['id'])[1];
+                $productImage        = ProductImage::find($id);
+                $productImage->order = $img['order'];
+                $productImage->save();
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            print $e;
+            Log::error($e);
+            DB::rollBack();
+        }
     }
 
 
     /**
      * Remove the specified resource from storage.
-     * @param Product $product
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Product           $product
+     * @param FTPStorageService $ftpStorageService
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @internal param int $id
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product, FTPStorageService $ftpStorageService)
     {
-        $product->delete();
+        DB::beginTransaction();
+        /* delete product_count record */
+        $product->productCount->delete();
 
-        return redirect('/productsConsole');
+        /* delete product_tag record */
+        $product->tags()->detach();
+
+        $productImages = $product->productImages;
+        $isAllDeleted = false;
+
+        /* delete productImage in DB & Folder */
+        foreach ($productImages as $productImage) {
+            $isAllDeleted = ProductImageRepository::deleteWithImageFiles($productImage, $ftpStorageService);
+        }
+
+        /* delete product itself */
+        if ($isAllDeleted) {
+            ProductRepository::deleteProductById($product->id);
+            DB::commit();
+        }
+
+        return redirect('/product/content');
     }
 
 
@@ -201,13 +211,13 @@ class ProductConsoleController extends Controller
         $cloneProduct = $product->replicate();
         $cloneProduct->push();
 
-        return redirect('/productsConsole');
+        return redirect('/product/content');
     }
 
 
     public function search(Request $request)
     {
-        $shopId           = $this->getShopId();
+        $shopId           = $this->getShop('id');
         $lastQueryType    = $request->productType;
         $lastQueryStatus  = $request->onlineStatus;
         $lastQuerykeyword = $request->keyword;
@@ -222,7 +232,7 @@ class ProductConsoleController extends Controller
 
         $lastQueryString = $this->getQueryString($request);
 
-        return view('consoles.products.index',
+        return view('consoles.products.content.index',
             compact(
                 'products',
                 'productTypes',

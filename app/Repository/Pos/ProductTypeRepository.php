@@ -13,4 +13,9 @@ class ProductTypeRepository extends BaseRepository
     {
         return self::getCollectionByColName(self::entity, 'shop_id', $shopId);
     }
+
+    public static function getPaginationByShopId($shopId, $paginationNumber)
+    {
+        return self::getPaginationByColName(self::entity, 'shop_id', $shopId, $paginationNumber);
+    }
 }

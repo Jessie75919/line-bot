@@ -48,22 +48,25 @@ class CreateRandomDatabase extends Seeder
     private function createDummyData()
     {
 
+        $shop = factory(\App\Models\Shop::class)->create();
+//        factory(\App\Models\User::class, 50)->create();
+        factory(\App\Models\Tag::class, 50)->create();
+        $saleChannel = factory(\App\Models\SaleChannel::class)->create(['shop_id' => $shop->id]);
+
+        factory(\App\Models\ProductType::class)->create([
+            'shop_id' => $shop->id,
+            'name' => '其他商品'
+        ]);
+
         foreach (range(1, 50) as $item) {
-            factory(\App\Models\Shop::class)->create();
+            factory(\App\Models\ProductType::class)->create(['shop_id' => $shop->id]);
+            factory(\App\Models\ProductSubType::class)->create(['shop_id' => $shop->id]);
+            $product = factory(\App\Models\Product::class)->create(['shop_id' => $shop->id]);
+            $product->tags()->attach(\App\Models\Tag::all()->random(1)->first()->id);
+            factory(\App\Models\ProductCount::class)->create(['product_id' => $product->id, 'sales_channel_id' => $saleChannel->id]);
+            factory(\App\Models\ProductImage::class)->create(['category' => 'product', 'product_id' => $product->id]);
         }
-
-        factory(\App\Models\User::class, 50)->create();
-        factory(\App\Models\ProductType::class, 10)->create();
-        factory(\App\Models\ProductSubType::class, 10)->create();
-        factory(\App\Models\Tag::class, 10)->create();
-        factory(\App\Models\Product::class, 50)->create();
-        factory(\App\Models\Product::class, 50)->create(['shop_id' => 1]);
-        factory(\App\Models\SaleChannel::class, 50)->create();
-        factory(\App\Models\ProductCount::class, 10)->create();
         factory(\App\Models\Order::class, 3)->create();
-        factory(\App\Models\ProductImage::class, 50)->create();
-
-        $this->createProductTags(100);
 
 
         factory('App\Models\User')->create([
@@ -75,19 +78,5 @@ class CreateRandomDatabase extends Seeder
             'remember_token' => str_random(10),
         ]);
 
-    }
-
-
-    private function createProductTags($count)
-    {
-        $productIds = \App\Models\Product::pluck('id');
-        $tagIds     = \App\Models\Tag::pluck('id');
-
-        foreach (range(1, $count) as $index) {
-            DB::table('product_tag')->insert([
-                'product_id' => $productIds[random_int(0, count($productIds) - 1)],
-                'tag_id'     => $tagIds[random_int(0, count($tagIds) - 1)]
-            ]);
-        }
     }
 }

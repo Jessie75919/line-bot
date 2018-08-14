@@ -1,7 +1,63 @@
 @charset "UTF-8";
 @import 'reset';
 @import 'setting.scss';
-/*-----------------------start-------------------------*/
+
+/*---------------login---------------*/
+
+.login {
+    width: 400px;
+    max-width: 94%;
+    margin: auto;
+    padding-top: 100px;
+    .logo {
+        width: 150px;
+        max-width: 100%;
+        margin: auto;
+        img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+    }
+    h1{
+        color: $cWhite;
+        text-align: center;
+        font-size: 1.3em;
+        line-height: 1.5em;
+        font-weight: normal;
+    }
+}
+
+.loginBox {
+
+    background-color: $cWhite;
+    padding: 30px;
+    margin-top: 20px;
+    border-radius: 10px;
+    .loginList {
+        padding-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        i {
+            display: block;
+            width: 40px;
+            color: $cPink;
+            padding: 0;
+        }
+        input {
+            border: none;
+            background-color: $cGrayeee;
+            margin: 0;
+        }
+    }
+    .loginBtn {
+        text-align: center;
+        a {
+            padding-left: 5px;
+        }
+    }
+}
 
 /*---------------share---------------*/
 
@@ -16,14 +72,14 @@ header {
     background-color: $cGray333;
     padding: 0px 0px 0 20px;
     figure.logo {
-        width: 60px;
+        width: 70px;
         float: left;
         padding: 10px 0;
         img {
             display: block;
             width: 100%;
             height: auto;
-            max-height: 50px;
+            max-height: 70px;
         }
     }
     .open {
@@ -35,7 +91,7 @@ header {
         color: $cGrayccc;
         border-radius: 50%;
         text-align: center;
-        top: 15px;
+        top: 25px;
         left: 210px;
         cursor: pointer;
         z-index: 9999;
@@ -47,6 +103,13 @@ header {
             background-color: $cPink;
             color: $cWhite;
         }
+        @include rwd($width910) {
+            position: relative;
+            top: auto;
+            left: auto;
+            float: left;
+            margin: 25px 0 0 20px;
+        }
     }
     .headerRight {
         width: calc(100% - 240px);
@@ -57,7 +120,7 @@ header {
             padding: 0;
             margin: 0;
             > li {
-                line-height: 50px;
+                line-height: 70px;
                 padding: 0;
                 list-style: none;
                 &.on {
@@ -82,7 +145,7 @@ header {
                     > span.remind {
                         display: block;
                         position: absolute;
-                        top: 10px;
+                        top: 20px;
                         right: 5px;
                         width: 24px;
                         height: 24px;
@@ -100,7 +163,7 @@ header {
                 ul {
                     display: none;
                     position: absolute;
-                    top: 70px;
+                    top: 90px;
                     right: 0px;
                     width: auto;
                     background-color: $cWhite;
@@ -113,6 +176,8 @@ header {
                     li {
                         padding: 0;
                         margin: 0;
+                        list-style: none;
+                        display: block;
                         a {
                             padding: 15px;
                             min-width: 180px;
@@ -124,6 +189,23 @@ header {
                             margin-left: 10px;
                             margin-right: 0;
                             color: $cGrayccc;
+                        }
+                    }
+                }
+            }
+        }
+        @include rwd($width600) {
+            width: auto;
+            > ul {
+                > li {
+                    a {
+                        font-size: 1.3em;
+                        padding: 10px;
+                        > span {
+                            display: none;
+                        }
+                        > span.remind {
+                            display: block;
                         }
                     }
                 }
@@ -271,7 +353,8 @@ aside {
                         li {
                             a {
                                 background-color: $cWhite;
-                                &:hover {
+                                &:hover,
+                                &.on {
                                     background-color: $cGrayeee;
                                     color: $cGray333;
                                 }
@@ -300,7 +383,7 @@ aside {
 .container {
     width: calc(100% - 250px);
     float: right;
-    padding: 90px 3% 20px 3%;
+    padding: 110px 3% 20px 3%;
     min-height: 1000px;
     animation: nofull 0.5s ease forwards alternate;
     &:after {
@@ -330,6 +413,35 @@ aside {
     }
     &.start {
         animation: none;
+    }
+    @include rwd($width910) {
+        @-webkit-keyframes nofull {
+            from {
+                width: 100%;
+                float: right;
+            }
+            to {
+                width: 100%;
+                float: right;
+                /*margin-right: -250px;*/
+            }
+        }
+        &.full {
+            width: 100%;
+        }
+        @-webkit-keyframes full {
+            from {
+                width: 100%;
+                /*margin-right: -250px;*/
+            }
+            to {
+                width: 100%;
+                /*margin-right: 0px;*/
+            }
+        }
+        &.start {
+            animation: none;
+        }
     }
     h1 span {
         font-size: 0.8em;
@@ -370,6 +482,29 @@ aside {
             h2 {
                 font-weight: normal;
                 padding: 5px 0px 40px 0;
+            }
+            @include rwd($width1200) {
+                &.col75p {
+                    width: 100%;
+                }
+                &.col60p {
+                    width: 100%;
+                }
+                &.col50p {
+                    width: 100%;
+                }
+                &.col40p {
+                    width: 100%;
+                }
+                &.col30p {
+                    width: 100%;
+                }
+                &.col25p {
+                    width: 100%;
+                }
+                &.col20p {
+                    width: 100%;
+                }
             }
         }
     }
@@ -455,6 +590,26 @@ footer {
     &.start {
         animation: none;
     }
+    @include rwd($width910) {
+        width: 94%;
+        right: 3%;
+        @-webkit-keyframes editListBtnNoFull {
+            from {
+                width: 94%;
+            }
+            to {
+                width: 94%;
+            }
+        }
+        @-webkit-keyframes editListBtnFull {
+            from {
+                width: 94%;
+            }
+            to {
+                width: 94%;
+            }
+        }
+    }
     a {
         display: inline-block;
         text-align: center;
@@ -486,12 +641,37 @@ footer {
     display: flex;
     flex-wrap: wrap;
     .stutsList {
-        padding: 0 15px 2px 0;
+        padding: 0 15px 10px 0;
+        width: calc((100% - 100px)/3);
+        &.sendBtn {
+            width: 100px;
+        }
+        span {
+            display: block;
+            padding-bottom: 5px;
+        }
         input[type="text"],
-        input[type="button"],
         select {
+            width: 100%;
+            min-width: auto;
+            margin: 0;
+        }
+        input[type="button"] {
             width: auto;
-            margin: 0 0 3px 5px;
+            margin: 0;
+            margin-top: 30px;
+        }
+        @include rwd($width600) {
+            width: calc(100% / 3);
+            &.sendBtn {
+                width: 100px;
+            }
+            input[type="button"] {
+                margin-top: 0px;
+            }
+        }
+        @include rwd($width400) {
+            width: 100%;
         }
     }
 }
@@ -531,7 +711,7 @@ footer {
     padding-top: 30px;
     a {
         display: inline-block;
-        margin: 5px;
+        margin: 3px;
         background-color: $cGrayeee;
         border-radius: 50%;
         width: 30px;
@@ -573,6 +753,14 @@ footer {
     }
     .full {
         width: 100%;
+    }
+    @include rwd($width600) {
+        .formName {
+            width: 100%;
+        }
+        .formInfo {
+            width: 100%;
+        }
     }
 }
 

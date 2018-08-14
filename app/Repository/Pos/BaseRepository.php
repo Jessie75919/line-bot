@@ -52,6 +52,12 @@ class BaseRepository
     }
 
 
+    public static function updateById($entity, $id, $data)
+    {
+        return $entity::where('id', $id)->update($data);
+    }
+
+
     protected static function getPaginationWithShopIdByCondition($entity, $shopId, $paginationNumber, $queryCondition)
     {
         /** @var QueryBuilder $queryBuilder */

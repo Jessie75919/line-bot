@@ -17,6 +17,7 @@ class CreateProductTypesTable extends Migration
             $table->increments('id');
             $table->string('name',30)->comment('產品類別名稱');
             $table->unsignedInteger('order')->nullable()->comment('類別排序順位');
+            $table->unsignedInteger('is_launch')->nullable()->comment('是否上架');
             $table->unsignedInteger('shop_id')->comment('商家id');
             $table->timestamps();
 

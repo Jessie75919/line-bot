@@ -67,6 +67,12 @@ class FTPStorageService
     }
 
 
+    public function deleteImageFile($fileName, $category)
+    {
+        return Storage::disk('ftp')->delete($this->getUploadUrl($category) . $fileName);
+    }
+
+
     public function generateFileName($category)
     {
         if ($this->validCategory($category)) {

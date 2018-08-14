@@ -1,7 +1,8 @@
 @extends('layouts.master')
 
 @section('meta')
-    <title>sideNav</title>
+
+    @parent
     <style>
         .searchFrom {
             width: 100%;
@@ -19,13 +20,13 @@
 
     <div class="container start">
         <!--主要內容-->
-        <h1>商品管理<span> / <a href="/productsConsole">內容管理</a></span></h1>
+        <h1>商品管理<span> / <a href="/product/content">內容管理</a></span></h1>
         <div class="panel">
             <div class="panelBody bt-wrapper">
                 <h2>單元列表一覽</h2>
                 <!--編輯按鈕區塊-->
                 <div class="editListBtn">
-                    <a href="/productsConsole/create"><i class="fas fa-plus"></i>新增內容</a>
+                    <a href="/product/content/create"><i class="fas fa-plus"></i>新增內容</a>
                     <a href="#" id="update_order"><i class="fas fa-redo-alt"></i>更新排序</a>
                     <a href="#" id="delete_selected"><i class="fas fa-trash-alt"></i>刪除勾選</a>
 
@@ -33,7 +34,7 @@
                 <!--編輯按鈕區塊 end-->
                 <!--搜尋商品狀態-->
                 <div class="stuts">
-                    <form class="searchFrom" action="/productsConsole/search" method="get">
+                    <form class="searchFrom" action="/product/content/search" method="get">
                         {{--上線狀態--}}
                         <div class="stutsList">
                             上線狀態
@@ -108,7 +109,7 @@
                             <th>品名</th>
                             <th>價格</th>
                             <th>類別</th>
-                            <th>狀態</th>
+                            <th>上線狀態</th>
                             <th>功能</th>
                         </tr>
                         </thead>
@@ -124,7 +125,9 @@
                                     <input class="order" type="text" value="{{$product->order}}" id="{{$product->id}}">
                                 </td>
 
-                                <td><img src="{{$product->thumbnailUrl('product')}}"></td>
+                                <td>
+                                    <a href="{{$product->pathUrl()}}/edit"><img src="{{$product->thumbnailUrl('product')}}"></a>
+                                </td>
 
                                 <td>{{$product->name}}</td>
 
@@ -198,11 +201,10 @@
         <!--主要內容 end-->
 
 
-        @include('consoles.products.components.footer')
+        @include('consoles.components.footer')
     </div>
 
     <script>
-
 
 
     </script>

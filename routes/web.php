@@ -1,6 +1,6 @@
 <?php
 
-$routeName = "/productsConsole";
+$routeName = "/product/content";
 
 //Route::get("/", function () {
 //    return view("consoles.products.index");
@@ -17,18 +17,24 @@ Auth::routes();
 //Route::get("/pushConsole", "HomeController@index");
 
 Route::group(["middleware" => ["sanitize", "auth"]], function () {
-    Route::get("/productsConsole", "ProductConsoleController@index")->name("productsConsole.index");
-    Route::get("/productsConsole/search", "ProductConsoleController@search");
-    Route::get("/productsConsole/create", "ProductConsoleController@create")->name('productsConsole.create');
-    Route::get("/productsConsole/{product}", "ProductConsoleController@show");
-    Route::get("/productsConsole/{product}/edit", "ProductConsoleController@edit");
-    Route::post("/productsConsole/storeImages", "ProductConsoleController@storeImages")->name('productsConsole.storeImages');
-    Route::put("/productsConsole/{product}", "ProductConsoleController@update");
-    Route::delete("/productsConsole/{product}", "ProductConsoleController@destroy")->name("productsConsole.destroy");
-    Route::get("/productsConsole/{product}/clone", "ProductConsoleController@clone");
+    
+    /* 商品管理 / 內容管理 */
+    Route::get("/product/content", "ProductConsoleController@index")->name("product.content.index");
+    Route::get("/product/content/search", "ProductConsoleController@search");
+    Route::get("/product/content/create", "ProductConsoleController@create")->name('product.content.create');
+    Route::get("/product/content/{product}", "ProductConsoleController@show");
+    Route::get("/product/content/{product}/edit", "ProductConsoleController@edit");
+    Route::put("/product/content/{product}", "ProductConsoleController@update");
+    Route::delete("/product/content/{product}", "ProductConsoleController@destroy")->name("product.content.destroy");
+    Route::get("/product/content/{product}/clone", "ProductConsoleController@clone");
+
+    /* 商品管理 / 類別管理 */
+    Route::get("/product/category", "ProductCategoryController@index")->name("product.category.index");
 });
 
-Route::post("/productsConsole", "ProductConsoleController@store")->name('productsConsole.store')->middleware('auth');;
+
+Route::post("/product/content", "ProductConsoleController@store")->name('product.content.store')->middleware('auth');
+Route::put("/product/content/{product}", "ProductConsoleController@update")->name('product.content.update')->middleware('auth');
 
 
 Route::get("/login", function () {

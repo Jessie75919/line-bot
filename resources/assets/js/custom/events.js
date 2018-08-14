@@ -17,7 +17,7 @@ $(function(){
         };
 
         httpPostWithData('update_order', data, function(data, textStatus, jqXHR){
-            window.location.replace("/productsConsole");
+            window.location.replace("/product/content");
         });
     });
 
@@ -30,9 +30,18 @@ $(function(){
 
     /* 批次刪除 */
     $('#delete_selected').on('click', function(){
+
+        let deleteItems = $('.batched_action:checked').toArray();
+        if(deleteItems.length === 0) {
+            return false;
+        }
+
         if(confirm("確定要批次刪除嗎？")) {
-            let deleteItems = $('.batched_action:checked').toArray();
+
             console.log(deleteItems[0]);
+
+
+
             let data = {
                 data : deleteItems.map(item =>{
                     return {id : item.value};
@@ -40,7 +49,7 @@ $(function(){
             };
             console.log(data);
             httpPostWithData('multi_delete', data, function(data, textStatus, jqXHR){
-                window.location.replace("/productsConsole");
+                window.location.replace("/product/content");
             });
         }
     });

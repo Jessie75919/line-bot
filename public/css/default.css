@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Quicksand:400,700);@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700);@charset "UTF-8";
 
 a,
 abbr,
@@ -137,7 +137,7 @@ html {
 
 body {
   position: relative;
-  font-family: "Quicksand", Arial, "\5FAE\8EDF\6B63\9ED1\9AD4", "Microsoft JhengHei", "\65B0\7D30\660E\9AD4";
+  font-family: "Source Sans Pro", Arial, "\5FAE\8EDF\6B63\9ED1\9AD4", "Microsoft JhengHei", "\65B0\7D30\660E\9AD4";
   background: #eeeeee;
   font-size: 1em;
   line-height: 1.5em;
@@ -149,6 +149,10 @@ body {
   position: relative;
   overflow-x: hidden;
   outline: none;
+}
+
+body.loginBody {
+  background: #e0b7b2;
 }
 
 a {
@@ -332,7 +336,7 @@ sup {
 input,
 textarea,
 select {
-  font-family: "Quicksand", Arial, "\5FAE\8EDF\6B63\9ED1\9AD4", "Microsoft JhengHei", "\65B0\7D30\660E\9AD4";
+  font-family: "Source Sans Pro", Arial, "\5FAE\8EDF\6B63\9ED1\9AD4", "Microsoft JhengHei", "\65B0\7D30\660E\9AD4";
   border: #cccccc solid 1px;
   background: #fff;
   padding: 10px;
@@ -426,7 +430,77 @@ textarea:-moz-placeholder {
   color: #999999;
 }
 
-/*-----------------------start-------------------------*/
+/*-----------------*/
+
+/*---------------login---------------*/
+
+.login {
+  width: 400px;
+  max-width: 94%;
+  margin: auto;
+  padding-top: 100px;
+}
+
+.login .logo {
+  width: 150px;
+  max-width: 100%;
+  margin: auto;
+}
+
+.login .logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.login h1 {
+  color: #fff;
+  text-align: center;
+  font-size: 1.3em;
+  line-height: 1.5em;
+  font-weight: normal;
+}
+
+.loginBox {
+  background-color: #fff;
+  padding: 30px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.loginBox .loginList {
+  padding-bottom: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.loginBox .loginList i {
+  display: block;
+  width: 40px;
+  color: #f4a9a0;
+  padding: 0;
+}
+
+.loginBox .loginList input {
+  border: none;
+  background-color: #eeeeee;
+  margin: 0;
+}
+
+.loginBox .loginBtn {
+  text-align: center;
+}
+
+.loginBox .loginBtn a {
+  padding-left: 5px;
+}
 
 /*---------------share---------------*/
 
@@ -443,7 +517,7 @@ header {
 }
 
 header figure.logo {
-  width: 60px;
+  width: 70px;
   float: left;
   padding: 10px 0;
 }
@@ -452,7 +526,7 @@ header figure.logo img {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 50px;
+  max-height: 70px;
 }
 
 header .open {
@@ -464,7 +538,7 @@ header .open {
   color: #cccccc;
   border-radius: 50%;
   text-align: center;
-  top: 15px;
+  top: 25px;
   left: 210px;
   cursor: pointer;
   z-index: 9999;
@@ -479,6 +553,16 @@ header .open:hover {
 header .open:active {
   background-color: #f4a9a0;
   color: #fff;
+}
+
+@media only screen and (max-width: 910px) {
+  header .open {
+    position: relative;
+    top: auto;
+    left: auto;
+    float: left;
+    margin: 25px 0 0 20px;
+  }
 }
 
 header .headerRight {
@@ -499,7 +583,7 @@ header .headerRight > ul {
 }
 
 header .headerRight > ul > li {
-  line-height: 50px;
+  line-height: 70px;
   padding: 0;
   list-style: none;
 }
@@ -533,7 +617,7 @@ header .headerRight > ul > li a:hover {
 header .headerRight > ul > li a > span.remind {
   display: block;
   position: absolute;
-  top: 10px;
+  top: 20px;
   right: 5px;
   width: 24px;
   height: 24px;
@@ -553,7 +637,7 @@ header .headerRight > ul > li a i.fa-angle-down {
 header .headerRight > ul > li ul {
   display: none;
   position: absolute;
-  top: 70px;
+  top: 90px;
   right: 0px;
   width: auto;
   background-color: #fff;
@@ -569,6 +653,8 @@ header .headerRight > ul > li ul {
 header .headerRight > ul > li ul li {
   padding: 0;
   margin: 0;
+  list-style: none;
+  display: block;
 }
 
 header .headerRight > ul > li ul li a {
@@ -583,6 +669,25 @@ header .headerRight > ul > li ul li i {
   margin-left: 10px;
   margin-right: 0;
   color: #cccccc;
+}
+
+@media only screen and (max-width: 600px) {
+  header .headerRight {
+    width: auto;
+  }
+
+  header .headerRight > ul > li a {
+    font-size: 1.3em;
+    padding: 10px;
+  }
+
+  header .headerRight > ul > li a > span {
+    display: none;
+  }
+
+  header .headerRight > ul > li a > span.remind {
+    display: block;
+  }
 }
 
 main {
@@ -762,7 +867,8 @@ aside nav ul li.active ul.dropdown li a {
   background-color: #fff;
 }
 
-aside nav ul li.active ul.dropdown li a:hover {
+aside nav ul li.active ul.dropdown li a:hover,
+aside nav ul li.active ul.dropdown li a.on {
   background-color: #eeeeee;
   color: #333;
 }
@@ -783,7 +889,7 @@ aside nav ul li.active ul.dropdown li a:hover {
 .container {
   width: calc(100% - 250px);
   float: right;
-  padding: 90px 3% 20px 3%;
+  padding: 110px 3% 20px 3%;
   min-height: 1000px;
   -webkit-animation: nofull 0.5s ease forwards alternate;
           animation: nofull 0.5s ease forwards alternate;
@@ -825,6 +931,42 @@ aside nav ul li.active ul.dropdown li a:hover {
 .container.start {
   -webkit-animation: none;
           animation: none;
+}
+
+@media only screen and (max-width: 910px) {
+@-webkit-keyframes nofull {
+    from {
+      width: 100%;
+      float: right;
+    }
+
+    to {
+      width: 100%;
+      float: right;
+      /*margin-right: -250px;*/
+    }
+}
+
+  .container.full {
+    width: 100%;
+  }
+
+@-webkit-keyframes full {
+    from {
+      width: 100%;
+      /*margin-right: -250px;*/
+    }
+
+    to {
+      width: 100%;
+      /*margin-right: 0px;*/
+    }
+}
+
+  .container.start {
+    -webkit-animation: none;
+            animation: none;
+  }
 }
 
 .container h1 span {
@@ -884,6 +1026,36 @@ aside nav ul li.active ul.dropdown li a:hover {
 .container .panel .panelBody h2 {
   font-weight: normal;
   padding: 5px 0px 40px 0;
+}
+
+@media only screen and (max-width: 1200px) {
+  .container .panel .panelBody.col75p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col60p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col50p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col40p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col30p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col25p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col20p {
+    width: 100%;
+  }
 }
 
 .container a.btn {
@@ -982,6 +1154,33 @@ footer {
           animation: none;
 }
 
+@media only screen and (max-width: 910px) {
+  .editListBtn {
+    width: 94%;
+    right: 3%;
+  }
+
+@-webkit-keyframes editListBtnNoFull {
+    from {
+      width: 94%;
+    }
+
+    to {
+      width: 94%;
+    }
+}
+
+@-webkit-keyframes editListBtnFull {
+    from {
+      width: 94%;
+    }
+
+    to {
+      width: 94%;
+    }
+}
+}
+
 .editListBtn a {
   display: inline-block;
   text-align: center;
@@ -1018,14 +1217,50 @@ footer {
 }
 
 .stuts .stutsList {
-  padding: 0 15px 2px 0;
+  padding: 0 15px 10px 0;
+  width: calc((100% - 100px)/3);
+}
+
+.stuts .stutsList.sendBtn {
+  width: 100px;
+}
+
+.stuts .stutsList span {
+  display: block;
+  padding-bottom: 5px;
 }
 
 .stuts .stutsList input[type="text"],
-.stuts .stutsList input[type="button"],
 .stuts .stutsList select {
+  width: 100%;
+  min-width: auto;
+  margin: 0;
+}
+
+.stuts .stutsList input[type="button"] {
   width: auto;
-  margin: 0 0 3px 5px;
+  margin: 0;
+  margin-top: 30px;
+}
+
+@media only screen and (max-width: 600px) {
+  .stuts .stutsList {
+    width: calc(100% / 3);
+  }
+
+  .stuts .stutsList.sendBtn {
+    width: 100px;
+  }
+
+  .stuts .stutsList input[type="button"] {
+    margin-top: 0px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .stuts .stutsList {
+    width: 100%;
+  }
 }
 
 .rwdTable {
@@ -1065,7 +1300,7 @@ footer {
 
 .page a {
   display: inline-block;
-  margin: 5px;
+  margin: 3px;
   background-color: #eeeeee;
   border-radius: 50%;
   width: 30px;
@@ -1119,6 +1354,16 @@ footer {
 
 .formList .full {
   width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .formList .formName {
+    width: 100%;
+  }
+
+  .formList .formInfo {
+    width: 100%;
+  }
 }
 
 .editorArea {

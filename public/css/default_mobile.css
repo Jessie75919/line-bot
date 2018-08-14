@@ -40,7 +40,7 @@
     top: auto;
     left: auto;
     float: left;
-    margin: 15px 0 0 20px;
+    margin: 25px 0 0 20px;
   }
 
   /*側邊攔*/
@@ -131,6 +131,18 @@
 
   /*----------其他內容設定----------*/
 
+  .stuts .stutsList {
+    width: calc(100% / 3);
+  }
+
+  .stuts .stutsList.sendBtn {
+    width: 100px;
+  }
+
+  .stuts .stutsList input[type="button"] {
+    margin-top: 0px;
+  }
+
   /*表單*/
 
   .formList .formName {
@@ -138,6 +150,14 @@
   }
 
   .formList .formInfo {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  /*----------其他內容設定----------*/
+
+  .stuts .stutsList {
     width: 100%;
   }
 }

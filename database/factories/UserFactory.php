@@ -58,6 +58,7 @@ $factory->define(ProductType::class, function (Faker $faker) {
         'shop_id' => function () {
             return Shop::all()->random(1)[0]->id;
         },
+        'is_launch'   => 1,
         'order'   => $faker->randomDigit
     ];
 });
@@ -77,6 +78,7 @@ $factory->define(ProductSubType::class, function (Faker $faker) {
 
 
 $factory->define(Product::class, function (Faker $faker) {
+
     return [
         'product_type_id'     => function () {
             return ProductType::all()->random(1)->first()->id;
@@ -99,7 +101,7 @@ $factory->define(Product::class, function (Faker $faker) {
 
 $factory->define(SaleChannel::class, function (Faker $faker) {
     return [
-        'name'    => $faker->word,
+        'name'    => 'web',
         'shop_id' => function () {
             return Shop::all()->random(1)[0]->id;
         },

@@ -26,4 +26,10 @@ class ProductImage extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    
+    
+    public function shop()
+    {
+        return $this->product->shop;
+    }
 }
