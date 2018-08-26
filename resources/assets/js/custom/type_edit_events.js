@@ -3,7 +3,9 @@ $(function(){
     init();
 
     $('#updateBtn').on('click', function(){
-        if(!$("#formContent").valid()) { return false ;}
+        if(!$("#formContent").valid()) {
+            return false ;
+        }
 
         let section       = $(this).attr('data-section');
         let productTypeId = $(this).attr('data-id');
