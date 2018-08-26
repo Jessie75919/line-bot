@@ -18,7 +18,7 @@
                 <a href="#"><i class="fas fa-shopping-cart"></i>商品管理</a><span>more</span>
                 <ul class="dropdown" id="product-manage">
                     <li><a href="{{route('product.content.index')}}">內容管理</a></li>
-                    <li><a href="{{route('product.category.index')}}">類別管理</a></li>
+                    <li><a href="{{route('product.type.index')}}">類別管理</a></li>
                 </ul>
             </li>
             <li id="side-news"><a href="#"><i class="fas fa-newspaper"></i>新聞管理</a><span>more</span>

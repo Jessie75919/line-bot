@@ -10,17 +10,16 @@ use App\Repository\Pos\ProductRepository;
 use App\Repository\Pos\ProductTypeRepository;
 use App\Repository\Pos\TagRepository;
 use App\Services\Pos\FTPStorageService;
+use App\Services\Pos\ProductService;
 use App\Traits\GetShopIdFromUser;
 use DB;
-use function dd;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
+use Mockery\Exception;
 use function compact;
 use function count;
 use function explode;
-use function is_numeric;
-use Mockery\Exception;
 use function redirect;
 use function response;
 use function view;
@@ -111,17 +110,6 @@ class ProductConsoleController extends Controller
     }
 
 
-//    /**
-//     * Display the specified resource.
-//     * @param $product
-//     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-//     */
-//    public function show(Product $product)
-//    {
-//        return view('consoles.products.content.show', compact('product'));
-//    }
-
-
     /**
      * Show the form for editing the specified resource.
      * @param Product $product
@@ -181,28 +169,21 @@ class ProductConsoleController extends Controller
      */
     public function destroy(Product $product, FTPStorageService $ftpStorageService)
     {
-        DB::beginTransaction();
-        /* delete product_count record */
-        $product->productCount->delete();
+        try {
+            DB::beginTransaction();
+            $productService = new ProductService($product);
+            if ($productService->destroyProduct()) {
+                DB::commit();
+                return redirect('/product/content');
+            }
 
-        /* delete product_tag record */
-        $product->tags()->detach();
+            DB::rollBack();
+            throw new Exception("Delete ProductId : $product->id falied");
 
-        $productImages = $product->productImages;
-        $isAllDeleted = false;
-
-        /* delete productImage in DB & Folder */
-        foreach ($productImages as $productImage) {
-            $isAllDeleted = ProductImageRepository::deleteWithImageFiles($productImage, $ftpStorageService);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e);
         }
-
-        /* delete product itself */
-        if ($isAllDeleted) {
-            ProductRepository::deleteProductById($product->id);
-            DB::commit();
-        }
-
-        return redirect('/product/content');
     }
 
 
@@ -210,6 +191,8 @@ class ProductConsoleController extends Controller
     {
         $cloneProduct = $product->replicate();
         $cloneProduct->push();
+        $saleChannel = $product->shop->saleChannels->first();
+        ProductCountRepository::create($cloneProduct->id, $saleChannel->id, 1);
 
         return redirect('/product/content');
     }

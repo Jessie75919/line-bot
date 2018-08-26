@@ -19,7 +19,7 @@ class ProductImageRepository
         return ProductImage::create([
             'product_id' => $productId,
             'file_name'  => $fileName,
-            'category'   => $category,
+            'type'   => $category,
             'image_url'  => $link,
             'status'     => $status,
             'order'      => $order

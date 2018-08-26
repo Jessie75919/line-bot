@@ -1,69 +1,40 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>網站管理系統</title>
+    <link rel="SHORTCUT ICON" href="/images/share/favicon.ico"/>
+    <link rel="icon" href="/images/share/favicon.ico" type="image/ico"/>
+    <link rel="stylesheet" href="{{ mix('/css/all.css') }}">
+    <script>window.Laravel = {csrfToken : "{{ csrf_token() }}"};  </script>
+    <script src="{{ mix('/js/app.js') }}"></script>
+    <script src="{{ mix('/js/all.js') }}"></script>
+</head>
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+<body class="loginBody">
+<div class="login">
+    <div class="logo"><img src="images/share/logo.svg"></div>
+    <h1>CHU.C 啾囍 網站管理系統 登入</h1>
+    <div class="loginBox">
+        <form method="post" action="{{ route('login') }}">
+            @csrf
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="email" class="col-sm-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autofocus>
-
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="invalid-feedback">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                    {{ __('Forgot Your Password?') }}
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+            <div class="loginList">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="帳號" name="email" id="account" required autofocus>
             </div>
-        </div>
+            <div class="loginList">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="密碼" name="password" id="password" required>
+            </div>
+            <div class="loginBtn">
+                <input type="submit" name="submit" id="submit" value="登入">
+                <a href="forget.htm">忘記密碼</a>
+            </div>
+        </form>
     </div>
 </div>
-@endsection
+<footer>©CHU.C 啾囍 All Rights Reserved.</footer>

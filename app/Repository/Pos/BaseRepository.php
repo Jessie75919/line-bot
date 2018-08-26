@@ -4,6 +4,8 @@
 namespace App\Repository\Pos;
 
 
+use DB;
+use function dd;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 class BaseRepository
@@ -29,8 +31,8 @@ class BaseRepository
 
     public static function updateColumnById($entity, $colName, $id, $updateVal)
     {
-        return $entity::find($id)
-                      ->update([$colName => $updateVal]);
+        return $entity::where('id', $id)
+               ->update([$colName => $updateVal]);
     }
 
 

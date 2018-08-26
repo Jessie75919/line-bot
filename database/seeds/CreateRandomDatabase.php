@@ -64,7 +64,7 @@ class CreateRandomDatabase extends Seeder
             $product = factory(\App\Models\Product::class)->create(['shop_id' => $shop->id]);
             $product->tags()->attach(\App\Models\Tag::all()->random(1)->first()->id);
             factory(\App\Models\ProductCount::class)->create(['product_id' => $product->id, 'sales_channel_id' => $saleChannel->id]);
-            factory(\App\Models\ProductImage::class)->create(['category' => 'product', 'product_id' => $product->id]);
+            factory(\App\Models\ProductImage::class)->create(['type' => 'product', 'product_id' => $product->id]);
         }
         factory(\App\Models\Order::class, 3)->create();
 

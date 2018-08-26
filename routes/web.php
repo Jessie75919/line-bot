@@ -29,7 +29,11 @@ Route::group(["middleware" => ["sanitize", "auth"]], function () {
     Route::get("/product/content/{product}/clone", "ProductConsoleController@clone");
 
     /* 商品管理 / 類別管理 */
-    Route::get("/product/category", "ProductCategoryController@index")->name("product.category.index");
+    Route::get("/product/type", "ProductTypeController@index")->name("product.type.index");
+    Route::delete("/product/type/{productType}", "ProductTypeController@destroy")->name("product.type.destroy");
+    Route::get("/product/type/{productType}/edit", "ProductTypeController@edit");
+    Route::put("/product/type/{productType}", "ProductTypeController@update");
+
 });
 
 
@@ -37,9 +41,7 @@ Route::post("/product/content", "ProductConsoleController@store")->name('product
 Route::put("/product/content/{product}", "ProductConsoleController@update")->name('product.content.update')->middleware('auth');
 
 
-Route::get("/login", function () {
-    return view("auth.login");
-})->name("login");
+Route::get("/logout", "Auth\LoginController@logout")->name("logOut");
 
 
 

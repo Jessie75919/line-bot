@@ -25,7 +25,7 @@ class FTPStorageService
      * @param mixed $shopService
      * @return FTPStorageService
      */
-    public function setShopService($shopService)
+    public function setShopService(ShopService $shopService)
     {
         $this->shopService = $shopService;
         return $this;

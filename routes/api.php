@@ -19,10 +19,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => ['sanitize']], function () {
     /* Product API */
-	Route::resource('products', 'Api\ProductController');
-	Route::get('products/status_switch/{product}', 'Api\ProductController@statusSwitch');
-	Route::post('products/update_order', 'Api\ProductController@updateOrder');
-	Route::post('products/multi_delete', 'Api\ProductController@multiDelete');
+	Route::resource('products/content/', 'Api\ApiProductController');
+	Route::get('products/content/status_switch/{product}', 'Api\ApiProductController@statusSwitch');
+	Route::post('products/content/update_order', 'Api\ApiProductController@updateOrder');
+	Route::post('products/content/multi_delete', 'Api\ApiProductController@multiDelete');
+
+	/* Type API */
+	Route::get('products/type/status_switch/{productType}', 'Api\ApiProductTypeController@statusSwitch');
+	Route::post('products/type/update_order', 'Api\ApiProductTypeController@updateOrder');
+	Route::post('products/type/multi_delete', 'Api\ApiProductTypeController@multiDelete');
 
 
 	/* ProductImage */

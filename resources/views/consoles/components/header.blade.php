@@ -12,7 +12,7 @@
                 <ul>
                     <li><a href="../account/account.htm" target="_blank">我的帳號</a></li>
                     <li><a href="../admin/list.htm">帳號管理</a></li>
-                    <li><a href="#">登出<i class="fas fa-sign-out-alt"></i></a></li>
+                    <li><a href="{{ route('logOut') }}">登出<i class="fas fa-sign-out-alt"></i></a></li>
                 </ul>
             </li>
             <li class="language"><a href="#" title="語言"><i class="fas fa-globe"></i><span>繁中<i

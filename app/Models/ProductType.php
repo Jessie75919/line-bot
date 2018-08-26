@@ -20,6 +20,11 @@ class ProductType extends Model
         'order'
     ];
 
+    public function pathUrl()
+    {
+        return "/product/type/{$this->id}";
+    }
+
 
     public function products()
     {

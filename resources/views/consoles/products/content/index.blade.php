@@ -27,8 +27,8 @@
                 <!--編輯按鈕區塊-->
                 <div class="editListBtn">
                     <a href="/product/content/create"><i class="fas fa-plus"></i>新增內容</a>
-                    <a href="#" id="update_order"><i class="fas fa-redo-alt"></i>更新排序</a>
-                    <a href="#" id="delete_selected"><i class="fas fa-trash-alt"></i>刪除勾選</a>
+                    <a href="#" id="update_order" data-section="content">><i class="fas fa-redo-alt"></i>更新排序</a>
+                    <a href="#" id="delete_selected" data-category="content"><i class="fas fa-trash-alt"></i>刪除勾選</a>
 
                 </div>
                 <!--編輯按鈕區塊 end-->
@@ -138,10 +138,10 @@
                                 <td>
                                     @if($product->is_launch == 1)
                                         <input type="checkbox" checked class="js-switch launch_status"
-                                               value="{{$product->id}}"/>
+                                               value="{{$product->id}}" data-section="content"/>
                                     @else
                                         <input type="checkbox" class="js-switch launch_status"
-                                               value="{{$product->id}}"/>
+                                               value="{{$product->id}}" data-section="content"/>
                                     @endif
                                 </td>
 

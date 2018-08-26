@@ -76,6 +76,7 @@ mix.babel([
     'resources/assets/js/custom/share.js',
     'resources/assets/js/custom/ajax.js',
     'resources/assets/js/custom/events.js',
+    'resources/assets/js/custom/type_edit_events.js',
 ], 'public/js/all.js').version();
 
 //mix.js('resources/assets/js/app.js', 'public/js');

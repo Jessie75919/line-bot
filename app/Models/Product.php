@@ -87,7 +87,7 @@ class Product extends Model
     public function thumbnailUrl($category)
     {
         $image = $this->productImages
-            ->where('category', $category)
+            ->where('type', $category)
             ->sortBy('order')
             ->first();
 
@@ -98,7 +98,7 @@ class Product extends Model
     public function imagesUrl($category)
     {
         return $this->productImages
-            ->where('category', $category)
+            ->where('type', $category)
             ->sortBy('order')
             ->pluck('image_url');
     }
@@ -107,7 +107,7 @@ class Product extends Model
     public function getImages($category)
     {
         return $this->productImages
-            ->where('category', $category)
+            ->where('type', $category)
             ->sortBy('order');
     }
 

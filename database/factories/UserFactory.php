@@ -128,7 +128,7 @@ $factory->define(ProductImage::class, function (Faker $faker) {
     return [
         'product_id' => $product->id,
         'image_url'  => $faker->imageUrl(),
-        'category'   => $category,
+        'type'   => $category,
         'file_name'  => "{$category}_" . md5(uniqid(rand(), true)),
         'order'      => $faker->randomNumber(1),
         'status'     => $faker->randomElement([0, 1]),

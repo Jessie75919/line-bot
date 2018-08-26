@@ -4,18 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
-use App\Repository\Pos\ProductImageRepository;
 use App\Repository\Pos\ProductRepository;
 use App\Services\Pos\FTPStorageService;
+use App\Services\Pos\ProductService;
 use App\Transformers\ProductTransformer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use const false;
 
-class ProductController extends ApiController
+class ApiProductController extends ApiController
 {
 
     /** @var  ProductTransformer */
@@ -144,44 +143,29 @@ class ProductController extends ApiController
     }
 
 
-    public function multiDelete(Request $request, FTPStorageService $ftpStorageService)
+    public function multiDelete(Request $request)
     {
         try {
+            DB::beginTransaction();
             foreach ($request->data as $item) {
-                DB::beginTransaction();
                 $product = Product::find($item['id']);
 
-                /* delete product_count record */
-                $product->productCount->delete();
-
-                /* delete product_tag record */
-                $product->tags()->detach();
-
-                $isAllImagesDeleted = false;
-                $productImages = $product->productImages;
-
-                /* delete productImage in DB & Folder */
-                foreach ($productImages as $productImage) {
-                    $isAllImagesDeleted = ProductImageRepository::deleteWithImageFiles($productImage, $ftpStorageService);
-                }
-
-                if ($isAllImagesDeleted) {
-                    /* delete product itself */
-                    ProductRepository::deleteProductById($item['id']);
-                    DB::commit();
+                $productService = new ProductService($product);
+                if (!$productService->destroyProduct()) {
+                    DB::rollBack();
+                    return $this->respondInternalError("ProductId : {$product->id} failed");
                 }
             }
+
+            DB::commit();
 
             return $this->respondDeleted('ok');
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e);
-            return $this->setStatusCode(500)
-                        ->respondWithError('Multi delete Failed');
+            return $this->respondInternalError('Multi delete Failed');
         }
-
-
     }
 
 

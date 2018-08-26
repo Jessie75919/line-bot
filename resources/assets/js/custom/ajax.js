@@ -1,7 +1,10 @@
 
-function httpGetWithId(url, id){
+function httpGetWithId(url, id, cb = null){
     $.get(`/api/v1/products/${url}/${id}` ,
         function (data, textStatus, jqXHR) {
+            if(cb) {
+                cb();
+            }
         },
         "json"
     );
