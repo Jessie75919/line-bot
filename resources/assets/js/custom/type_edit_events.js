@@ -27,7 +27,6 @@ $(function(){
                     swal("類別更新成功！", {
                         icon : "success",
                     }).then(res =>{
-                        console.log(res);
                         window.location.replace(`/product/${section}`);
                     });
                 }

@@ -16,7 +16,7 @@
                 <!--編輯按鈕區塊-->
                 <div class="editListBtn start">
                     <a href="{{URL::previous()}}"> <i class="fas fa-reply"></i>回上一頁 </a>
-                    <a href="#" id="updateBtn"><i class="fas fa-edit"></i>確認編輯</a>
+                    <a href="#" id="updateContentBtn"><i class="fas fa-edit"></i>確認編輯</a>
                 </div>
                 <!--編輯按鈕區塊 end-->
                 <!--新增商品資訊-->
@@ -167,7 +167,7 @@
         deleteImage();
 
         /* submit button action */
-        $('#updateBtn').on('click', function(e){
+        $('#updateContentBtn').on('click', function(e){
             e.preventDefault();
 
             /* check text input */
@@ -472,11 +472,18 @@
 
             handle()
                 .then(() =>{
-                    alert('upload successfully');
-                    location.replace('{{route('product.content.index')}}');
+                    swal("商品更新成功！", {
+                        icon : "success",
+                    }).then(res =>{
+                        location.replace('{{route('product.content.index')}}');
+                    });
+
                 })
                 .catch(() =>{
-                    alert('upload Failed!');
+                    swal("商品更新失敗！", "請洽詢工程師處理！", {
+                        icon : "error",
+                    });
+                    console.log(err);
                 });
         }
 
