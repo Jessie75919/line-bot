@@ -62,7 +62,7 @@ class ProductRepository extends BaseRepository
 
     public static function createProduct($data)
     {
-        return self::create(self::entity, $data);
+        return self::createProductCount(self::entity, $data);
     }
 
 

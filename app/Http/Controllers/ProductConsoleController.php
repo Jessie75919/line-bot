@@ -90,7 +90,7 @@ class ProductConsoleController extends Controller
             ]);
 
             $saleChannelId = $product->shop->saleChannels->first()->id;
-            ProductCountRepository::create($product->id, $saleChannelId, $quantity);
+            ProductCountRepository::createProductCount($product->id, $saleChannelId, $quantity);
 
             if (count($tags) != 0) {
                 foreach ($tags as $tag) {
@@ -192,7 +192,7 @@ class ProductConsoleController extends Controller
         $cloneProduct = $product->replicate();
         $cloneProduct->push();
         $saleChannel = $product->shop->saleChannels->first();
-        ProductCountRepository::create($cloneProduct->id, $saleChannel->id, 1);
+        ProductCountRepository::createProductCount($cloneProduct->id, $saleChannel->id, 1);
 
         return redirect('/product/content');
     }

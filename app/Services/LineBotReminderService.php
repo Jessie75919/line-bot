@@ -36,7 +36,7 @@ class LineBotReminderService
     const ERROR           = 'ERROR';
     const STATE           = "STATE";
     const REMINDER_STATE  = "Reminder-State";
-    const REMINDER        = 'reminder';
+    const REMINDER        = 'notice';
     const REMINDER_DELETE = "Reminder-Delete";
 
 
@@ -53,7 +53,7 @@ class LineBotReminderService
     }
 
 
-    public function handle($mode = 'reminder')
+    public function handle($mode = 'notice')
     {
 
         switch($mode) {

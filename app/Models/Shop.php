@@ -4,6 +4,7 @@ namespace App\Models;
 
 ;
 
+use App\Repository\Pos\ShopRepository;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -59,5 +60,10 @@ class Shop extends Model
     public function productImages()
     {
         return $this->hasManyThrough(ProductImage::class, Product::class);
+    }
+
+    public function getRepository()
+    {
+        return new ShopRepository($this);
     }
 }

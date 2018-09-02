@@ -41125,12 +41125,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery_ui_ui_widgets_autocomplete_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery_ui_ui_widgets_autocomplete_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery_validation__ = __webpack_require__("./node_modules/jquery-validation/dist/jquery.validate.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery_validation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery_validation__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash__ = __webpack_require__("./node_modules/lodash/lodash.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
 __webpack_require__("./resources/assets/js/bootstrap.js");
+
 
 
 

@@ -3,9 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Repository\Pos\UserRepository;
+use App\Services\JWTService;
+use App\Utilities\ValidationTools;
+use function dd;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 use function redirect;
 use function route;
 use Session;
@@ -43,10 +50,53 @@ class LoginController extends Controller
     }
 
 
+    public function login()
+    {
+        $input = Input::all();
+
+        $messages = [
+            'email' => 'Email的格式錯誤囉！',
+            'exists' => '輸入的帳號不存在喔！',
+        ];
+
+        $rules = ['email'=>'required|email|exists:users,email',
+                  'password'=>'required'
+        ];
+
+        $v = Validator::make($input, $rules, $messages);
+
+        if ($v->passes()) {
+            $attempt = Auth::attempt([
+                'email' => $input['email'],
+                'password' => $input['password']
+            ]);
+
+            if ($attempt) {
+                return Redirect::intended($this->redirectTo);
+            }
+
+            return Redirect::to('login')
+                           ->withErrors(['fail'=>'帳號或密碼錯誤囉！請重新輸入。']);
+        }
+
+        //fails
+        return Redirect::to('login')
+                       ->withErrors($v)
+                       ->withInput(Input::except('password'));
+    }
+
+
+
+
+
     public function logout(Request $request)
     {
         $this->guard()->logout();
+
+        $request->session()->invalidate();
+
         Session::flush();
+
         return redirect('/login');
 
     }

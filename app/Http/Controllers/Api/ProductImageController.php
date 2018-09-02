@@ -49,7 +49,7 @@ class ProductImageController extends ApiController
 
             $fileName = $ftpStorageService->getFileName();
 
-            $productImageRepository->create(
+            $productImageRepository->createProductImage(
                 $productId,
                 $fileName,
                 ShopService::PRODUCT,

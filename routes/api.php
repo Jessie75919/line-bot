@@ -17,6 +17,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 	return $request->user();
 });
 
+
+Route::post('user/send_reset_pw_email', 'Api\ApiUserController@sendResetPasswordEmail');
+
 Route::group(['middleware' => ['sanitize']], function () {
     /* Product API */
 	Route::resource('products/content/', 'Api\ApiProductController');

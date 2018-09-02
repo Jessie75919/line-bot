@@ -6,21 +6,22 @@ namespace App\Repository\Pos;
 
 use App\Models\ProductCount;
 
-class ProductCountRepository
+class ProductCountRepository extends BaseRepository
 {
-    public static function create($productId, $saleChannelId, $count)
+    const entity = ProductCount::class;
+
+    public static function createProductCount($productId, $saleChannelId, $count)
     {
-        return ProductCount::create([
-            'product_id' => $productId,
+        return self::create(self::entity, [
+            'product_id'       => $productId,
             'sales_channel_id' => $saleChannelId,
-            'count' => (int)$count
+            'count'            => (int)$count
         ]);
     }
 
 
     public static function updateCountByProductId($productId, $quantity)
     {
-        ProductCount::where('product_id', $productId)
-                    ->update(['count' => $quantity]);
+        return self::updateColumnById(self::entity, 'count', $productId, $quantity);
     }
 }

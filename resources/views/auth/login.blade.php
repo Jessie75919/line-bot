@@ -32,9 +32,38 @@
             </div>
             <div class="loginBtn">
                 <input type="submit" name="submit" id="submit" value="登入">
-                <a href="forget.htm">忘記密碼</a>
+                <a href="{{ route('password.request') }}">忘記密碼</a>
             </div>
         </form>
+
+        @if(session('status'))
+            <div>afjaofjoajofjao</div>
+        @endif
+
+        <script>
+            @if ($errors->has('fail') || $errors->has('email'))
+                swal({
+                title   : "{{ $errors->first('fail')}}{{ $errors->first('email') }}",
+                icon    : "error",
+                buttons : {
+                    cancel : '好喔',
+                }
+            });
+            @endif
+
+             @if(session('success_updatePW'))
+            swal({
+                title  : "{{ session('success_updatePW') }}",
+                icon   : "success",
+                button : "OK",
+            });
+
+            @endif
+
+
+        </script>
+
+
     </div>
 </div>
 <footer>©CHU.C 啾囍 All Rights Reserved.</footer>

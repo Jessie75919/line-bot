@@ -30,7 +30,7 @@ class LineBotReceiveMessageService
     const TALK             = 'talk';
     const RESPONSE         = 'response';
     const GENERAL_RESPONSE = '好喔～好喔～';
-    const REMINDER         = 'reminder';
+    const REMINDER         = 'notice';
     const STATE            = "state";
     const REMINDER_STATE   = "Reminder-State";
     const REMINDER_DELETE  = "Reminder-Delete";

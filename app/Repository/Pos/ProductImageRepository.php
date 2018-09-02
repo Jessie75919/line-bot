@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use function is_null;
 
-class ProductImageRepository
+class ProductImageRepository extends BaseRepository
 {
-    public function create($productId, $fileName, $category, $link, $status, $order): ProductImage
+    const entity = ProductImage::class;
+
+    public function createProductImage($productId, $fileName, $category, $link, $status, $order): ProductImage
     {
-        return ProductImage::create([
+        return self::create(self::entity, [
             'product_id' => $productId,
             'file_name'  => $fileName,
             'type'   => $category,

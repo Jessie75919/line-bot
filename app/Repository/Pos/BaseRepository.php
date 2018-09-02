@@ -36,6 +36,13 @@ class BaseRepository
     }
 
 
+    public static function findByColumn($entity, $colName, $val)
+    {
+        return $entity::where($colName, $val)
+                      ->first();
+    }
+
+
     protected static function deleteById($entity, $id)
     {
         return $entity::destroy($id);
@@ -57,6 +64,12 @@ class BaseRepository
     public static function updateById($entity, $id, $data)
     {
         return $entity::where('id', $id)->update($data);
+    }
+
+
+    public static function find($entity, $id)
+    {
+        return $entity::find($id);
     }
 
 
