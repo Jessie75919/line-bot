@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Repository\Pos\ProductRepository;
-use App\Services\Pos\FTPStorageService;
 use App\Services\Pos\ProductService;
 use App\Transformers\ProductTransformer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -118,19 +117,6 @@ class ApiProductController extends ApiController
     {
         Product::destroy($id);
         return $this->respondDeleted('Product successfully delete.');
-    }
-
-
-    public function statusSwitch(Product $product)
-    {
-        $status = null;
-        if ($product) {
-            $status = (int)!($product->is_launch);
-            ProductRepository::updateProductStatusById($product->id, $status);
-        }
-
-        $message = "{$product->name} => " . $status;
-        return $this->respondWithOKMessage($message);
     }
 
 

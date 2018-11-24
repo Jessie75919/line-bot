@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+@section('product')
 <div class="container">
 
     <form action="/pushMessage" method="post">

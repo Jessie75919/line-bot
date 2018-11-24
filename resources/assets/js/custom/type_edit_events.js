@@ -45,19 +45,19 @@ function init(){
 }
 
 function jqValidateInit(){
-    $("#formContent").validate({
-        wrapper  : 'span',
-        rules    : {
-            name : {
-                required  : true,
-                maxlength : 20
-            },
-        },
-        messages : {
-            name : {
-                required  : "商品名稱不可為空白!",
-                maxlength : "商品名稱不可超過20字喔！"
-            },
-        }
-    });
+//    $("#formContent").validate({
+//        wrapper  : 'span',
+//        rules    : {
+//            name : {
+//                required  : true,
+//                maxlength : 20
+//            },
+//        },
+//        messages : {
+//            name : {
+//                required  : "商品名稱不可為空白!",
+//                maxlength : "商品名稱不可超過20字喔！"
+//            },
+//        }
+//    });
 }

@@ -6,11 +6,10 @@ use App\Models\ProductType;
 use App\Repository\Pos\ProductTypeRepository;
 use App\Services\Pos\ProductTypeService;
 use App\Traits\GetShopIdFromUser;
-use function compact;
-use function dd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Mockery\Exception;
+use function compact;
 use function response;
 
 class ProductTypeController extends Controller
@@ -25,7 +24,7 @@ class ProductTypeController extends Controller
         $shop         = $this->getShop();
         $productTypes = ProductTypeRepository::getPaginationByShopId($shop->id, $this->paginationNumber);
 
-        return view('consoles.products.type.index', compact('productTypes', 'shop'));
+        return view('consoles.merchandise.type.index', compact('productTypes', 'shop'));
     }
 
 
@@ -47,7 +46,7 @@ class ProductTypeController extends Controller
     public function edit(ProductType $productType)
     {
         $shopId       = $this->getShop('id');
-        return view('consoles.products.type.edit', compact('productType','shopId'));
+        return view('consoles.merchandise.type.edit', compact('productType','shopId'));
     }
 
     public function update(ProductType $productType, Request $request)

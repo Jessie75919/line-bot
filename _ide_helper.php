@@ -7857,7 +7857,7 @@ namespace Illuminate\Support\Facades {
          * Associates a format with mime types.
          *
          * @param string $format The format
-         * @param string|array $mimeTypes The associated mime types (the preferred one must be the first as it will be used as the content type)
+         * @param string|array $mimeTypes The associated mime types (the preferred one must be the first as it will be used as the product type)
          * @static 
          */ 
         public static function setFormat($format, $mimeTypes)
@@ -7900,7 +7900,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Gets the format associated with the request.
          *
-         * @return string|null The format (null if no content type is present)
+         * @return string|null The format (null if no product type is present)
          * @static 
          */ 
         public static function getContentType()
@@ -8010,10 +8010,10 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Returns the request body content.
+         * Returns the request body product.
          *
          * @param bool $asResource If true, a resource will be returned
-         * @return string|resource The request body content or a resource to read the body stream
+         * @return string|resource The request body product or a resource to read the body stream
          * @throws \LogicException
          * @static 
          */ 
@@ -8097,9 +8097,9 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Gets a list of content types acceptable by the client browser.
+         * Gets a list of product types acceptable by the client browser.
          *
-         * @return array List of content types in preferable order
+         * @return array List of product types in preferable order
          * @static 
          */ 
         public static function getAcceptableContentTypes()
@@ -8140,7 +8140,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Determine if the given content types match.
+         * Determine if the given product types match.
          *
          * @param string $actual
          * @param string $type
@@ -8186,7 +8186,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Determines whether the current requests accepts a given content type.
+         * Determines whether the current requests accepts a given product type.
          *
          * @param string|array $contentTypes
          * @return bool 
@@ -8198,7 +8198,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Return the most suitable content type from the given array based on content negotiation.
+         * Return the most suitable product type from the given array based on product negotiation.
          *
          * @param string|array $contentTypes
          * @return string|null 
@@ -11424,7 +11424,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Get the rendered content of the view based on a given condition.
+         * Get the rendered product of the view based on a given condition.
          *
          * @param bool $condition
          * @param string $view
@@ -11775,7 +11775,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Save the slot content for rendering.
+         * Save the slot product for rendering.
          *
          * @return void 
          * @static 
@@ -11848,7 +11848,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Start injecting content into a section.
+         * Start injecting product into a section.
          *
          * @param string $section
          * @param string|null $content
@@ -11861,7 +11861,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Inject inline content into a section.
+         * Inject inline product into a section.
          *
          * @param string $section
          * @param string $content
@@ -11874,7 +11874,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Stop injecting content into a section and return its contents.
+         * Stop injecting product into a section and return its contents.
          *
          * @return string 
          * @static 
@@ -11885,7 +11885,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Stop injecting content into a section.
+         * Stop injecting product into a section.
          *
          * @param bool $overwrite
          * @return string 
@@ -11898,7 +11898,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Stop injecting content into a section and append it.
+         * Stop injecting product into a section and append it.
          *
          * @return string 
          * @throws \InvalidArgumentException
@@ -12038,7 +12038,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Start injecting content into a push section.
+         * Start injecting product into a push section.
          *
          * @param string $section
          * @param string $content
@@ -12051,7 +12051,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Stop injecting content into a push section.
+         * Stop injecting product into a push section.
          *
          * @return string 
          * @throws \InvalidArgumentException
@@ -12063,7 +12063,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Start prepending content into a push section.
+         * Start prepending product into a push section.
          *
          * @param string $section
          * @param string $content
@@ -12076,7 +12076,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Stop prepending content into a push section.
+         * Stop prepending product into a push section.
          *
          * @return string 
          * @throws \InvalidArgumentException

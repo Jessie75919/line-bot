@@ -80,7 +80,7 @@ class Product extends Model
 
     public function pathUrl()
     {
-        return "/product/content/{$this->id}";
+        return "/merchandise/product/{$this->id}";
     }
 
 

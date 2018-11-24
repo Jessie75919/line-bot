@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Repository\Pos\ShopRepository;
 use App\Traits\GetShopIdFromUser;
-use function compact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
+use function compact;
 
 class ProductNoticeController extends Controller
 {
@@ -18,7 +18,7 @@ class ProductNoticeController extends Controller
     {
         /** @var ShopRepository $shopRepository */
         $notice = ($this->getShop())->notice;
-        return view('consoles.products.notice.index',compact('notice'));
+        return view('consoles.merchandise.notice.index',compact('notice'));
     }
 
 

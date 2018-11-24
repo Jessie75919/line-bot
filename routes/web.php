@@ -1,9 +1,9 @@
 <?php
 
-$routeName = "/product/content";
+$routeName = "/product/product";
 
 //Route::get("/", function () {
-//    return view("consoles.products.index");
+//    return view("consoles.merchandise.index");
 //});
 Route::get("/test", function () {
     return view("consoles.products.test");
@@ -18,44 +18,60 @@ Auth::routes();
 
 Route::group(["middleware" => ["sanitize", "auth"]], function () {
 
+
+    Route::get('/body_temperature', function () {
+        $today = \App\Utilities\DateTools::today()->toDateString();
+        return view("body_temperature.index", compact('today'));
+    });
+
+
+
     /* 商品管理 / 內容管理 */
-    Route::get("/product/content", "ProductConsoleController@index")
-         ->name("product.content.index");
-    Route::get("/product/content/search", "ProductConsoleController@search");
-    Route::get("/product/content/create", "ProductConsoleController@create")
-         ->name('product.content.create');
-    Route::get("/product/content/{product}", "ProductConsoleController@show");
-    Route::get("/product/content/{product}/edit", "ProductConsoleController@edit");
-    Route::put("/product/content/{product}", "ProductConsoleController@update");
-    Route::delete("/product/content/{product}", "ProductConsoleController@destroy")
-         ->name("product.content.destroy");
-    Route::get("/product/content/{product}/clone", "ProductConsoleController@clone");
+    Route::get("/merchandise/product", "ProductConsoleController@index")
+         ->name("merchandise.product.index");
+    Route::get("/merchandise/product/search", "ProductConsoleController@search");
+    Route::get("/merchandise/product/create", "ProductConsoleController@create")
+         ->name('merchandise.product.create');
+    Route::get("/merchandise/product/{product}", "ProductConsoleController@show");
+    Route::get("/merchandise/product/{product}/edit", "ProductConsoleController@edit");
+    Route::put("/merchandise/product/{product}", "ProductConsoleController@update");
+    Route::delete("/merchandise/product/{product}", "ProductConsoleController@destroy")
+         ->name("merchandise.product.destroy");
+    Route::get("/merchandise/product/{product}/clone", "ProductConsoleController@clone");
 
     /* 商品管理 / 類別管理 */
-    Route::get("/product/type", "ProductTypeController@index")
-         ->name("product.type.index");
-    Route::delete("/product/type/{productType}", "ProductTypeController@destroy")
-         ->name("product.type.destroy");
-    Route::get("/product/type/{productType}/edit", "ProductTypeController@edit");
-    Route::put("/product/type/{productType}", "ProductTypeController@update");
+    Route::get("/merchandise/productType", "ProductTypeController@index")
+         ->name("merchandise.productType.index");
+    Route::delete("/merchandise/productType/{productType}", "ProductTypeController@destroy")
+         ->name("merchandise.productType.destroy");
+    Route::get("/merchandise/productType/{productType}/edit", "ProductTypeController@edit");
+    Route::put("/merchandise/productType/{productType}", "ProductTypeController@update");
 
     /* 貼心小提醒 */
-    Route::get("/product/notices", "ProductNoticeController@index")
-         ->name("product.notices.index");
+    Route::get("/merchandise/notices", "ProductNoticeController@index")
+         ->name("merchandise.notices.index");
+
+
+    /* 首頁主圖管理 */
+    Route::get("/homeImage", "HomeImageController@index")
+         ->name("homeImage.index");
+    Route::get("/homeImage/search", "HomeImageController@search")
+         ->name("homeImage.search");
+
 
 });
 
 
 /* No Sanitize */ 
 Route::group(["middleware" => ["auth"]], function () {
-    Route::post("/product/content", "ProductConsoleController@store")
-         ->name('product.content.store')
+    Route::post("/merchandise/product", "ProductConsoleController@store")
+         ->name('merchandise.product.store')
          ->middleware('auth');
-    Route::put("/product/content/{product}", "ProductConsoleController@update")
-         ->name('product.content.update')
+    Route::put("/merchandise/product/{product}", "ProductConsoleController@update")
+         ->name('merchandise.product.update')
          ->middleware('auth');
-    Route::post("/product/notices", "ProductNoticeController@create")
-         ->name("product.notices.create");
+    Route::post("/merchandise/notices", "ProductNoticeController@create")
+         ->name("merchandise.notices.create");
 });
 
 

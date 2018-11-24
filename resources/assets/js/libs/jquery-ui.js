@@ -1271,7 +1271,7 @@ var data = $.extend( $.expr[ ":" ], {
 
 //>>label: disableSelection
 //>>group: Core
-//>>description: Disable selection of text content within the set of matched elements.
+//>>description: Disable selection of text product within the set of matched elements.
 //>>docs: http://api.jqueryui.com/disableSelection/
 
 // This file is deprecated
@@ -2291,7 +2291,7 @@ if ( $.uiBackCompat !== false ) {
 				active = document.activeElement;
 
 			// Support: Firefox
-			// Firefox incorrectly exposes anonymous content
+			// Firefox incorrectly exposes anonymous product
 			// https://bugzilla.mozilla.org/show_bug.cgi?id=561664
 			try {
 				active.id;
@@ -2496,7 +2496,7 @@ $.extend( $.effects, {
 			placeholder = $( "<" + element[ 0 ].nodeName + ">" ).insertAfter( element ).css( {
 
 				// Convert inline to inline block to account for inline elements
-				// that turn to inline block based on content (like img)
+				// that turn to inline block based on product (like img)
 				display: /^(inline|ruby)/.test( element.css( "display" ) ) ?
 					"inline-block" :
 					"block",
@@ -3502,7 +3502,7 @@ var effectsEffectSize = $.effects.define( "size", function( options, done ) {
 		}
 	}
 
-	// Scale the content
+	// Scale the product
 	if ( scale === "content" || scale === "both" ) {
 
 		// Vertical props scaling
@@ -3615,7 +3615,7 @@ var effectsEffectSize = $.effects.define( "size", function( options, done ) {
 
 //>>label: Scale Effect
 //>>group: Effects
-//>>description: Grows or shrinks an element and its content.
+//>>description: Grows or shrinks an element and its product.
 //>>docs: http://api.jqueryui.com/scale-effect/
 //>>demos: http://jqueryui.com/effect/
 
@@ -4095,8 +4095,7 @@ if ( $.fn.jquery.substring( 0, 3 ) === "1.7" ) {
 	};
 }
 
-;
-/*!
+    /*!
  * jQuery UI Keycode 1.12.1
  * http://jqueryui.com
  *
@@ -4305,7 +4304,7 @@ var uniqueId = $.fn.extend( {
 //>>label: Accordion
 //>>group: Widgets
 // jscs:disable maximumLineLength
-//>>description: Displays collapsible content panels for presenting information in a limited amount of space.
+//>>description: Displays collapsible product panels for presenting information in a limited amount of space.
 // jscs:enable maximumLineLength
 //>>docs: http://api.jqueryui.com/accordion/
 //>>demos: http://jqueryui.com/accordion/
@@ -4416,7 +4415,7 @@ var widgetsAccordion = $.widget( "ui.accordion", {
 
 		this._destroyIcons();
 
-		// Clean up content panels
+		// Clean up product panels
 		contents = this.headers.next()
 			.css( "display", "" )
 			.removeAttr( "role aria-hidden aria-labelledby" )
@@ -4562,8 +4561,8 @@ var widgetsAccordion = $.widget( "ui.accordion", {
 		this._addClass( this.headers, "ui-accordion-header ui-accordion-header-collapsed",
 			"ui-state-default" );
 
-		this.panels = this.headers.next().filter( ":not(.ui-accordion-content-active)" ).hide();
-		this._addClass( this.panels, "ui-accordion-content", "ui-helper-reset ui-widget-content" );
+		this.panels = this.headers.next().filter( ":not(.ui-accordion-product-active)" ).hide();
+		this._addClass( this.panels, "ui-accordion-content", "ui-helper-reset ui-widget-product" );
 
 		// Avoid memory leaks (#10056)
 		if ( prevPanels ) {
@@ -4581,7 +4580,7 @@ var widgetsAccordion = $.widget( "ui.accordion", {
 		this.active = this._findActive( options.active );
 		this._addClass( this.active, "ui-accordion-header-active", "ui-state-active" )
 			._removeClass( this.active, "ui-accordion-header-collapsed" );
-		this._addClass( this.active.next(), "ui-accordion-content-active" );
+		this._addClass( this.active.next(), "ui-accordion-product-active" );
 		this.active.next().show();
 
 		this.headers
@@ -4760,7 +4759,7 @@ var widgetsAccordion = $.widget( "ui.accordion", {
 					._addClass( clickedChildren, null, options.icons.activeHeader );
 			}
 
-			this._addClass( clicked.next(), "ui-accordion-content-active" );
+			this._addClass( clicked.next(), "ui-accordion-product-active" );
 		}
 	},
 
@@ -4862,7 +4861,7 @@ var widgetsAccordion = $.widget( "ui.accordion", {
 				step: function( now, fx ) {
 					fx.now = Math.round( now );
 					if ( fx.prop !== "height" ) {
-						if ( boxSizing === "content-box" ) {
+						if ( boxSizing === "product-box" ) {
 							adjust += fx.now;
 						}
 					} else if ( that.options.heightStyle !== "content" ) {
@@ -4877,7 +4876,7 @@ var widgetsAccordion = $.widget( "ui.accordion", {
 		var toHide = data.oldPanel,
 			prev = toHide.prev();
 
-		this._removeClass( toHide, "ui-accordion-content-active" );
+		this._removeClass( toHide, "ui-accordion-product-active" );
 		this._removeClass( prev, "ui-accordion-header-active" )
 			._addClass( prev, "ui-accordion-header-collapsed" );
 
@@ -4975,7 +4974,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 				tabIndex: 0
 			} );
 
-		this._addClass( "ui-menu", "ui-widget ui-widget-content" );
+		this._addClass( "ui-menu", "ui-widget ui-widget-product" );
 		this._on( {
 
 			// Prevent focus from sticking to links inside menu after clicking
@@ -5220,7 +5219,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 				menu.attr( "aria-labelledby", item.attr( "id" ) );
 			} );
 
-		this._addClass( newSubmenus, "ui-menu", "ui-widget ui-widget-content ui-front" );
+		this._addClass( newSubmenus, "ui-menu", "ui-widget ui-widget-product ui-front" );
 
 		menus = submenus.add( this.element );
 		items = menus.find( this.options.items );
@@ -5229,7 +5228,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 		items.not( ".ui-menu-item" ).each( function() {
 			var item = $( this );
 			if ( that._isDivider( item ) ) {
-				that._addClass( item, "ui-menu-divider", "ui-widget-content" );
+				that._addClass( item, "ui-menu-divider", "ui-widget-product" );
 			}
 		} );
 
@@ -5565,7 +5564,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 		return this.activeMenu
 			.find( this.options.items )
 
-				// Only match on items, not dividers or other content (#10571)
+				// Only match on items, not dividers or other product (#10571)
 				.filter( ".ui-menu-item" )
 					.filter( function() {
 						return regex.test(
@@ -6323,7 +6322,7 @@ var widgetsControlgroup = $.widget( "ui.controlgroup", {
 					element.contents()
 						.wrapAll( "<span class='ui-controlgroup-label-contents'></span>" );
 				} );
-				that._addClass( labels, null, "ui-widget ui-widget-content ui-state-default" );
+				that._addClass( labels, null, "ui-widget ui-widget-product ui-state-default" );
 				childWidgets = childWidgets.concat( labels.get() );
 				return;
 			}
@@ -7302,7 +7301,7 @@ function Datepicker() {
 	$.extend( this._defaults, this.regional[ "" ] );
 	this.regional.en = $.extend( true, {}, this.regional[ "" ] );
 	this.regional[ "en-US" ] = $.extend( true, {}, this.regional.en );
-	this.dpDiv = datepicker_bindHover( $( "<div id='" + this._mainDivId + "' class='ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all'></div>" ) );
+	this.dpDiv = datepicker_bindHover( $( "<div id='" + this._mainDivId + "' class='ui-datepicker ui-widget ui-widget-product ui-helper-clearfix ui-corner-all'></div>" ) );
 }
 
 $.extend( Datepicker.prototype, {
@@ -7355,7 +7354,7 @@ $.extend( Datepicker.prototype, {
 			drawMonth: 0, drawYear: 0, // month being drawn
 			inline: inline, // is datepicker inline or not
 			dpDiv: ( !inline ? this.dpDiv : // presentation div
-			datepicker_bindHover( $( "<div class='" + this._inlineClass + " ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all'></div>" ) ) ) };
+			datepicker_bindHover( $( "<div class='" + this._inlineClass + " ui-datepicker ui-widget ui-widget-product ui-helper-clearfix ui-corner-all'></div>" ) ) ) };
 	},
 
 	/* Attach the date picker to an input field. */
@@ -7969,7 +7968,7 @@ $.extend( Datepicker.prototype, {
 		}
 	},
 
-	/* Generate the date picker content. */
+	/* Generate the date picker product. */
 	_updateDatepicker: function( inst ) {
 		this.maxRows = 4; //Reset the max number of rows being displayed (see #7043)
 		datepicker_instActive = inst; // for delegate hover events
@@ -8875,7 +8874,7 @@ $.extend( Datepicker.prototype, {
 		controls = ( !inst.inline ? "<button type='button' class='ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all' data-handler='hide' data-event='click'>" +
 			this._get( inst, "closeText" ) + "</button>" : "" );
 
-		buttonPanel = ( showButtonPanel ) ? "<div class='ui-datepicker-buttonpane ui-widget-content'>" + ( isRTL ? controls : "" ) +
+		buttonPanel = ( showButtonPanel ) ? "<div class='ui-datepicker-buttonpane ui-widget-product'>" + ( isRTL ? controls : "" ) +
 			( this._isInRange( inst, gotoDate ) ? "<button type='button' class='ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all' data-handler='today' data-event='click'" +
 			">" + currentText + "</button>" : "" ) + ( isRTL ? "" : controls ) + "</div>" : "";
 
@@ -9395,7 +9394,7 @@ var widgetsMouse = $.widget( "ui.mouse", {
 
 		// Only check for mouseups outside the document if you've moved inside the document
 		// at least once. This prevents the firing of mouseup in the case of IE<9, which will
-		// fire a mousemove event if content is placed under the cursor. See #7778
+		// fire a mousemove event if product is placed under the cursor. See #7778
 		// Support: IE <9
 		if ( this._mouseMoved ) {
 
@@ -12059,7 +12058,7 @@ $.widget( "ui.dialog", {
 			.removeAttr( "title" )
 			.appendTo( this.uiDialog );
 
-		this._addClass( "ui-dialog-content", "ui-widget-content" );
+		this._addClass( "ui-dialog-product", "ui-widget-product" );
 
 		this._createTitlebar();
 		this._createButtonPane();
@@ -12220,7 +12219,7 @@ $.widget( "ui.dialog", {
 		// Set focus to the first match:
 		// 1. An element that was focused previously
 		// 2. First element inside the dialog matching [autofocus]
-		// 3. Tabbable element inside the content element
+		// 3. Tabbable element inside the product element
 		// 4. Tabbable element inside the buttonpane
 		// 5. The close button
 		// 6. The dialog itself
@@ -12272,7 +12271,7 @@ $.widget( "ui.dialog", {
 			} )
 			.appendTo( this._appendTo() );
 
-		this._addClass( this.uiDialog, "ui-dialog", "ui-widget ui-widget-content ui-front" );
+		this._addClass( this.uiDialog, "ui-dialog", "ui-widget ui-widget-product ui-front" );
 		this._on( this.uiDialog, {
 			keydown: function( event ) {
 				if ( this.options.closeOnEscape && !event.isDefaultPrevented() && event.keyCode &&
@@ -12312,8 +12311,8 @@ $.widget( "ui.dialog", {
 		} );
 
 		// We assume that any existing aria-describedby attribute means
-		// that the dialog content is marked up properly
-		// otherwise we brute force the content as the description
+		// that the dialog product is marked up properly
+		// otherwise we brute force the product as the description
 		if ( !this.element.find( "[aria-describedby]" ).length ) {
 			this.uiDialog.attr( {
 				"aria-describedby": this.element.uniqueId().attr( "id" )
@@ -12382,7 +12381,7 @@ $.widget( "ui.dialog", {
 	_createButtonPane: function() {
 		this.uiDialogButtonPane = $( "<div>" );
 		this._addClass( this.uiDialogButtonPane, "ui-dialog-buttonpane",
-			"ui-widget-content ui-helper-clearfix" );
+			"ui-widget-product ui-helper-clearfix" );
 
 		this.uiButtonSet = $( "<div>" )
 			.appendTo( this.uiDialogButtonPane );
@@ -12459,7 +12458,7 @@ $.widget( "ui.dialog", {
 		}
 
 		this.uiDialog.draggable( {
-			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
+			cancel: ".ui-dialog-product, .ui-dialog-titlebar-close",
 			handle: ".ui-dialog-titlebar",
 			containment: "document",
 			start: function( event, ui ) {
@@ -12509,7 +12508,7 @@ $.widget( "ui.dialog", {
 		}
 
 		this.uiDialog.resizable( {
-			cancel: ".ui-dialog-content",
+			cancel: ".ui-dialog-product",
 			containment: "document",
 			alsoResize: this.element,
 			maxWidth: options.maxWidth,
@@ -12690,12 +12689,12 @@ $.widget( "ui.dialog", {
 
 	_size: function() {
 
-		// If the user has resized the dialog, the .ui-dialog and .ui-dialog-content
+		// If the user has resized the dialog, the .ui-dialog and .ui-dialog-product
 		// divs will both have width and height set, so we need to reset them
 		var nonContentHeight, minContentHeight, maxContentHeight,
 			options = this.options;
 
-		// Reset content sizing
+		// Reset product sizing
 		this.element.show().css( {
 			width: "auto",
 			minHeight: 0,
@@ -12708,7 +12707,7 @@ $.widget( "ui.dialog", {
 		}
 
 		// Reset wrapper sizing
-		// determine the height of all the non-content elements
+		// determine the height of all the non-product elements
 		nonContentHeight = this.uiDialog.css( {
 			height: "auto",
 			width: options.width
@@ -13388,7 +13387,7 @@ var widgetsProgressbar = $.widget( "ui.progressbar", {
 			role: "progressbar",
 			"aria-valuemin": this.min
 		} );
-		this._addClass( "ui-progressbar", "ui-widget ui-widget-content" );
+		this._addClass( "ui-progressbar", "ui-widget ui-widget-product" );
 
 		this.valueDiv = $( "<div>" ).appendTo( this.element );
 		this._addClass( this.valueDiv, "ui-progressbar-value", "ui-widget-header" );
@@ -14526,7 +14525,7 @@ var widgetsSlider = $.widget( "ui.slider", $.ui.mouse, {
 		this._calculateNewMax();
 
 		this._addClass( "ui-slider ui-slider-" + this.orientation,
-			"ui-widget ui-widget-content" );
+			"ui-widget ui-widget-product" );
 
 		this._refresh();
 
@@ -16958,7 +16957,7 @@ $.widget( "ui.spinner", {
 	_draw: function() {
 		this._enhance();
 
-		this._addClass( this.uiSpinner, "ui-spinner", "ui-widget ui-widget-content" );
+		this._addClass( this.uiSpinner, "ui-spinner", "ui-widget ui-widget-product" );
 		this._addClass( "ui-spinner-input" );
 
 		this.element.attr( "role", "spinbutton" );
@@ -17363,7 +17362,7 @@ $.widget( "ui.tabs", {
 
 		this.running = false;
 
-		this._addClass( "ui-tabs", "ui-widget ui-widget-content" );
+		this._addClass( "ui-tabs", "ui-widget ui-widget-product" );
 		this._toggleClass( "ui-tabs-collapsible", null, options.collapsible );
 
 		this._processTabs();
@@ -17755,7 +17754,7 @@ $.widget( "ui.tabs", {
 		} );
 
 		this.panels.attr( "role", "tabpanel" );
-		this._addClass( this.panels, "ui-tabs-panel", "ui-widget-content" );
+		this._addClass( this.panels, "ui-tabs-panel", "ui-widget-product" );
 
 		// Avoid memory leaks (#10056)
 		if ( prevTabs ) {
@@ -18444,10 +18443,10 @@ $.widget( "ui.tooltip", {
 		}
 
 		// Content can be updated multiple times. If the tooltip already
-		// exists, then just update the content and bail.
+		// exists, then just update the product and bail.
 		tooltipData = this._find( target );
 		if ( tooltipData ) {
-			tooltipData.tooltip.find( ".ui-tooltip-content" ).html( content );
+			tooltipData.tooltip.find( ".ui-tooltip-product" ).html( content );
 			return;
 		}
 
@@ -18469,13 +18468,13 @@ $.widget( "ui.tooltip", {
 		tooltipData = this._tooltip( target );
 		tooltip = tooltipData.tooltip;
 		this._addDescribedBy( target, tooltip.attr( "id" ) );
-		tooltip.find( ".ui-tooltip-content" ).html( content );
+		tooltip.find( ".ui-tooltip-product" ).html( content );
 
 		// Support: Voiceover on OS X, JAWS on IE <= 9
 		// JAWS announces deletions even when aria-relevant="additions"
 		// Voiceover will sometimes re-read the entire log region's contents from the beginning
 		this.liveRegion.children().hide();
-		a11yContent = $( "<div>" ).html( tooltip.find( ".ui-tooltip-content" ).html() );
+		a11yContent = $( "<div>" ).html( tooltip.find( ".ui-tooltip-product" ).html() );
 		a11yContent.removeAttr( "name" ).find( "[name]" ).removeAttr( "name" );
 		a11yContent.removeAttr( "id" ).find( "[id]" ).removeAttr( "id" );
 		a11yContent.appendTo( this.liveRegion );
@@ -18558,7 +18557,7 @@ $.widget( "ui.tooltip", {
 		if ( !tooltipData ) {
 
 			// We set ui-tooltip-open immediately upon open (in open()), but only set the
-			// additional data once there's actually content to show (in _open()). So even if the
+			// additional data once there's actually product to show (in _open()). So even if the
 			// tooltip doesn't have full data, we always remove ui-tooltip-open in case we're in
 			// the period between open() and _open().
 			target.removeData( "ui-tooltip-open" );
@@ -18618,8 +18617,8 @@ $.widget( "ui.tooltip", {
 			content = $( "<div>" ).appendTo( tooltip ),
 			id = tooltip.uniqueId().attr( "id" );
 
-		this._addClass( content, "ui-tooltip-content" );
-		this._addClass( tooltip, "ui-tooltip", "ui-widget ui-widget-content" );
+		this._addClass( content, "ui-tooltip-product" );
+		this._addClass( tooltip, "ui-tooltip", "ui-widget ui-widget-product" );
 
 		tooltip.appendTo( this._appendTo( element ) );
 

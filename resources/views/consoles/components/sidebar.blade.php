@@ -6,7 +6,7 @@
             <!--所在的類別li要加上class="active"-->
             <li id="side-home"><a href="#"><i class="fas fa-home"></i>首頁管理</a><span>more</span>
                 <ul class="dropdown" id="HomeManage">
-                    <li><a href="#">首頁主圖管理</a></li>
+                    <li><a href="{{ route('homeImage.index') }}">首頁主圖管理</a></li>
                 </ul>
             </li>
             <li id="side-unit"><a href="#"><i class="fas fa-image"></i>單元主圖管理</a><span>more</span>
@@ -17,9 +17,9 @@
             <li id="side-product" class="active">
                 <a href="#"><i class="fas fa-shopping-cart"></i>商品管理</a><span>more</span>
                 <ul class="dropdown" id="product-manage">
-                    <li><a href="{{ route('product.content.index') }}">內容管理</a></li>
-                    <li><a href="{{ route('product.type.index') }}">類別管理</a></li>
-                    <li><a href="{{ route('product.notices.index') }}">貼心提醒管理</a></li>
+                    <li><a href="{{ route('merchandise.product.index') }}">內容管理</a></li>
+                    <li><a href="{{ route('merchandise.productType.index') }}">類別管理</a></li>
+                    <li><a href="{{ route('merchandise.notices.index') }}">貼心提醒管理</a></li>
                 </ul>
             </li>
             <li id="side-news"><a href="#"><i class="fas fa-newspaper"></i>新聞管理</a><span>more</span>

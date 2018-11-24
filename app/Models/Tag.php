@@ -12,7 +12,7 @@ namespace App\Models;
 use Eloquent;
 
 /**
- * @property mixed $products
+ * @property mixed $merchandise
  * @property mixed $shops
  */
 class Tag extends Eloquent

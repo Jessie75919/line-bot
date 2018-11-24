@@ -24,7 +24,7 @@ class ProductControllerTest extends ApiTester
     {
         $this->times(5)->make('App\Models\Product');
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
-        $response = $this->getJson('api/v1/products');
+        $response = $this->getJson('api/v1/merchandise');
         $response->assertStatus(200);
     }
 
@@ -32,7 +32,7 @@ class ProductControllerTest extends ApiTester
     /** @test */
     public function it_should_404_if_a_product_not_found()
     {
-        $response = $this->getJson('api/v1/products/xx');
+        $response = $this->getJson('api/v1/merchandise/xx');
         $response->assertStatus(404);
 
     }
@@ -43,7 +43,7 @@ class ProductControllerTest extends ApiTester
     {
         $this->times(5)->make('App\Models\Product');
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
-        $this->getJson('api/v1/products/1')
+        $this->getJson('api/v1/merchandise/1')
              ->assertStatus(200)
              ->assertJsonStructure(
                  [
@@ -60,7 +60,7 @@ class ProductControllerTest extends ApiTester
     /** @test */
     public function it_creates_a_new_product_given_valid_parameters()
     {
-        $this->postJson("api/v1/products", $this->getStub())
+        $this->postJson("api/v1/merchandise", $this->getStub())
              ->assertSuccessful()
              ->assertJsonStructure(['message']);
 
@@ -69,7 +69,7 @@ class ProductControllerTest extends ApiTester
 
     public function user_can_update_a_product_with_given_valid_parameters()
     {
-        $response = $this->putJson("api/v1/products/1", $this->getStub())
+        $response = $this->putJson("api/v1/merchandise/1", $this->getStub())
                          ->assertSuccessful()
                          ->assertJsonStructure(['message']);
 
@@ -79,13 +79,13 @@ class ProductControllerTest extends ApiTester
     /** @test */
     public function user_can_delete_a_product_with_id()
     {
-        $response = $this->postJson("api/v1/products", $this->getStub())
+        $response = $this->postJson("api/v1/merchandise", $this->getStub())
                          ->assertSuccessful()
                          ->assertJsonStructure(['message']);
 
-        $productId = DB::table('products')->max('id');
+        $productId = DB::table('merchandise')->max('id');
 
-        $response = $this->deleteJson("api/v1/products/{$productId}")
+        $response = $this->deleteJson("api/v1/merchandise/{$productId}")
                          ->assertSuccessful()
                          ->assertJsonStructure(['message']);
 

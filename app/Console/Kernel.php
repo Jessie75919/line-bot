@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\BodyTemperatureDocsGenerator;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
 use Illuminate\Console\Scheduling\Schedule;
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         UrlSpider::class,
-        MailTest::class
+        MailTest::class,
+        BodyTemperatureDocsGenerator::class
     ];
 
     /**

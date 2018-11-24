@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $created_at
  * @property int            $id
  * @property \Carbon\Carbon $updated_at
- * @property mixed          $products
+ * @property mixed          $merchandise
  * @property mixed          $product_type
  */
 class ProductSubType extends Model

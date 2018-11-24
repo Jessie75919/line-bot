@@ -126,7 +126,7 @@ table {
   position: relative;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  /*&:after {content: '';clear: both;display: block;}*/
+  /*&:after {product: '';clear: both;display: block;}*/
 }
 
 html {

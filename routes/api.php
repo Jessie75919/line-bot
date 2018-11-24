@@ -22,15 +22,13 @@ Route::post('user/send_reset_pw_email', 'Api\ApiUserController@sendResetPassword
 
 Route::group(['middleware' => ['sanitize']], function () {
     /* Product API */
-	Route::resource('products/content/', 'Api\ApiProductController');
-	Route::get('products/content/status_switch/{product}', 'Api\ApiProductController@statusSwitch');
-	Route::post('products/content/update_order', 'Api\ApiProductController@updateOrder');
-	Route::post('products/content/multi_delete', 'Api\ApiProductController@multiDelete');
+	Route::resource('merchandise/product/', 'Api\ApiProductController');
+	Route::post('merchandise/product/update_order', 'Api\ApiProductController@updateOrder');
+	Route::post('merchandise/product/multi_delete', 'Api\ApiProductController@multiDelete');
 
 	/* Type API */
-	Route::get('products/type/status_switch/{productType}', 'Api\ApiProductTypeController@statusSwitch');
-	Route::post('products/type/update_order', 'Api\ApiProductTypeController@updateOrder');
-	Route::post('products/type/multi_delete', 'Api\ApiProductTypeController@multiDelete');
+	Route::post('merchandise/productType/update_order', 'Api\ApiProductTypeController@updateOrder');
+	Route::post('merchandise/productType/multi_delete', 'Api\ApiProductTypeController@multiDelete');
 
 
 	/* ProductImage */
@@ -44,7 +42,18 @@ Route::group(['middleware' => ['sanitize']], function () {
 	Route::delete('tag/product/{product}', 'Api\TagsController@detachTag');
 	Route::delete('tag/{tag}', 'Api\TagsController@destroy');
 	Route::put('tag/{tag}', 'Api\TagsController@update');
+
+
+	/* Common Action */
+    Route::post('action/status_switch', 'Api\ApiCommonActionController@statusSwitch');
+    Route::post('action/update_order', 'Api\ApiCommonActionController@updateOrder');
+
+
+    /* Body Temperature */
+    Route::post('body_temperature/update', 'Api\ApiBodyTemperatureController@update');
+
+
 });
 //Route::resource('tags', 'Api\TagsController', ['only' => ['index', 'show']]);
 
-Route::get('products/{id}/tags', 'Api\TagsController@index');
+Route::get('merchandise/{id}/tags', 'Api\TagsController@index');

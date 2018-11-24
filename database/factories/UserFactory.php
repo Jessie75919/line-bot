@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\BodyTemperature\BodyTemperature;
+use App\Models\HomeImage;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -11,6 +13,7 @@ use App\Models\SaleChannel;
 use App\Models\Shop;
 use App\Models\Tag;
 use App\Models\User;
+use App\Utilities\HashTools;
 use Faker\Generator as Faker;
 
 /*
@@ -28,11 +31,12 @@ $factory->define(Shop::class, function (Faker $faker) {
     $sn = Shop::all()->max('id') + 1;
     return [
         'name'         => $faker->company,
-        'shop_sn'      => 'HM' . sprintf('%08s', $sn) ,
+        'shop_sn'      => 'HM' . sprintf('%08s', $sn),
         'email'        => $faker->email,
         'password'     => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'phone'        => $faker->phoneNumber,
         'address'      => $faker->address,
+        'notice'       => $faker->paragraph,
         'line_channel' => $faker->uuid,
     ];
 });
@@ -54,12 +58,12 @@ $factory->define(User::class, function (Faker $faker) {
 
 $factory->define(ProductType::class, function (Faker $faker) {
     return [
-        'name'    => $faker->word,
-        'shop_id' => function () {
+        'name'      => $faker->word,
+        'shop_id'   => function () {
             return Shop::all()->random(1)[0]->id;
         },
-        'is_launch'   => 1,
-        'order'   => $faker->randomDigit
+        'is_launch' => 1,
+        'order'     => $faker->randomDigit
     ];
 });
 
@@ -73,6 +77,22 @@ $factory->define(ProductSubType::class, function (Faker $faker) {
             return ProductType::all()->random(1)[0]->id;
         },
         'order'           => $faker->randomDigit
+    ];
+});
+
+
+$factory->define(HomeImage::class, function (Faker $faker) {
+    $name = $faker->word;
+    return [
+        'shop_id'   => function () {
+            return Shop::all()->random(1)[0]->id;
+        },
+        'name'      => $name,
+        'order'     => $faker->randomDigit,
+        'is_launch' => $faker->randomElement([0, 1]),
+        'file_name' => "homeImage_" . HashTools::generateHash(),
+        'image_url' => $faker->imageUrl(),
+        'link'      => $faker->imageUrl(),
     ];
 });
 
@@ -128,7 +148,7 @@ $factory->define(ProductImage::class, function (Faker $faker) {
     return [
         'product_id' => $product->id,
         'image_url'  => $faker->imageUrl(),
-        'type'   => $category,
+        'type'       => $category,
         'file_name'  => "{$category}_" . md5(uniqid(rand(), true)),
         'order'      => $faker->randomNumber(1),
         'status'     => $faker->randomElement([0, 1]),
@@ -166,5 +186,16 @@ $factory->define(Tag::class, function (Faker $faker) {
     return [
         'name'    => $faker->word,
         'shop_id' => Shop::all()->random(1)[0]->id,
+    ];
+});
+
+
+/* Body Temperature */
+$factory->define(BodyTemperature::class, function (Faker $faker) {
+    return [
+        'month'       => Carbon\Carbon::now()->month,
+        'day'         => 1,
+        'temperature' => $faker->randomFloat($nbMaxDecimals = 2, $min = 36, $max = 37.5),
+        'is_period'   => $faker->randomElement([0, 1]),
     ];
 });

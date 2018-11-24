@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 
 class MailTest extends Command
 {
@@ -38,9 +37,12 @@ class MailTest extends Command
      */
     public function handle()
     {
-        Mail::raw('test', function ($message) {
-            $message->subject('This is Test')->to('jessie75919@gmail.com');
-        });
+//        Mail::raw('test', function ($message) {
+//            $message->subject('This is Test')->to('jessie75919@gmail.com');
+//        });
+
+
+
 
     }
 }

@@ -4,7 +4,7 @@
     @parent
 @endsection
 
-@section('content')
+@section('product')
 
 
 

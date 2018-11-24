@@ -3,19 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Repository\Pos\UserRepository;
 use App\Services\JWTService;
-use App\Utilities\ValidationTools;
-use function dd;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use function redirect;
-use function route;
 use Session;
+use function redirect;
 
 class LoginController extends Controller
 {
@@ -37,7 +33,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/product/content';
+    protected $redirectTo = '/product/product';
 
     /**
      * Create a new controller instance.

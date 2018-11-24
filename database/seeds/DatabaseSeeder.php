@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         $this->call(CreateRandomDatabase::class);
+//         $this->call(CreateRandomDatabase::class);
+         $this->call(MakeBodyTemperatureData::class);
     }
 }

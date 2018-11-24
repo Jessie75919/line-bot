@@ -2,13 +2,10 @@
 
 namespace App\Console\Commands;
 
-use function dd;
-use GuzzleHttp\Pool;
-use Illuminate\Console\Command;
 use Goutte\Client as GoutteClient;
 use GuzzleHttp\Client as GuzzleClient;
-use Illuminate\Support\Facades\Storage;
-use function print_r;
+use GuzzleHttp\Pool;
+use Illuminate\Console\Command;
 use function trim;
 
 class UrlSpider extends Command
@@ -79,8 +76,8 @@ class UrlSpider extends Command
 //                        $carwler = $client->request('GET', $link);       //进入文章
 
 //                        $this->comment($carwler->filter('public')->first()->text());
-//                        $content = $carwler->filter('#emojify')->first()->text();     //获取内容
-//                        Storage::disk('local')->put($title, $content);           //储存在本地
+//                        $product = $carwler->filter('#emojify')->first()->text();     //获取内容
+//                        Storage::disk('local')->put($title, $product);           //储存在本地
 //                    }
                 });
             },

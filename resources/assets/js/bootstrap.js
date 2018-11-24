@@ -34,7 +34,8 @@ try {
 window.axios = require('axios');
 window.Dropzone = require('dropzone');
 window.Sortable = require('sortablejs');
-
+window.Vue      = require('vue');
+window.moment   = require('moment');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 

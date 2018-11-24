@@ -3,25 +3,29 @@ $(function(){
     /* 上架狀態切換 */
     $('.launch_status').on('change', function(){
         let section = $(this).attr('data-section');
-        httpGetWithId(`${section}/status_switch`, $(this).val());
+
+        axios.post('/api/v1/action/status_switch', {
+            entity : $(this).attr('data-section'),
+            id     : $(this).val()
+        });
     });
 
 
     /* 更新排序 */
     $('#update_order').on('click', function(){
         let section     = $(this).attr('data-section');
-        let UpdateItems = $('.order').toArray();
-        let data        = {
-            data : UpdateItems.map(item =>{
+        let updateItems = $('.order').toArray();
+
+        axios.post('/api/v1/action/update_order', {
+            entity : $(this).attr('data-section'),
+            orders : updateItems.map(item =>{
                 return {id : item.id, order : item.value};
             })
-        };
-
-        httpPostWithData(`${section}/update_order`, data, function(data, textStatus, jqXHR){
+        }).then(() => {
             swal("排序更新成功！", {
                 icon : "success",
             }).then(res =>{
-                window.location.replace(`/product/${section}`);
+                window.location.replace(`/merchandise/${section}`);
             });
         });
     });
@@ -66,7 +70,7 @@ $(function(){
                         swal("類別刪除成功！", {
                             icon : "success",
                         }).then(res =>{
-                            window.location.replace(`/product/${section}`);
+                            window.location.replace(`/merchandise/${section}`);
                         });
                     }
                 );

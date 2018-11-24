@@ -25,7 +25,7 @@
     <h1>OK</h1>
     {{--<navbar></navbar>--}}
     {{--<div class="container">--}}
-        {{--<products></products>--}}
+        {{--<merchandise></merchandise>--}}
     {{--</div>--}}
 </div>
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $created_at
  * @property int            $id
  * @property \Carbon\Carbon $updated_at
- * @property mixed          $products
+ * @property mixed          $merchandise
  * @property mixed          $shop
  * @property mixed          $product_sub_type
  */
@@ -22,7 +22,7 @@ class ProductType extends Model
 
     public function pathUrl()
     {
-        return "/product/type/{$this->id}";
+        return "/merchandise/productType/{$this->id}";
     }
 
 

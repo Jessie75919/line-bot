@@ -11,12 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $created_at
  * @property int            $id
  * @property \Carbon\Carbon $updated_at
- * @property mixed          $products
+ * @property mixed          $merchandise
  * @property mixed          $product_types
  * @property mixed          $sale_channels
  * @property mixed          $users
  * @property mixed          $tags
  * @property mixed          $product_images
+ * @property mixed          $home_images
  */
 class Shop extends Model
 {
@@ -65,5 +66,10 @@ class Shop extends Model
     public function getRepository()
     {
         return new ShopRepository($this);
+    }
+
+    public function homeImages()
+    {
+        return $this->hasMany('App\Models\HomeImage');
     }
 }

@@ -423,7 +423,7 @@ var Dropzone = function(_Emitter){
                     /**
                      * This is the element the hidden input field (which is used when clicking on the
                      * dropzone to trigger file selection) will be appended to. This might
-                     * be important in case you use frameworks to switch the content of your page.
+                     * be important in case you use frameworks to switch the product of your page.
                      *
                      * Can be a selector string, or an element directly.
                      */
@@ -2781,7 +2781,7 @@ var Dropzone = function(_Emitter){
                 if(xhr.responseType !== 'arraybuffer' && xhr.responseType !== 'blob') {
                     response = xhr.responseText;
 
-                    if(xhr.getResponseHeader("content-type") && ~xhr.getResponseHeader("content-type").indexOf("application/json")) {
+                    if(xhr.getResponseHeader("product-type") && ~xhr.getResponseHeader("product-type").indexOf("application/json")) {
                         try {
                             response = JSON.parse(response);
                         } catch(error) {
@@ -3080,7 +3080,7 @@ Dropzone.isBrowserSupported = function(){
 
                 if(regex.test(navigator.userAgent)) {
                     capableBrowser = false;
-                    continue;
+
                 }
             }
         }

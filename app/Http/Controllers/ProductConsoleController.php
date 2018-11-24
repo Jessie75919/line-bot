@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Repository\Pos\ProductCountRepository;
-use App\Repository\Pos\ProductImageRepository;
 use App\Repository\Pos\ProductRepository;
 use App\Repository\Pos\ProductTypeRepository;
 use App\Repository\Pos\TagRepository;
@@ -45,7 +44,7 @@ class ProductConsoleController extends Controller
         $productTypes = $shop->productTypes;
 
 
-        return view('consoles.products.content.index', compact('products', 'productTypes'));
+        return view('consoles.merchandise.product.index', compact('products', 'productTypes'));
     }
 
 
@@ -58,7 +57,7 @@ class ProductConsoleController extends Controller
         $productTypes = ProductTypeRepository::getProductTypesByShopId($shopId);
 
         return view(
-            'consoles.products.content.create',
+            'consoles.merchandise.product.create',
             compact('productTypes', 'shopId')
         );
     }
@@ -119,7 +118,7 @@ class ProductConsoleController extends Controller
     {
         $shopId       = $this->getShop('id');
         $productTypes = ProductTypeRepository::getProductTypesByShopId($shopId);
-        return view('consoles.products.content.edit', compact('product', 'productTypes', 'shopId'));
+        return view('consoles.merchandise.product.edit', compact('product', 'productTypes', 'shopId'));
     }
 
 
@@ -174,7 +173,7 @@ class ProductConsoleController extends Controller
             $productService = new ProductService($product);
             if ($productService->destroyProduct()) {
                 DB::commit();
-                return redirect('/product/content');
+                return redirect()->route('merchandise.product.index');
             }
 
             DB::rollBack();
@@ -194,7 +193,7 @@ class ProductConsoleController extends Controller
         $saleChannel = $product->shop->saleChannels->first();
         ProductCountRepository::createProductCount($cloneProduct->id, $saleChannel->id, 1);
 
-        return redirect('/product/content');
+        return redirect()->route('merchandise.product.index');
     }
 
 
@@ -215,7 +214,7 @@ class ProductConsoleController extends Controller
 
         $lastQueryString = $this->getQueryString($request);
 
-        return view('consoles.products.content.index',
+        return view('consoles.merchandise.product.index',
             compact(
                 'products',
                 'productTypes',

@@ -25,7 +25,7 @@
 
     @include('consoles.components.sidebar')
 
-    @yield('content')
+    @yield('product')
 
 </main>
 
