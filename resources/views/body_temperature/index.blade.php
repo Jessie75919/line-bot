@@ -26,6 +26,22 @@
         .mainColor {
             background-color: #ffc5cb;
         }
+
+        #temperature {
+            font-size: 35px;
+            height: 70px;
+        }
+
+        .main {
+            position: relative;
+        }
+
+        .update_popup {
+            position: absolute;
+            top: 15px;
+            left: 125px;
+            display: none;
+        }
     </style>
 
 </head>
@@ -85,26 +101,39 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body main">
             {{--體溫輸入--}}
             <h5 class="card-title">今日體溫</h5>
+            <div class="update_popup mainColor text-light rounded p-1">紀錄以更新</div>
             <div class="input-group mt-3">
                 <input type="number"
                        class="form-control form-control-lg"
                        id="temperature"
                        min="36"
                        max="37.5"
+                       @if(isset($temperature))
+                       value="{{ $temperature}}"
+                       @endif
                        aria-label="°C (with dot and two decimal places)">
                 <div class="input-group-append">
-                    <span class="input-group-text mainColor">°C</span>
+                    <span class="input-group-text mainColor"
+                          style="font-size:32px;">°C</span>
                 </div>
             </div>
         </div>
 
+        <input type="hidden"
+               id="user_id"
+               value="{{$user_id}}">
 
         <div class="card-footer mainColor">
             <input type="checkbox"
-                   class="js-switch"/> <span style="padding-left: 5px; font-size: 18px;">姨媽來了沒？</span>
+                   class="js-switch"
+                   id="is_period"
+                   @if(isset($is_period) && $is_period == 1)
+                   checked
+                    @endif
+            /> <span style="padding-left: 5px; font-size: 18px;">姨媽來了沒？</span>
         </div>
 
     </div>
@@ -115,10 +144,6 @@
 
 <!-- Scripts -->
 
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
         integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>
@@ -133,7 +158,7 @@
     var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
 
     elems.forEach(function(html){
-        var switchery = new Switchery(html);
+        var switchery = new Switchery(html,{ size: 'large' });
     });
 
     $(function(){
@@ -144,27 +169,43 @@
     });
 
     $("#datetimepicker1").on("change.datetimepicker", function(e){
-        console.log(e.date);
-        console.log($("#datetimepickerInput").val());
+
+        axios.post('/api/v1/body_temperature/query', {
+            date    : $("#datetimepickerInput").val(),
+            user_id : $("#user_id").val()
+        }).then(function(res){
+            let {data} = res.data;
+
+            $("#temperature").val(data.temperature);
+
+        });
     });
 
 
     $('.js-switch').on('change', function(){
-        axios.post('/api/v1/body_temperature/update', {
-            date             : $("#datetimepickerInput").val(),
-            body_temperature : $("#temperature").val(),
-            is_period        : $('.js-switch').is(":checked")
-        });
+        update();
     });
 
     $("#temperature").on('change', function(){
+        update();
+    });
+
+
+    function update(){
+
         axios.post('/api/v1/body_temperature/update', {
             date             : $("#datetimepickerInput").val(),
             body_temperature : $("#temperature").val(),
-            is_period        : $('.js-switch').is(":checked")
-        });
-    })
+            is_period        : $('.js-switch').is(":checked"),
+            user_id          : $("#user_id").val()
+        }).then(function(){
 
+            $(".update_popup").fadeIn();
+            setTimeout(function(){
+                $(".update_popup").fadeOut();
+            }, 1500)
+        });
+    }
 
 </script>
 </body>

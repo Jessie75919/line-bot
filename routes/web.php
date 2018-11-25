@@ -19,10 +19,8 @@ Auth::routes();
 Route::group(["middleware" => ["sanitize", "auth"]], function () {
 
 
-    Route::get('/body_temperature', function () {
-        $today = \App\Utilities\DateTools::today()->toDateString();
-        return view("body_temperature.index", compact('today'));
-    });
+    Route::get('/body_temperature', "BodyTemperatureController@index" );
+
 
 
 

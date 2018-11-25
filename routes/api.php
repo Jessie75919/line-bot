@@ -51,6 +51,7 @@ Route::group(['middleware' => ['sanitize']], function () {
 
     /* Body Temperature */
     Route::post('body_temperature/update', 'Api\ApiBodyTemperatureController@update');
+    Route::post('body_temperature/query', 'Api\ApiBodyTemperatureController@query');
 
 
 });

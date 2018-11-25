@@ -33,7 +33,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/product/product';
+    protected $redirectTo = '/body_temperature';
 
     /**
      * Create a new controller instance.

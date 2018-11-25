@@ -10,9 +10,24 @@ use function tap;
 
 class ApiBodyTemperatureController extends ApiController
 {
-    public function index()
+    public function query(Request $request)
     {
+        $date             = $request->date;
+        $dateArr          = explode('-', $request->date);
+        $user_id          = $request->user_id;
 
+        $bodyTemperature = BodyTemperatureRepo::getModelByDate($date);
+        if (!$bodyTemperature) {
+            $bodyTemperature = BodyTemperature::create([
+                'month'       => $dateArr[1],
+                'day'         => $dateArr[2],
+                'temperature' => 0,
+                'user_id'     => $user_id,
+                'is_period'   => 0
+            ]);
+        }
+
+        return $this->respondWithArray($bodyTemperature->toArray());
     }
 
 
@@ -22,6 +37,8 @@ class ApiBodyTemperatureController extends ApiController
         $dateArr          = explode('-', $request->date);
         $body_temperature = $request->body_temperature;
         $is_period        = $request->is_period;
+        $user_id          = $request->user_id;
+
 
         $bodyTemperature = BodyTemperatureRepo::getModelByDate($date);
         if (!$bodyTemperature) {
@@ -29,8 +46,10 @@ class ApiBodyTemperatureController extends ApiController
                 'month'       => $dateArr[1],
                 'day'         => $dateArr[2],
                 'temperature' => $body_temperature,
-                '$is_period'  => $is_period
+                'user_id'     => $user_id,
+                'is_period'   => $is_period
             ]);
+
             return $this->respondWithOKMessage("Done");
         }
 

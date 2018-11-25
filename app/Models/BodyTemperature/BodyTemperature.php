@@ -15,6 +15,7 @@ class BodyTemperature extends Model
         'month',
         'day',
         'temperature',
+        'user_id',
         'is_period'
     ];
 }
