@@ -14,28 +14,29 @@ use function explode;
 
 class BodyTemperatureRepo
 {
-    public static function getRangeData($begin, $end)
+    public static function getRangeData($begin, $end, $userId)
     {
-        $beginId = self::getIdByDate($begin);
-        $endId   = self::getIdByDate($end);
+        $beginId = self::getIdByDate($begin, $userId);
+        $endId   = self::getIdByDate($end, $userId);
 
         return BodyTemperature::whereBetween('id', [$beginId, $endId])->get();
     }
 
 
-    public static function getModelByDate($date)
+    public static function getModelByDate($date, $userId)
     {
         $dateArr = explode('-', $date);
 
         return BodyTemperature::where([
             ['month', $dateArr[1]],
             ['day', $dateArr[2]],
+            ['user_id', $userId],
         ])->first();
     }
 
 
-    private static function getIdByDate(string $date)
+    private static function getIdByDate(string $date, $userId)
     {
-        return self::getModelByDate($date)->id;
+        return self::getModelByDate($date, $userId)->id;
     }
 }

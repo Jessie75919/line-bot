@@ -11,8 +11,8 @@ class BodyTemperatureController extends Controller
     public function index()
     {
         $today           = DateTools::today()->toDateString();
-        $bodyTemperature = BodyTemperatureRepo::getModelByDate($today);
         $user            = Auth::user();
+        $bodyTemperature = BodyTemperatureRepo::getModelByDate($today, $user->id);
         $payload         = [];
 
 
