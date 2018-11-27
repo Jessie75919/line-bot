@@ -68,6 +68,7 @@ class BodyTemperatureDrawTemplate extends DrawPrintTemplate
 
     private function getY($temperature)
     {
+        $temperature = $temperature <= 36 ? 36 : $temperature;
         $diff         = $temperature - self::LOWEST_TEMPERATURE;
         $diffTimesTen = $diff * 10;
         $divCount     = $diffTimesTen % 10;

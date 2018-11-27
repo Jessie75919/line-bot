@@ -60,7 +60,7 @@ class BodyTemperatureRepo
 
         foreach ($dates as $date) {
 
-            $datePreviousTemperature = 36;
+            $datePreviousTemperature = 0;
 
             foreach (range(1, $date->daysInMonth) as $item) {
                 $dateAlready = self::getModelByMonthDay($date->month, $item, $userId);
