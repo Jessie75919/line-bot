@@ -33,6 +33,7 @@ mix.sass('resources/assets/sass/default.scss', 'public/css')
 mix.styles([
     'resources/assets/css/libs/fontawesome-all.min.css',
     'resources/assets/css/libs/switchery.css',
+    'node_modules/lightpick/css/lightpick.css',
     'resources/assets/css/libs/dropzone.css',
     'resources/assets/css/libs/jquery.tag-editor.css',
 ], 'public/css/vendor.css');

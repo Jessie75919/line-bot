@@ -31,7 +31,7 @@ class BodyTemperatureGenerator
     public function __construct($data)
     {
         $this->image    = imagecreatefrompng(storage_path('') . "/template/body_temperature/body_temperature.png");
-        $this->savePath = storage_path('') . "/app/file/body_temperature.png";
+        $this->savePath = storage_path('') . "/app/public/";
 
         $this->textPrinter = new TextPrinterService();
         $this->drawPrinter = new DrawPrinterService();
@@ -40,9 +40,11 @@ class BodyTemperatureGenerator
     }
 
 
-    public static function init($begin, $end)
+    public static function init($begin, $end, $userId)
     {
-        $data = BodyTemperatureRepo::getRangeData($begin, $end);
+        BodyTemperatureRepo::fillEmptyDataBetween($begin, $end, $userId);
+        $data = BodyTemperatureRepo::getRangeData($begin, $end, $userId);
+        
         return new static($data);
     }
 
@@ -68,5 +70,16 @@ class BodyTemperatureGenerator
     {
         ImageJPEG($this->image, $this->savePath);
         imagedestroy($this->image);
+    }
+
+
+    /**
+     * @param string $filename
+     * @return BodyTemperatureGenerator
+     */
+    public function setFilename(string $filename): BodyTemperatureGenerator
+    {
+        $this->savePath .=  "{$filename}" ;
+        return $this;
     }
 }

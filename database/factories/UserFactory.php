@@ -194,6 +194,7 @@ $factory->define(Tag::class, function (Faker $faker) {
 $factory->define(BodyTemperature::class, function (Faker $faker) {
     return [
         'month'       => Carbon\Carbon::now()->month,
+        'user_id' => 1,
         'day'         => 1,
         'temperature' => $faker->randomFloat($nbMaxDecimals = 2, $min = 36, $max = 37.5),
         'is_period'   => $faker->randomElement([0, 1]),

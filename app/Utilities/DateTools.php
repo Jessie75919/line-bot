@@ -46,9 +46,9 @@ class DateTools
     }
 
 
-    public static function createCarbonByDateStr($date): Carbon
+    public static function createCarbonByDateStr($date, $delimiter = '-'): Carbon
     {
-        $dateArr = explode('-', $date);
+        $dateArr = explode($delimiter, $date);
         return Carbon::createFromDate(
             $dateArr[0],
             $dateArr[1],
@@ -117,12 +117,14 @@ class DateTools
     }
 
 
-    public static function toChineseDate(string $date, $delimiter)
+    public static function toChineseDate(string $date, $delimiter , $afterDelimiter = ".")
     {
         $dateArr = explode($delimiter, $date);
-        return sprintf('%s.%s.%s',
+        return sprintf('%s%s%s%s%s',
             $chineseYear = self::toChineseYear($dateArr[0]),
+            $afterDelimiter,
             $dateArr[1],
+            $afterDelimiter,
             $dateArr[2]
         );
     }

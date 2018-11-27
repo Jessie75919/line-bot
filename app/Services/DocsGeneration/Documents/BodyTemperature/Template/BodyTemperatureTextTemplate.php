@@ -36,7 +36,6 @@ class BodyTemperatureTextTemplate extends TextPrintTemplate
     private function printYear()
     {
         $this->addSections(36, 998, 154, DateTools::thisLunarYear());
-
     }
 
 
@@ -46,21 +45,40 @@ class BodyTemperatureTextTemplate extends TextPrintTemplate
         $monthY  = 214;
         $dayY    = 263;
         $periodY = 1210;
+        $count = 0 ;
 
-        $this->data->each(function ($item, $key) use (
-            $spacing,
-            $monthY,
-            $dayY,
-            $periodY
-        ) {
-            $x = 874 + $key * $spacing;
+        foreach ($this->data as $item) {
+            $x = 874 + $count * $spacing;
+
             $this->addSections(30, $x, $monthY, $item->month);
             $this->addSections(30, $x, $dayY, $item->day);
+
             if ($item->is_period) {
                 $this->addSections(30, $x, $periodY, "○");
-                return;
             }
-        });
 
+            $count++;
+        }
+
+
+//        $this->data->each(function ($item, $key) use (
+//            $spacing,
+//            $monthY,
+//            $dayY,
+//            $count,
+//            $periodY
+//        ) {
+//
+//            $x = 874 + $count * $spacing;
+//
+//            $this->addSections(30, $x, $monthY, $item->month);
+//            $this->addSections(30, $x, $dayY, $item->day);
+//
+//            if ($item->is_period) {
+//                $this->addSections(30, $x, $periodY, "○");
+//            }
+//
+//            $count++;
+//        });
     }
 }

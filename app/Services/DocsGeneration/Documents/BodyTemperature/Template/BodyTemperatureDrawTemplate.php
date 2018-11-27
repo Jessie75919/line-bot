@@ -49,15 +49,17 @@ class BodyTemperatureDrawTemplate extends DrawPrintTemplate
     {
 
         $cords = [];
-        foreach ($this->data as $key => $item) {
-            $x       = $this->firstX + $key * $this->spacing;
+        $count = 0;
+
+        foreach ($this->data as $item) {
+            $x       = $this->firstX + $count * $this->spacing;
             $y       = $this->getY($item->temperature);
             $cords[] = ['x' => $x, 'y' => $y, 'temperature' => $item->temperature];
+            $count++;
         }
 
-
         for ($i = 1 ; $i < count($cords) ; $i++) {
-            print $cords[$i - 1]['temperature'] . " => " . $cords[$i - 1]['x'] . '|' . $cords[$i - 1]['y'] . '|' . $cords[$i]['x'] . '|' . $cords[$i]['y'] . PHP_EOL;
+
             $this->addSections(
                 $cords[$i - 1]['x'], $cords[$i - 1]['y'], $cords[$i]['x'], $cords[$i]['y'], 4);
         }

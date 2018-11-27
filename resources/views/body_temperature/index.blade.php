@@ -70,6 +70,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link"
+                   data-toggle="modal"
+                   data-target="#exampleModal"
                    href="#">產生紀錄表</a>
             </li>
         </ul>
@@ -133,9 +135,57 @@
                    @if(isset($is_period) && $is_period == 1)
                    checked
                     @endif
-            /> <span style="padding-left: 5px; font-size: 18px;">姨媽來了沒？</span>
+            />
+            <span style="padding-left: 5px; font-size: 18px;">姨媽來了沒？</span>
         </div>
 
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade"
+         id="exampleModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="exampleModalLabel">請選擇時間區段</h5>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="input-group">
+
+                            <input type="text"
+                                   id="start"
+                                   class="form-control form-control-lg">
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal">Close
+                    </button>
+                    <button type="button"
+                            id="generateImage"
+                            class="btn btn-primary">產生檔案
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -155,11 +205,14 @@
 
 <script>
 
-    var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
-
+    var elems     = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+    var switchery = null;
     elems.forEach(function(html){
-        var switchery = new Switchery(html,{ size: 'large' });
+        switchery = new Switchery(html, {size : 'large'});
     });
+
+
+    var beginDate, endDate;
 
     $(function(){
         $('#datetimepicker1').datetimepicker({
@@ -167,6 +220,14 @@
             locale : 'zh-tw',
         });
     });
+
+    function setSwitchery(switchElement, checkedBool){
+        if((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
+            switchElement.setPosition(true);
+            switchElement.handleOnchange(true);
+        }
+    }
+
 
     $("#datetimepicker1").on("change.datetimepicker", function(e){
 
@@ -177,7 +238,7 @@
             let {data} = res.data;
 
             $("#temperature").val(data.temperature);
-
+            setSwitchery(switchery, data.is_period);
         });
     });
 
@@ -192,7 +253,6 @@
 
 
     function update(){
-
         axios.post('/api/v1/body_temperature/update', {
             date             : $("#datetimepickerInput").val(),
             body_temperature : $("#temperature").val(),
@@ -206,6 +266,75 @@
             }, 1500)
         });
     }
+
+
+    $('#generateImage').on('click', function(){
+        swal({
+            title      : `確定要產生 ${beginDate} 到 ${endDate}區間的檔案嗎？`,
+            icon       : 'warning',
+            buttons    : true,
+            dangerMode : true,
+        }).then((ok) =>{
+            if(ok) {
+                generateImage();
+//                beginDate = endDate = null;
+            }
+        });
+
+    });
+
+    function generateImage(){
+
+        let data = {
+            begin        : beginDate,
+            end          : endDate,
+            user_id      : $("#user_id").val()
+        };
+
+        axios({
+            method       : 'post',
+            url          : '/api/v1/body_temperature/generateImage',
+            data         : JSON.stringify(data),
+            headers      : {
+                'Content-Type'  : 'application/json',
+            },
+            responseType : 'blob', // important
+        }).then(function(res){
+
+            const url  = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href  = url;
+            link.setAttribute('download', `${beginDate}-${endDate}_體溫表.png`);
+            document.body.appendChild(link);
+            link.click();
+            window.URL.revokeObjectURL(url);
+        });
+    }
+
+
+    var picker = new Lightpick({
+        field           : document.getElementById('start'),
+        singleDate      : false,
+        numberOfMonths  : 3,
+        numberOfColumns : 1,
+        maxDays         : 50,
+        selectForward   : false,
+        orientation     : 'bottom',
+        format          : 'YYYY/MM/DD',
+        onSelect        : function(start, end){
+            if(!start || !end) {
+                return false;
+            }
+
+            beginDate = start.format("YYYY/MM/DD");
+            endDate   = end.format("YYYY/MM/DD");
+
+            let diffInDays = end.diff(start, 'day');
+            console.log(start.format("YYYY/MM/DD"), end.format("YYYY/MM/DD"), diffInDays);
+        },
+
+    });
+
 
 </script>
 </body>
