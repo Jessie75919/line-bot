@@ -66,6 +66,13 @@ class ApiBodyTemperatureController extends ApiController
     }
 
 
+    public function delete(Request $request)
+    {
+        if (Storage::disk('public')->exists($request->filename)) {
+            Storage::disk('public')->delete($request->filename);
+        }
+    }
+
     public function generateImage(Request $request)
     {
 

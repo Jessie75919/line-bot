@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class BodyTemperature extends Model
 {
     protected $fillable = [
+        'year',
         'month',
         'day',
         'temperature',

@@ -52,23 +52,27 @@ class BodyTemperatureDrawTemplate extends DrawPrintTemplate
         $count = 0;
 
         foreach ($this->data as $item) {
-            $x       = $this->firstX + $count * $this->spacing;
-            $y       = $this->getY($item->temperature);
-            $cords[] = ['x' => $x, 'y' => $y, 'temperature' => $item->temperature];
+            $x = $this->firstX + $count * $this->spacing;
+
+            if ($item->temperature >= 36) {
+                $y       = $this->getY($item->temperature);
+                $cords[] = ['x' => $x, 'y' => $y, 'temperature' => $item->temperature];
+            }
             $count++;
         }
 
-        for ($i = 1 ; $i < count($cords) ; $i++) {
 
+        for ($i = 1 ; $i < count($cords) ; $i++) {
             $this->addSections(
                 $cords[$i - 1]['x'], $cords[$i - 1]['y'], $cords[$i]['x'], $cords[$i]['y'], 4);
         }
+
     }
 
 
     private function getY($temperature)
     {
-        $temperature = $temperature <= 36 ? 36 : $temperature;
+
         $diff         = $temperature - self::LOWEST_TEMPERATURE;
         $diffTimesTen = $diff * 10;
         $divCount     = $diffTimesTen % 10;

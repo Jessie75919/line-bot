@@ -19,12 +19,13 @@ class BodyTemperatureRepo
     {
         $sortData =
             BodyTemperature::where('user_id', $userId)
+                           ->orderBy('year', 'asc')
                            ->orderBy('month', 'asc')
                            ->orderBy('day', 'asc')->get();
 
-        $year = DateTools::thisYear();
 
-        return $sortData->filter(function ($item) use ($begin, $end, $year) {
+        return $sortData->filter(function ($item) use ($begin, $end) {
+            $year = $item->year + 1911;
             $date = DateTools::createCarbonByDateStr("{$year}-{$item->month}-{$item->day}");
             return $date->between($begin, $end);
         });
@@ -37,6 +38,7 @@ class BodyTemperatureRepo
         $dateArr = explode($delimiter, $date);
 
         return BodyTemperature::where([
+            ['year', $dateArr[0]],
             ['month', $dateArr[1]],
             ['day', $dateArr[2]],
             ['user_id', $userId],
@@ -44,9 +46,10 @@ class BodyTemperatureRepo
     }
 
 
-    public static function getModelByMonthDay($month, $day, $userId)
+    public static function getModelByMonthDay($year, $month, $day, $userId)
     {
         return BodyTemperature::where([
+            ['year', $year],
             ['month', $month],
             ['day', $day],
             ['user_id', $userId],
@@ -63,11 +66,13 @@ class BodyTemperatureRepo
             $datePreviousTemperature = 0;
 
             foreach (range(1, $date->daysInMonth) as $item) {
-                $dateAlready = self::getModelByMonthDay($date->month, $item, $userId);
+                $dateAlready = self::getModelByMonthDay(
+                    $date->year - 1911, $date->month, $item, $userId);
 
                 if (!$dateAlready) {
                     BodyTemperature::create([
                         'user_id'     => $userId,
+                        'year'       => $date->year - 1911,
                         'month'       => $date->month,
                         'day'         => $item,
                         'temperature' => $datePreviousTemperature

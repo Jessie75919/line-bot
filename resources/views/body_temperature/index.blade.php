@@ -304,12 +304,19 @@
             let {url} = res.data.data;
 
             swal({
-                title  : "你的紀錄表已經完成囉！",
-                text   : `${beginDate} 到 ${endDate}`,
+                title  : `你的${beginDate} 到 ${endDate} 體溫紀錄表已經完成囉！`,
+                text   : `連結將在3分鐘內刪除`,
                 icon   : "success",
                 button : "查看紀錄表",
             }).then((ok) =>{
                 if(ok) {
+                    
+                    let urlSplit = url.split('/');
+                    let filename = urlSplit[urlSplit.length - 1];
+                    setTimeout(() =>{
+                        axios.post('/api/v1/body_temperature/delete', {filename});
+                    }, 180000);
+
                     window.open(url, '_blank');
                 }
             });
