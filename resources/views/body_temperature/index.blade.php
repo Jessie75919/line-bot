@@ -71,7 +71,7 @@
             <li class="nav-item">
                 <a class="nav-link"
                    data-toggle="modal"
-                   data-target="#exampleModal"
+                   data-target="#dateRangePicker"
                    href="#">產生紀錄表</a>
             </li>
         </ul>
@@ -144,7 +144,7 @@
 
     <!-- Modal -->
     <div class="modal fade"
-         id="exampleModal"
+         id="dateRangePicker"
          tabindex="-1"
          role="dialog"
          aria-labelledby="exampleModalLabel"
@@ -277,7 +277,8 @@
         }).then((ok) =>{
             if(ok) {
                 generateImage();
-//                beginDate = endDate = null;
+                $('#dateRangePicker').modal('hide');
+                beginDate = endDate = null;
             }
         });
 
@@ -286,28 +287,33 @@
     function generateImage(){
 
         let data = {
-            begin        : beginDate,
-            end          : endDate,
-            user_id      : $("#user_id").val()
+            begin   : beginDate,
+            end     : endDate,
+            user_id : $("#user_id").val()
         };
 
         axios({
-            method       : 'post',
-            url          : '/api/v1/body_temperature/generateImage',
-            data         : JSON.stringify(data),
-            headers      : {
-                'Content-Type'  : 'application/json',
+            method  : 'post',
+            url     : '/api/v1/body_temperature/generateImage',
+            data    : JSON.stringify(data),
+            headers : {
+                'Content-Type' : 'application/json',
             },
-            responseType : 'blob', // important
+
         }).then(function(res){
 
-            const url  = window.URL.createObjectURL(new Blob([res.data]));
-            const link = document.createElement('a');
-            link.href  = url;
-            link.setAttribute('download', `${beginDate}-${endDate}_體溫表.png`);
-            document.body.appendChild(link);
-            link.click();
-            window.URL.revokeObjectURL(url);
+            let {url} = res.data.data;
+
+            swal({
+                title  : "你的紀錄表已經完成囉！",
+                text   : `${beginDate} 到 ${endDate}`,
+                icon   : "success",
+                button : "查看紀錄表",
+            }).then((ok) =>{
+                if(ok) {
+                    window.open(url, '_blank');
+                }
+            });
         });
     }
 

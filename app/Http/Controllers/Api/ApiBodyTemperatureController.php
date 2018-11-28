@@ -8,8 +8,8 @@ use App\Repository\BodyTemperature\BodyTemperatureRepo;
 use App\Services\DocsGeneration\Documents\BodyTemperature\Generator\BodyTemperatureGenerator;
 use App\Utilities\DateTools;
 use Illuminate\Http\Request;
+use Storage;
 use function explode;
-use function storage_path;
 use function tap;
 
 class ApiBodyTemperatureController extends ApiController
@@ -77,14 +77,18 @@ class ApiBodyTemperatureController extends ApiController
 
         $generator = BodyTemperatureGenerator::init($begin, $end, $userId);
 
-        $filename  = "{$begin}_{$end}_{$user->name}_body_temperature.png";
+        $filename  = "{$begin->toDateString()}_{$end->toDateString()}_{$user->name}_body_temperature.png";
 
         $generator->setFilename($filename)
                   ->printData()
                   ->save();
 
-        return response()
-            ->download(storage_path("app/public/{$filename}"), $filename);
+        return $this->respondWithArray(['url' => url(Storage::url($filename))]);
+
+
+
+//        return response()
+//            ->download(storage_path("app/public/{$filename}"), $filename);
 //            ->deleteFileAfterSend(true);
     }
 }
