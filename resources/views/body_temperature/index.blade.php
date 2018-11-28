@@ -278,7 +278,6 @@
             if(ok) {
                 generateImage();
                 $('#dateRangePicker').modal('hide');
-                beginDate = endDate = null;
             }
         });
 
