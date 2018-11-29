@@ -10,13 +10,14 @@ class BodyTemperatureController extends Controller
 {
     public function index()
     {
-        $today           = DateTools::getChineseDateStr();
+        $today           = DateTools::today();
         $user            = Auth::user();
         $bodyTemperature = BodyTemperatureRepo::getModelByDate($today, $user->id);
-        $payload         = [];
+
+        $payload = [];
 
 
-        $payload['today']   = DateTools::today();
+        $payload['today']   = $today;
         $payload['user_id'] = $user->id;
 
         if ($bodyTemperature) {

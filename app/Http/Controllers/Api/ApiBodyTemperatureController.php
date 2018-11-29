@@ -20,9 +20,11 @@ class ApiBodyTemperatureController extends ApiController
         $dateArr = explode('-', $request->date);
         $user_id = $request->user_id;
 
+
         $bodyTemperature = BodyTemperatureRepo::getModelByDate($date, $user_id);
         if (!$bodyTemperature) {
             $bodyTemperature = BodyTemperature::create([
+                'year'        => $dateArr[0] - 1911,
                 'month'       => $dateArr[1],
                 'day'         => $dateArr[2],
                 'temperature' => 0,
@@ -47,6 +49,7 @@ class ApiBodyTemperatureController extends ApiController
         $bodyTemperature = BodyTemperatureRepo::getModelByDate($date, $user_id);
         if (!$bodyTemperature) {
             BodyTemperature::create([
+                'year'        => $dateArr[0] - 1911,
                 'month'       => $dateArr[1],
                 'day'         => $dateArr[2],
                 'temperature' => $body_temperature,

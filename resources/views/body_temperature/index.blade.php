@@ -113,9 +113,6 @@
                        id="temperature"
                        min="36"
                        max="37.5"
-                       @if(isset($temperature))
-                       value="{{ $temperature}}"
-                       @endif
                        aria-label="°C (with dot and two decimal places)">
                 <div class="input-group-append">
                     <span class="input-group-text mainColor"
@@ -132,9 +129,6 @@
             <input type="checkbox"
                    class="js-switch"
                    id="is_period"
-                   @if(isset($is_period) && $is_period == 1)
-                   checked
-                    @endif
             />
             <span style="padding-left: 5px; font-size: 18px;">姨媽來了沒？</span>
         </div>
@@ -324,7 +318,7 @@
             let {status} = err.response;
             if(status === 404){
                 swal({
-                    title  : `你的 ${beginDate} 到 ${endDate} 區間內沒有找到任何資料喔！`,
+                    title  : `你的 ${beginDate} 到 ${endDate} 區間的資料不足無法產生紀錄表喔！`,
                     text   : "",
                     icon   : "error",
                     button : "OK",

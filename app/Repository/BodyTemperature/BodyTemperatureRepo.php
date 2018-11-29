@@ -38,7 +38,7 @@ class BodyTemperatureRepo
         $dateArr = explode($delimiter, $date);
 
         return BodyTemperature::where([
-            ['year', $dateArr[0]],
+            ['year', $dateArr[0] - 1911 ] ,
             ['month', $dateArr[1]],
             ['day', $dateArr[2]],
             ['user_id', $userId],
@@ -84,8 +84,4 @@ class BodyTemperatureRepo
     }
 
 
-    private static function getIdByDate(string $date, $userId)
-    {
-        return self::getModelByDate($date, $userId)->id;
-    }
 }
