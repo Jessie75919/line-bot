@@ -92,10 +92,5 @@ class ApiBodyTemperatureController extends ApiController
 
         return $this->respondWithArray(['url' => url(Storage::url($filename))]);
 
-
-
-//        return response()
-//            ->download(storage_path("app/public/{$filename}"), $filename);
-//            ->deleteFileAfterSend(true);
     }
 }
