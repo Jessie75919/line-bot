@@ -320,7 +320,17 @@
                     window.open(url, '_blank');
                 }
             });
-        });
+        }).catch(err => {
+            let {status} = err.response;
+            if(status === 404){
+                swal({
+                    title  : `你的 ${beginDate} 到 ${endDate} 區間內沒有找到任何資料喔！`,
+                    text   : "",
+                    icon   : "error",
+                    button : "OK",
+                });
+            }
+        })
     }
 
 

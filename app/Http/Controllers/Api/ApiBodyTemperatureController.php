@@ -73,6 +73,7 @@ class ApiBodyTemperatureController extends ApiController
         }
     }
 
+
     public function generateImage(Request $request)
     {
 
@@ -84,13 +85,22 @@ class ApiBodyTemperatureController extends ApiController
 
         $generator = BodyTemperatureGenerator::init($begin, $end, $userId);
 
-        $filename  = "{$begin->toDateString()}_{$end->toDateString()}_{$user->name}_body_temperature.png";
+        $filename = "{$begin->toDateString()}_{$end->toDateString()}_{$user->name}_body_temperature.png";
 
-        $generator->setFilename($filename)
-                  ->printData()
-                  ->save();
 
-        return $this->respondWithArray(['url' => url(Storage::url($filename))]);
+        try {
+
+            $generator->setFilename($filename)
+                      ->printData()
+                      ->save();
+
+            return $this->respondWithArray(['url' => url(Storage::url($filename))]);
+
+        } catch (\Exception $e) {
+
+            return $this->errorNotFound("[Error] No Data");
+        }
+
 
     }
 }

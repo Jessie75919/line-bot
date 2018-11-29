@@ -71,7 +71,7 @@ class BodyTemperatureRepo
                 if (!$dateAlready) {
                     BodyTemperature::create([
                         'user_id'     => $userId,
-                        'year'       => $date->year - 1911,
+                        'year'        => $date->year - 1911,
                         'month'       => $date->month,
                         'day'         => $item,
                         'temperature' => 0

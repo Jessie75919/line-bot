@@ -30,6 +30,10 @@ class TextPrinterService extends PrinterService
     {
         $this->color = ImageColorAllocate($this->image, 52, 115, 195);
 
+        if(is_null($this->template->sections)){
+            throw new \Exception("No Data !!");
+        }
+
         foreach ($this->template->sections as $section) {
             $this->imagettftextSp(
                 $this->image, $section->fontSize, 0, $section->x, $section->y, $this->color, $this->font,

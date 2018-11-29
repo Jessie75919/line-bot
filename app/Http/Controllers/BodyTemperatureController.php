@@ -16,7 +16,7 @@ class BodyTemperatureController extends Controller
         $payload         = [];
 
 
-        $payload['today']   = $today;
+        $payload['today']   = DateTools::today();
         $payload['user_id'] = $user->id;
 
         if ($bodyTemperature) {

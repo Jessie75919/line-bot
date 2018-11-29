@@ -9,6 +9,8 @@
 namespace App\Services\DocsGeneration\Printer;
 
 
+use function is_null;
+
 class DrawPrinterService extends PrinterService
 {
 
@@ -43,6 +45,10 @@ class DrawPrinterService extends PrinterService
     public function printTemplate()
     {
         $this->color = ImageColorAllocate($this->image, 52, 115, 195);
+
+        if(is_null($this->template->sections)){
+            throw new \Exception("No Data !!");
+        }
 
         foreach ($this->template->sections as $section) {
             $this->imageLineThick(
