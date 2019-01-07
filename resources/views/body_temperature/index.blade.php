@@ -14,7 +14,7 @@
           crossorigin="anonymous">
     <meta name="csrf-token"
           content="{{ csrf_token() }}">
-    <script>window.Laravel = {csrfToken : "{{ csrf_token() }}"};  </script>
+    <script>window.Laravel = { csrfToken: "{{ csrf_token() }}" };  </script>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"/>
     <script src="{{ mix('/js/app.js') }}"></script>
@@ -111,6 +111,7 @@
                 <input type="number"
                        class="form-control form-control-lg"
                        id="temperature"
+                       value=""
                        min="36"
                        max="37.5"
                        aria-label="°C (with dot and two decimal places)">
@@ -147,42 +148,23 @@
              role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"
-                        id="exampleModalLabel">請選擇時間區段</h5>
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title" id="exampleModalLabel">請選擇時間區段</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <div class="input-group">
-
-                            <input type="text"
-                                   id="start"
-                                   class="form-control form-control-lg">
-
+                        <div class="input-group"><input type="text" id="start" class="form-control form-control-lg">
                         </div>
-
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-dismiss="modal">Close
-                    </button>
-                    <button type="button"
-                            id="generateImage"
-                            class="btn btn-primary">產生檔案
-                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="generateImage" class="btn btn-primary">產生檔案</button>
                 </div>
             </div>
         </div>
     </div>
-
-
 </div>
 
 
@@ -199,157 +181,199 @@
 
 <script>
 
-    var elems     = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
-    var switchery = null;
-    elems.forEach(function(html){
-        switchery = new Switchery(html, {size : 'large'});
+  var elems     = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+  var switchery = null;
+  elems.forEach(function(html) {
+    switchery = new Switchery(html, { size: 'large' });
+  });
+
+
+  var beginDate, endDate;
+
+  $(function() {
+    $('#datetimepicker1').datetimepicker({
+      format: 'YYYY-MM-DD',
+      locale: 'zh-tw',
+    });
+  });
+
+  function setSwitchery(switchElement, checkedBool) {
+    if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
+      switchElement.setPosition(true);
+      switchElement.handleOnchange(true);
+    }
+  }
+
+
+  $("#datetimepicker1").on("change.datetimepicker", function(e) {
+
+    axios.post('/api/v1/body_temperature/query', {
+      date: $("#datetimepickerInput").val(),
+      user_id: $("#user_id").val()
+    }).then(function(res) {
+      let { data } = res.data;
+
+      if (data.temperature === 0) {
+        $("#temperature").val('');
+      }else {
+        $("#temperature").val(data.temperature);
+      }
+      setSwitchery(switchery, data.is_period);
+    });
+  });
+
+
+  $('.js-switch').on('change', function() {
+    update();
+  });
+
+  function parseInputToFloat() {
+    let val    = parseFloat($("#temperature").val()) + "";
+    let length = val.length;
+
+    if (length > 2) {
+      val = val.substring(0, 2) + "." + val.substring(2, length)
+    } else {
+      val = val.substring(0, 2);
+    }
+
+    let parseVal = parseFloat(val);
+    $("#temperature").val(parseVal);
+  };
+
+
+  $("#temperature").on('change', function() {
+
+    if ($('#temperature').val().indexOf('.') === -1) {
+      parseInputToFloat();
+    }
+
+    if ($('#temperature').val() < 36) {
+      swal({
+        title: "溫度太低了！！",
+        text: "你丟搞喔！",
+        icon: "warning",
+        button: "OK",
+      });
+      return false;
+    }
+    if ($('#temperature').val() >= 37.5) {
+      swal({
+        title: "溫度太高了！！",
+        text: "你發騷喔！??",
+        icon: "warning",
+        button: "OK",
+      });
+      return false;
+    }
+    update();
+  });
+
+
+  function update() {
+    axios.post('/api/v1/body_temperature/update', {
+      date: $("#datetimepickerInput").val(),
+      body_temperature: $("#temperature").val(),
+      is_period: $('.js-switch').is(":checked"),
+      user_id: $("#user_id").val()
+    }).then(function() {
+
+      $(".update_popup").fadeIn();
+      setTimeout(function() {
+        $(".update_popup").fadeOut();
+      }, 1500)
+    });
+  }
+
+
+  $('#generateImage').on('click', function() {
+    swal({
+      title: `確定要產生 ${beginDate} 到 ${endDate}區間的檔案嗎？`,
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true,
+    }).then((ok) => {
+      if (ok) {
+        generateImage();
+        $('#dateRangePicker').modal('hide');
+      }
     });
 
+  });
 
-    var beginDate, endDate;
+  function generateImage() {
 
-    $(function(){
-        $('#datetimepicker1').datetimepicker({
-            format : 'YYYY-MM-DD',
-            locale : 'zh-tw',
-        });
-    });
+    let data = {
+      begin: beginDate,
+      end: endDate,
+      user_id: $("#user_id").val()
+    };
 
-    function setSwitchery(switchElement, checkedBool){
-        if((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
-            switchElement.setPosition(true);
-            switchElement.handleOnchange(true);
+    axios({
+      method: 'post',
+      url: '/api/v1/body_temperature/generateImage',
+      data: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+    }).then(function(res) {
+
+      let { url } = res.data.data;
+
+      swal({
+        title: `你的${beginDate} 到 ${endDate} 體溫紀錄表已經完成囉！`,
+        text: `連結將在3分鐘內刪除`,
+        icon: "success",
+        button: "查看紀錄表",
+      }).then((ok) => {
+        if (ok) {
+
+          let urlSplit = url.split('/');
+          let filename = urlSplit[urlSplit.length - 1];
+          setTimeout(() => {
+            axios.post('/api/v1/body_temperature/delete', { filename });
+          }, 180000);
+
+          window.open(url, '_blank');
         }
-    }
-
-
-    $("#datetimepicker1").on("change.datetimepicker", function(e){
-
-        axios.post('/api/v1/body_temperature/query', {
-            date    : $("#datetimepickerInput").val(),
-            user_id : $("#user_id").val()
-        }).then(function(res){
-            let {data} = res.data;
-
-            $("#temperature").val(data.temperature);
-            setSwitchery(switchery, data.is_period);
-        });
-    });
-
-
-    $('.js-switch').on('change', function(){
-        update();
-    });
-
-    $("#temperature").on('change', function(){
-        update();
-    });
-
-
-    function update(){
-        axios.post('/api/v1/body_temperature/update', {
-            date             : $("#datetimepickerInput").val(),
-            body_temperature : $("#temperature").val(),
-            is_period        : $('.js-switch').is(":checked"),
-            user_id          : $("#user_id").val()
-        }).then(function(){
-
-            $(".update_popup").fadeIn();
-            setTimeout(function(){
-                $(".update_popup").fadeOut();
-            }, 1500)
-        });
-    }
-
-
-    $('#generateImage').on('click', function(){
+      });
+    }).catch(err => {
+      let { status } = err.response;
+      if (status === 404) {
         swal({
-            title      : `確定要產生 ${beginDate} 到 ${endDate}區間的檔案嗎？`,
-            icon       : 'warning',
-            buttons    : true,
-            dangerMode : true,
-        }).then((ok) =>{
-            if(ok) {
-                generateImage();
-                $('#dateRangePicker').modal('hide');
-            }
+          title: `你的 ${beginDate} 到 ${endDate} 區間的資料不足無法產生紀錄表喔！`,
+          text: "",
+          icon: "error",
+          button: "OK",
         });
-
-    });
-
-    function generateImage(){
-
-        let data = {
-            begin   : beginDate,
-            end     : endDate,
-            user_id : $("#user_id").val()
-        };
-
-        axios({
-            method  : 'post',
-            url     : '/api/v1/body_temperature/generateImage',
-            data    : JSON.stringify(data),
-            headers : {
-                'Content-Type' : 'application/json',
-            },
-
-        }).then(function(res){
-
-            let {url} = res.data.data;
-
-            swal({
-                title  : `你的${beginDate} 到 ${endDate} 體溫紀錄表已經完成囉！`,
-                text   : `連結將在3分鐘內刪除`,
-                icon   : "success",
-                button : "查看紀錄表",
-            }).then((ok) =>{
-                if(ok) {
-                    
-                    let urlSplit = url.split('/');
-                    let filename = urlSplit[urlSplit.length - 1];
-                    setTimeout(() =>{
-                        axios.post('/api/v1/body_temperature/delete', {filename});
-                    }, 180000);
-
-                    window.open(url, '_blank');
-                }
-            });
-        }).catch(err => {
-            let {status} = err.response;
-            if(status === 404){
-                swal({
-                    title  : `你的 ${beginDate} 到 ${endDate} 區間的資料不足無法產生紀錄表喔！`,
-                    text   : "",
-                    icon   : "error",
-                    button : "OK",
-                });
-            }
-        })
-    }
+      }
+    })
+  }
 
 
-    var picker = new Lightpick({
-        field           : document.getElementById('start'),
-        singleDate      : false,
-        numberOfMonths  : 3,
-        numberOfColumns : 1,
-        maxDays         : 50,
-        selectForward   : false,
-        orientation     : 'bottom',
-        format          : 'YYYY/MM/DD',
-        onSelect        : function(start, end){
-            if(!start || !end) {
-                return false;
-            }
+  var picker = new Lightpick({
+    field: document.getElementById('start'),
+    singleDate: false,
+    numberOfMonths: 3,
+    numberOfColumns: 1,
+    maxDays: 50,
+    selectForward: false,
+    orientation: 'bottom',
+    format: 'YYYY/MM/DD',
+    onSelect: function(start, end) {
+      if (!start || !end) {
+        return false;
+      }
 
-            beginDate = start.format("YYYY/MM/DD");
-            endDate   = end.format("YYYY/MM/DD");
+      beginDate = start.format("YYYY/MM/DD");
+      endDate   = end.format("YYYY/MM/DD");
 
-            let diffInDays = end.diff(start, 'day');
-            console.log(start.format("YYYY/MM/DD"), end.format("YYYY/MM/DD"), diffInDays);
-        },
+      let diffInDays = end.diff(start, 'day');
+      console.log(start.format("YYYY/MM/DD"), end.format("YYYY/MM/DD"), diffInDays);
+    },
 
-    });
+  });
 
 
 </script>
