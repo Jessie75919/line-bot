@@ -14,14 +14,14 @@ Route::post("/webhook", "LineController@index");
 
 Auth::routes();
 
-//Route::get("/pushConsole", "HomeController@index");
+Route::get('/', function () {
+    return view('auth.login');
+});
 
 Route::group(["middleware" => ["sanitize", "auth"]], function () {
 
 
-    Route::get('/body_temperature', "BodyTemperatureController@index" );
-
-
+    Route::get('/body_temperature', "BodyTemperatureController@index");
 
 
     /* 商品管理 / 內容管理 */
@@ -60,7 +60,7 @@ Route::group(["middleware" => ["sanitize", "auth"]], function () {
 });
 
 
-/* No Sanitize */ 
+/* No Sanitize */
 Route::group(["middleware" => ["auth"]], function () {
     Route::post("/merchandise/product", "ProductConsoleController@store")
          ->name('merchandise.product.store')
@@ -71,9 +71,6 @@ Route::group(["middleware" => ["auth"]], function () {
     Route::post("/merchandise/notices", "ProductNoticeController@create")
          ->name("merchandise.notices.create");
 });
-
-
-
 
 
 /* Reset Password */
