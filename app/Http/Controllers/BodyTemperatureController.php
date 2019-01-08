@@ -16,7 +16,6 @@ class BodyTemperatureController extends Controller
 
         $payload = [];
 
-
         $payload['today']   = $today;
         $payload['user_id'] = $user->id;
 
@@ -27,7 +26,5 @@ class BodyTemperatureController extends Controller
 
 
         return view("body_temperature.index", $payload);
-
-
     }
 }

@@ -2,18 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use function app;
-use App\Memory;
-use App\Services\LineBotLearnService;
 use App\Services\LineBotReceiveMessageService;
-use App\Services\LineBotResponseService;
-use function dd;
-use function env;
-use const false;
 use Illuminate\Http\Request;
 use LINE\LINEBot;
-use Psy\Util\Json;
-use const true;
+use function app;
 
 class LineController extends Controller
 {
@@ -33,6 +25,7 @@ class LineController extends Controller
     {
         \Log::info('Line Bot Starting .... ');
         $this->lineBot    = app(LINEBot::class);
+        /** @var LineBotReceiveMessageService botReceiveMessageService */
         $this->botReceiveMessageService = app(LineBotReceiveMessageService::class);
     }
 

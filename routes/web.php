@@ -9,8 +9,12 @@ Route::get("/test", function () {
     return view("consoles.products.test");
 })->name("test");
 
-Route::post("/webhook", "LineController@index");
+//Route::post("/webhook", "LineController@index");
 //Route::post("/pushMessage", "PushMessageController@index")->name("pushConsole");
+
+Route::post("/webhook", "FacebookBotController@post");
+Route::get("/webhook", "FacebookBotController@get");
+
 
 Auth::routes();
 
