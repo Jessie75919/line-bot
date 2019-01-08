@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use function env;
+use function info;
 use function response;
 
 class FacebookBotController extends Controller
@@ -21,6 +22,8 @@ class FacebookBotController extends Controller
         $entries = $body->entry;
         foreach ($entries as $entry) {
             $webhookEvt = $entry['messaging'][0];
+            info($webhookEvt);
+
             $senderId   = $webhookEvt['sender']['id'];
             $message    = $webhookEvt['message']['text'];
 
