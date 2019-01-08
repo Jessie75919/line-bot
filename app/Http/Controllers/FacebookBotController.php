@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use function info;
+use function env;
 use function response;
 
 class FacebookBotController extends Controller
 {
     public function post(Request $request)
     {
+
         $body = (object)$request->toArray();
 
         if ($body->object !== 'page') {
@@ -19,7 +21,11 @@ class FacebookBotController extends Controller
         $entries = $body->entry;
         foreach ($entries as $entry) {
             $webhookEvt = $entry['messaging'][0];
-            info($webhookEvt);
+            $senderId   = $webhookEvt['sender']['id'];
+            $message    = $webhookEvt['message']['text'];
+
+            $this->sendMessage($senderId, $message);
+
         }
         return response('EVENT_RECEIVED', 200);
     }
@@ -28,10 +34,10 @@ class FacebookBotController extends Controller
     public function get(Request $request)
     {
 
-        $verifyToken = 'Npkb5h9pY95fn5v3PmWRPSAFM';
+        $verifyToken = env('FACEBOOK_CUSTOM_TOKEN');
 
-        $mode = $request->hub_mode;
-        $token = $request->hub_verify_token;
+        $mode      = $request->hub_mode;
+        $token     = $request->hub_verify_token;
         $challenge = $request->hub_challenge;
 
         if ($mode === 'subscribe' && $token === $verifyToken) {
@@ -39,5 +45,16 @@ class FacebookBotController extends Controller
         } else {
             return response('', 403);
         }
+    }
+
+
+    private function sendMessage($senderId, $message)
+    {
+        $facebookToken = env('FACEBOOK_TOKEN');
+        $client        = new Client(['timeout' => 2.0]);
+        $client->post("https://graph.facebook.com/v2.6/me/messages?access_token={$facebookToken}", [
+            "recipient" => ["id" => $senderId],
+            "message"   => ["text" => $message]
+        ]);
     }
 }
