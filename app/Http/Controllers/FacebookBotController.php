@@ -52,9 +52,12 @@ class FacebookBotController extends Controller
     {
         $facebookToken = env('FACEBOOK_TOKEN');
         $client        = new Client(['timeout' => 2.0]);
-        $client->post("https://graph.facebook.com/v2.6/me/messages?access_token={$facebookToken}", [
-            "recipient" => ["id" => $senderId],
-            "message"   => ["text" => $message]
-        ]);
+        $client->post("https://graph.facebook.com/v2.6/me/messages?access_token={$facebookToken}",
+            [
+                'form_params' => [
+                    "recipient" => ["id" => $senderId],
+                    "message"   => ["text" => $message]
+                ]
+            ]);
     }
 }
