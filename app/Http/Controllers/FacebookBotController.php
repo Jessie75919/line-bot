@@ -15,6 +15,8 @@ class FacebookBotController extends Controller
 
         $body = (object)$request->toArray();
 
+        info($body);
+
         if ($body->object !== 'page') {
             return response('', 404);
         }
