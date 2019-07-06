@@ -35,7 +35,6 @@ class LineController extends Controller
 //        $package = ($request->all())[0]; // for test
         $package = $request->json()->all();
          \Log::info( __METHOD__ . ' => ' . print_r($package , true));
-        return response('ok', 200);
 
         $this->botReceiveMessageService->handle($package);
 //
