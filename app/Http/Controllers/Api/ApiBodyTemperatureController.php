@@ -79,7 +79,6 @@ class ApiBodyTemperatureController extends ApiController
 
     public function generateImage(Request $request)
     {
-
         $begin = DateTools::createCarbonByDateStr($request->begin, '/');
         $end   = DateTools::createCarbonByDateStr($request->end, '/');
 
@@ -92,18 +91,13 @@ class ApiBodyTemperatureController extends ApiController
 
 
         try {
-
             $generator->setFilename($filename)
                       ->printData()
                       ->save();
 
             return $this->respondWithArray(['url' => url(Storage::url($filename))]);
-
         } catch (\Exception $e) {
-
             return $this->errorNotFound("[Error] No Data");
         }
-
-
     }
 }
