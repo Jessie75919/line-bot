@@ -9,7 +9,7 @@
 namespace App\Services;
 
 
-use App\Memory;
+use App\Models\Memory;
 use App\Models\Message;
 
 class LineBotResponseService

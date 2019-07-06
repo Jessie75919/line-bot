@@ -10,17 +10,15 @@ namespace App\Services;
 
 
 use App\Jobs\TodoJob;
-use App\TodoList;
+use App\Models\TodoList;
 use Carbon\Carbon;
-use function count;
 use Exception;
+use function count;
 use function explode;
-use const false;
-use Illuminate\Bus\Dispatcher;
-use Illuminate\Queue\Queue;
 use function preg_match;
 use function preg_replace;
 use function print_r;
+use const false;
 use const true;
 
 class LineBotReminderService

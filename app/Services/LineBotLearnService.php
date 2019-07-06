@@ -9,9 +9,8 @@
 namespace App\Services;
 
 
-use App\Message;
-use function count;
-use function explode;
+
+use App\Models\Message;
 
 class LineBotLearnService
 {
