@@ -6,22 +6,22 @@
  * Time: 下午6:18
  */
 
-namespace App\Services;
+namespace App\Services\LineBot;
 
 
+use Exception;
+use Carbon\Carbon;
 use App\Jobs\TodoJob;
 use App\Models\TodoList;
-use Carbon\Carbon;
-use Exception;
 use function count;
 use function explode;
+use function print_r;
 use function preg_match;
 use function preg_replace;
-use function print_r;
-use const false;
 use const true;
+use const false;
 
-class LineBotReminderService
+class LineBotReminder implements LineBotHandlerInterface
 {
     private $channelId;
     private $message;
@@ -78,7 +78,7 @@ class LineBotReminderService
             case self::REMINDER:
 
 
-                $this->dissectMessage();
+//                $this->dissectMessage();
 
                 // get TargetTime
                 try {
@@ -424,4 +424,8 @@ class LineBotReminderService
     }
 
 
+    public function handler ()
+    {
+        // TODO: Implement handler() method.
+    }
 }

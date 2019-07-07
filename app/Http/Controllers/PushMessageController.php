@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 
-use function app;
 use App\Memory;
-use App\Services\LineBotPushService;
-use function dd;
 use Illuminate\Http\Request;
-use LINE\LINEBot;
+use App\Services\LineBot\LineBotPushService;
+use function app;
 use function redirect;
 
 class PushMessageController extends Controller

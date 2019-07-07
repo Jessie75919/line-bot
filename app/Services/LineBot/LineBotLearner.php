@@ -6,13 +6,13 @@
  * Time: 下午6:11
  */
 
-namespace App\Services;
+namespace App\Services\LineBot;
 
 
 
 use App\Models\Message;
 
-class LineBotLearnService
+class LineBotLearner implements LineBotHandlerInterface
 {
     private $channelId;
     private $learnContent;
@@ -53,5 +53,11 @@ class LineBotLearnService
         ]);
 
         return true;
+    }
+
+
+    public function handler ()
+    {
+        // TODO: Implement handler() method.
     }
 }

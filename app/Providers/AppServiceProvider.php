@@ -2,14 +2,12 @@
 
 namespace App\Providers;
 
-use App\Services\LineBotPushService;
-use App\Services\LineBotReceiveMessageService;
-use App\Services\LineBotResponseService;
-use function config;
-use function env;
-use Illuminate\Support\ServiceProvider;
 use LINE\LINEBot;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
+use App\Services\LineBot\LineBotPushService;
+use App\Services\LineBot\LineBotMessageReceiver;
+use function env;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -31,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         $this->lineBotRegister();
         $this->lineBotServiceRegister();
         $this->lineBotReceiveMessageRegister();
@@ -56,8 +53,8 @@ class AppServiceProvider extends ServiceProvider
 
     private function lineBotReceiveMessageRegister()
     {
-        $this->app->singleton(LineBotReceiveMessageService::class, function() {
-            return new LineBotReceiveMessageService();
+        $this->app->singleton(LineBotMessageReceiver::class, function() {
+            return new LineBotMessageReceiver();
         });
     }
 
