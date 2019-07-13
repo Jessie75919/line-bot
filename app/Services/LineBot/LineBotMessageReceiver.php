@@ -90,14 +90,14 @@ class LineBotMessageReceiver
     public function checkPurpose()
     {
         // 提醒類型指令
-        $pattern = "/(^提醒|reminder);(.*)/";
+        $pattern = "/(^提醒|reminder)\s?;(.*)/";
         if (preg_match($pattern, $this->userMessage) == 1) {
             $this->purpose = self::REMINDER;
             return $this;
         }
 
         // 學習類型指令
-        $pattern = "/(^學|learn);(.*)/";
+        $pattern = "/(^學|learn)\s?;(.*)/";
         if (preg_match($pattern, $this->userMessage) == 1) {
             $this->purpose = self::LEARN;
             return $this;

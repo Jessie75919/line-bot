@@ -95,7 +95,6 @@ class DateParser
     private function timeFormatParse($time): string
     {
         $time = strtr(trim($time), self::CHINESE_NUMBER_MAP);
-        \Log::info("time => {$time}");
 
         // check 5點
         $pattern = '/([0-1]*[0-9]+)點$/';
@@ -116,9 +115,9 @@ class DateParser
         }
 
         // check 5：30
-        $pattern = '/([0-1]*[0-9]+)：([0-1]*[0-9]+)/';
+        $pattern = '/([0-1]*[0-9]+)(:|：)([0-1]*[0-9]+)/';
         if (preg_match($pattern, $time) == 1) {
-            return preg_replace($pattern, "$1:$2", $time);
+            return preg_replace($pattern, "$1:$3", $time);
         }
     }
 
@@ -149,7 +148,6 @@ class DateParser
     {
         $isNeedPlus12 = $this->isNeedToPlus12($dateAlias);
         $time = $this->timeFormatParse($time);
-
         return ["{$date} {$time}", $isNeedPlus12];
     }
 
