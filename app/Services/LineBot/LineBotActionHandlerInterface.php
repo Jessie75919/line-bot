@@ -8,8 +8,7 @@
 
 namespace App\Services\LineBot;
 
-
-interface LineBotHandlerInterface
+interface LineBotActionHandlerInterface
 {
-    public function handler();
+    public function handle();
 }

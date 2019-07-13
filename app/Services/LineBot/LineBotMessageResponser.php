@@ -14,6 +14,7 @@ use App\Models\Message;
 class LineBotMessageResponser
 {
     const GENERAL_RESPONSE = '好喔～好喔～';
+    const ERROR_MESSAGE    = 'Oh!oh!好像那裡有問題了 QQ';
     private $channelId;
     private $purpose;
     private $content;
@@ -22,8 +23,8 @@ class LineBotMessageResponser
     public function __construct($channelId, $purpose, $content = null)
     {
         $this->channelId = $channelId;
-        $this->purpose   = $purpose;
-        $this->content   = $content;
+        $this->purpose = $purpose;
+        $this->content = $content;
     }
 
 
@@ -33,15 +34,15 @@ class LineBotMessageResponser
      */
     public function keywordReply($userMsg): string
     {
-        \Log::info('userMsg = '.$userMsg);
+        \Log::info('userMsg = ' . $userMsg);
         $resp = Message::where('keyword', strtolower($userMsg))->where('channel_id', $this->channelId)->get();
 
-        return count($resp) != 0 ? $resp->random()->message : '';
+        return count($resp) != 0 ? $resp->random()->message : '....無言以對';
     }
 
 
     /**
-     * @param  bool  $shutUp
+     * @param bool $shutUp
      */
     public function setTalk(bool $shutUp): void
     {
@@ -66,19 +67,30 @@ class LineBotMessageResponser
                 $this->setTalk(0);
                 return self::GENERAL_RESPONSE;
             case 'state':
-                $isTalk    = Memory::where('channel_id', $this->channelId)->first()->is_talk;
+                $isTalk = Memory::where('channel_id', $this->channelId)->first()->is_talk;
                 $stateText = "channel_id : \n [ {$this->channelId } \n";
 
-                return ! $isTalk ? $stateText." 目前處於 \n [ 閉嘴狀態 ]" : $stateText." 目前處於 \n [可以講話狀態 ]";
+                return ! $isTalk ? $stateText . " 目前處於 \n [ 閉嘴狀態 ]" : $stateText . " 目前處於 \n [可以講話狀態 ]";
         }
     }
 
 
     /**
-     * @param  mixed  $purpose
+     * @param mixed $purpose
      */
     public function setPurpose($purpose)
     {
         $this->purpose = $purpose;
+    }
+
+
+    /**
+     * @param null $content
+     * @return LineBotMessageResponser
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+        return $this;
     }
 }
