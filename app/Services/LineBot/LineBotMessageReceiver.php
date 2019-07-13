@@ -22,6 +22,7 @@ class LineBotMessageReceiver
     const STATE           = "state";
     const REMINDER_STATE  = "Reminder-State";
     const REMINDER_DELETE = "Reminder-Delete";
+    const DELIMITER       = ';|_|x|、|，';
     public $replyToken;
     public $userMessage;
     public $channelId;
@@ -36,6 +37,19 @@ class LineBotMessageReceiver
      */
     public function __construct()
     {
+    }
+
+
+    /** Dissect the Message if it is a learning command with <學;key;value>
+     * @param $userMessage
+     * @return array
+     */
+    public static function breakdownMessage($userMessage): array
+    {
+        return collect(preg_split('/' . self::DELIMITER . '/', $userMessage))
+            ->map(function ($item) {
+                return trim($item);
+            })->toArray();
     }
 
 
@@ -90,14 +104,14 @@ class LineBotMessageReceiver
     public function checkPurpose()
     {
         // 提醒類型指令
-        $pattern = "/(^提醒|reminder)\s?;(.*)/";
+        $pattern = "/(^提醒|reminder)\s?" . self::DELIMITER . "(.*)/";
         if (preg_match($pattern, $this->userMessage) == 1) {
             $this->purpose = self::REMINDER;
             return $this;
         }
 
         // 學習類型指令
-        $pattern = "/(^學|learn)\s?;(.*)/";
+        $pattern = "/(^學|learn)\s?" . self::DELIMITER . "(.*)/";
         if (preg_match($pattern, $this->userMessage) == 1) {
             $this->purpose = self::LEARN;
             return $this;
@@ -124,19 +138,6 @@ class LineBotMessageReceiver
         $this->purpose = self::TALK;
 
         return $this;
-    }
-
-
-    /** Dissect the Message if it is a learning command with <學;key;value>
-     * @return array
-     * @internal param $userMsg
-     */
-    public function breakdownMessage(): array
-    {
-        return collect(explode(';', $this->userMessage))
-            ->map(function ($item) {
-                return trim($item);
-            })->toArray();
     }
 
 
@@ -170,7 +171,7 @@ class LineBotMessageReceiver
 
     public function preparePayload()
     {
-        $breakdownMessage = $this->breakdownMessage();
+        $breakdownMessage = self::breakdownMessage($this->userMessage);
 
         $this->payload = [
             'channelId' => $this->channelId,

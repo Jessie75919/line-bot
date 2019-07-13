@@ -15,7 +15,6 @@ use App\Models\TodoList;
 use App\Services\Date\DateParser;
 use App\Repository\LineBot\TodoListRepo;
 use function count;
-use function explode;
 use function print_r;
 use const true;
 use const false;
@@ -132,7 +131,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
     private function updateDetailPurpose()
     {
         $originMessage = $this->payload['message']['origin'];
-        $breakdownMessage = $this->breakdownMessage($originMessage);
+        $breakdownMessage = LineBotMessageReceiver::breakdownMessage($originMessage);
 
         $purpose = trim($breakdownMessage[1]);
 
@@ -146,19 +145,6 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
             default:
                 $this->payload['purpose'] = self::REMINDER;
         }
-    }
-
-
-    /** Dissect the Message if it is a learning command with <學;key;value>
-     * @param $originMessage
-     * @return array
-     */
-    private function breakdownMessage($originMessage): array
-    {
-        return collect(explode(';', $originMessage))
-            ->map(function ($item) {
-                return trim($item);
-            })->toArray();
     }
 
 
