@@ -29,9 +29,6 @@ class LineBotMainService
 
         $responseText = $dispatchHandler->handle();
 
-        dd($responseText);
-
-
         /** @var string $replyToken */
         $replyToken = $this->lineBotReceiver->getReplyToken();
 

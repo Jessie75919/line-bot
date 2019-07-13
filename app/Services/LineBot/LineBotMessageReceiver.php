@@ -27,12 +27,7 @@ class LineBotMessageReceiver
     public $channelId;
     public $purpose;
     private $isTalk;
-    private $botResponseService;
-    private $processContent;
-    private $botRemindService;
-    /**
-     * @var array
-     */
+    /** * @var array */
     private $payload;
 
 
