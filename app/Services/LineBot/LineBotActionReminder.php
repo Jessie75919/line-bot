@@ -15,7 +15,6 @@ use App\Models\TodoList;
 use App\Services\Date\DateParser;
 use App\Repository\LineBot\TodoListRepo;
 use function count;
-use function print_r;
 use const true;
 use const false;
 
@@ -179,12 +178,10 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
 
         try {
             /** @var Carbon $targetTime */
-            $targetTime = $dateParser->toCarbon();
-
-            \Log::info("targetTime => " . print_r($targetTime, true));
+            $targetTime = $dateParser->getTargetTime();
         } catch (\Exception $e) {
             \Log::error(__METHOD__ . " => " . $e);
-            return " 喔 !? 輸入格式好像有點問題喔～ \n 例如：『 提醒;2018-03-04 09:30;吃早餐 』。";
+            return " 喔 !? 輸入格式好像有點問題喔～ \n 例如：『 提醒;明天早上九點;吃早餐 』。";
         }
 
         if ($dateParser->validTimeInThePast($targetTime)) {

@@ -22,7 +22,7 @@ class LineBotMessageReceiver
     const STATE           = "state";
     const REMINDER_STATE  = "Reminder-State";
     const REMINDER_DELETE = "Reminder-Delete";
-    const DELIMITER       = ';|_|x|、|，';
+    const DELIMITER       = '(;|_|x|、|，)';
     public $replyToken;
     public $userMessage;
     public $channelId;
@@ -104,14 +104,14 @@ class LineBotMessageReceiver
     public function checkPurpose()
     {
         // 提醒類型指令
-        $pattern = "/(^提醒|reminder)\s?" . self::DELIMITER . "(.*)/";
+        $pattern = "/^(提醒|rem|reminder){1}\s?" . self::DELIMITER . "(.*)/";
         if (preg_match($pattern, $this->userMessage) == 1) {
             $this->purpose = self::REMINDER;
             return $this;
         }
 
         // 學習類型指令
-        $pattern = "/(^學|learn)\s?" . self::DELIMITER . "(.*)/";
+        $pattern = "/^(學|learn){1}\s?" . self::DELIMITER . "(.*)/";
         if (preg_match($pattern, $this->userMessage) == 1) {
             $this->purpose = self::LEARN;
             return $this;

@@ -34,17 +34,17 @@ class LineBotMessageResponser
      */
     public function keywordReply($userMsg): string
     {
-        \Log::info('userMsg = ' . $userMsg);
-        $resp = Message::where('keyword', strtolower($userMsg))->where('channel_id', $this->channelId)->get();
+        $resp = Message::where('keyword', $userMsg)
+                       ->where('channel_id', $this->channelId)->get();
 
-        return count($resp) != 0 ? $resp->random()->message : '....無言以對';
+        return count($resp) != 0 ? $resp->random()->message : null;
     }
 
 
     /**
      * @param bool $shutUp
      */
-    public function setTalk(bool $shutUp): void
+    public function setTalk(bool $shutUp)
     {
         Memory::where('channel_id', $this->channelId)->update(['is_talk' => $shutUp]);
     }

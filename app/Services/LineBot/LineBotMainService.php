@@ -7,7 +7,7 @@ use LINE\LINEBot;
 
 class LineBotMainService
 {
-    /** @var LineBotMessageReceiver  */
+    /** @var LineBotMessageReceiver */
     private $lineBotReceiver;
     private $lineBot;
 
@@ -17,7 +17,7 @@ class LineBotMainService
      */
     public function __construct()
     {
-        $this->lineBot         = app(LINEBot::class);
+        $this->lineBot = app(LINEBot::class);
         $this->lineBotReceiver = app(LineBotMessageReceiver::class);
     }
 
@@ -28,6 +28,10 @@ class LineBotMainService
             $this->lineBotReceiver->handle($package);
 
         $responseText = $dispatchHandler->handle();
+
+        if (! $responseText) {
+            return null;
+        }
 
         /** @var string $replyToken */
         $replyToken = $this->lineBotReceiver->getReplyToken();

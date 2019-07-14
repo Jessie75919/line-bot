@@ -41,7 +41,7 @@ class DateParser
     }
 
 
-    public function toCarbon(): Carbon
+    public function getTargetTime(): Carbon
     {
         // 2019-07-02 10:11 | 2019\07\02 | 2019/07/02 | 2019 07 02
         if ($this->isPatternFor(self::DATE_PATTERNS['FORMAL_DATE_PATTERN'])) {
@@ -192,7 +192,7 @@ class DateParser
     {
         $todayStr = Carbon::now('Asia/Taipei')->toDateString();
 
-        $dateData = $this->parseTime($datetimeStr, $todayStr);
+        $dateData = $this->handleTimeAliasDatetime($datetimeStr, $todayStr);
 
         return $this->createTargetTime($dateData[0], $dateData[1]);
     }
@@ -209,7 +209,7 @@ class DateParser
      * @param string $dateStr
      * @return array
      */
-    private function parseTime($datetimeStr, string $dateStr): array
+    private function handleTimeAliasDatetime($datetimeStr, string $dateStr): array
     {
         $times = explode(
             ',',
@@ -291,7 +291,7 @@ class DateParser
      */
     private function createTargetTimeWithDateStrAndTime(string $time, string $targetDateStr): Carbon
     {
-        $dateData = $this->parseTime($time, $targetDateStr);
+        $dateData = $this->handleTimeAliasDatetime($time, $targetDateStr);
         return $this->createTargetTime($dateData[0], $dateData[1]);
     }
 }

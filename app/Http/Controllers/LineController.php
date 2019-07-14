@@ -28,6 +28,6 @@ class LineController extends Controller
 
         $finalResponse = $this->lineMainService->handle($package);
 
-        return response()->json($finalResponse);
+        return isset($finalResponse) ? response()->json($finalResponse) : null;
     }
 }
