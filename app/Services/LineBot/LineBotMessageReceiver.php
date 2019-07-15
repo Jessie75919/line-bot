@@ -106,7 +106,7 @@ class LineBotMessageReceiver
     public function checkPurpose()
     {
         // Help指令
-        if ($this->userMessage === 'help') {
+        if (strtolower($this->userMessage) === 'help') {
             $this->purpose = self::HELP;
             return $this;
         }
