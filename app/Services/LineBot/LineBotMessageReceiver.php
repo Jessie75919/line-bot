@@ -160,7 +160,7 @@ class LineBotMessageReceiver
         $shutUpCmd = ['閉嘴', '安靜', '吵死了'];
         $stateCmd = ['狀態'];
 
-        if (substr($keyword, 0, 2) != 'jc') {
+        if (strtolower(substr($keyword, 0, 2)) != 'jc') {
             return false;
         }
 
