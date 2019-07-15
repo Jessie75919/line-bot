@@ -17,12 +17,14 @@ class LineBotMessageReceiver
     const SHUT_UP         = 'shutUp';
     const LEARN           = 'learn';
     const TALK            = 'talk';
+    const HELP            = 'help';
     const RESPONSE        = 'response';
     const REMINDER        = 'reminder';
     const STATE           = "state";
     const REMINDER_STATE  = "Reminder-State";
     const REMINDER_DELETE = "Reminder-Delete";
-    const DELIMITER       = '(;|_|x|、|，)';
+    const DELIMITER_USE   = ';|_|x|、|，';
+    const DELIMITER       = '(' . self::DELIMITER_USE . ')';
     public $replyToken;
     public $userMessage;
     public $channelId;
@@ -103,6 +105,12 @@ class LineBotMessageReceiver
      */
     public function checkPurpose()
     {
+        // Help指令
+        if ($this->userMessage === 'help') {
+            $this->purpose = self::HELP;
+            return $this;
+        }
+
         // 提醒類型指令
         $pattern = "/^(提醒|rem|reminder){1}\s?" . self::DELIMITER . "(.*)/";
         if (preg_match($pattern, $this->userMessage) == 1) {
@@ -197,6 +205,10 @@ class LineBotMessageReceiver
             case $this->isCommonPurpose($this->purpose):
                 return new LineBotActionCommonReplier($this->payload);
 
+            case self::HELP:
+                return new LineBotCommandHelper($this->payload);
+                break;
+
             case self::LEARN:
                 return new LineBotActionLearner($this->payload);
                 break;
@@ -277,6 +289,7 @@ class LineBotMessageReceiver
         return self::SPEAK === $purpose ||
             self::SHUT_UP === $purpose ||
             self::TALK === $purpose ||
-            self::STATE === $purpose;
+            self::STATE === $purpose ||
+            self::HELP === $purpose;
     }
 }
