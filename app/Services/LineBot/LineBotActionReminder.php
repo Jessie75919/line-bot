@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: jessie
@@ -14,9 +15,6 @@ use App\Jobs\TodoJob;
 use App\Models\TodoList;
 use App\Services\Date\DateParser;
 use App\Repository\LineBot\TodoListRepo;
-use function count;
-use const true;
-use const false;
 
 class LineBotActionReminder implements LineBotActionHandlerInterface
 {
@@ -33,6 +31,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
     private $todoListRepo;
     /** * @var LineBotMessageResponser */
     private $messageResponser;
+    private $repeatPeriod = null;
 
 
     /**
@@ -81,7 +80,8 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
                 new TodoJob(
                     $this->payload['channelId'],
                     $this->payload['message']['value'],
-                    $todoListId
+                    $todoListId,
+                    $this->repeatPeriod
                 )
             )->delay(now('Asia/Taipei')->addSeconds($delayTime));
 
@@ -108,6 +108,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
 
             return $todo;
         } catch (\Exception $e) {
+            \Log::error(__METHOD__ . " => " . $e);
             return null;
         }
     }
@@ -132,7 +133,26 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
         $originMessage = $this->payload['message']['origin'];
         $breakdownMessage = LineBotMessageReceiver::breakdownMessage($originMessage);
 
-        $purpose = trim($breakdownMessage[1]);
+        $purposeKey = $breakdownMessage[0];
+        $pattern = '/remR(.*)/m';
+        if (preg_match($pattern, $purposeKey)) {
+            $repeatPeriod = preg_replace($pattern, '$1', $purposeKey);
+            $numberWithPeriod =
+                explode(
+                    ',',
+                    preg_replace(
+                        '/(\d?)(\w?)/m',
+                        '$1,$2',
+                        $repeatPeriod
+                    )
+                );
+            $this->repeatPeriod = [
+                'period' => $numberWithPeriod[1],
+                'length' => $numberWithPeriod[2] === '' ? 1 : (int)$numberWithPeriod[2]
+            ];
+        }
+
+        $purpose = $breakdownMessage[1];
 
         switch ($purpose) {
             case $purpose === 'all' || $purpose === '所有提醒':

@@ -5,11 +5,6 @@ namespace App\Services\LineBot;
 
 use App\Models\Memory;
 use App\Repository\LineBot\TodoListRepo;
-use function substr;
-use function explode;
-use function preg_match;
-use const true;
-use const false;
 
 class LineBotMessageReceiver
 {
@@ -23,7 +18,7 @@ class LineBotMessageReceiver
     const STATE           = "state";
     const REMINDER_STATE  = "Reminder-State";
     const REMINDER_DELETE = "Reminder-Delete";
-    const DELIMITER_USE   = ';|_|x|、|，';
+    const DELIMITER_USE   = ';|_|、|，';
     const DELIMITER       = '(' . self::DELIMITER_USE . ')';
     public $replyToken;
     public $userMessage;
@@ -111,8 +106,8 @@ class LineBotMessageReceiver
             return $this;
         }
 
-        // 提醒類型指令
-        $pattern = "/^(提醒|rem|reminder){1}\s?" . self::DELIMITER . "(.*)/";
+        // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
+        $pattern = "/^(提醒|rem|reminder|remR.*){1}\s?" . self::DELIMITER . "(.*)/";
         if (preg_match($pattern, $this->userMessage) == 1) {
             $this->purpose = self::REMINDER;
             return $this;
