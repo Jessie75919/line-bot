@@ -81,6 +81,8 @@ class TodoJob implements ShouldQueue
                 $delayTime->addMinutes(0);
         }
 
+        $todo->update(['send_time' => $delayTime]);
+
         dispatch(
             new TodoJob(
                 $todo->send_channel_id,
