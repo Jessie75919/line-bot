@@ -66,20 +66,21 @@ class TodoJob implements ShouldQueue
     public function setNewQueueJob(TodoList $todo)
     {
         $delayTime = now('Asia/Taipei');
+        $repeatPeriodMethodMap = [
+            'D' => 'addDays',
+            'W' => 'addWeeks',
+            "M" => 'addMinutes'
+        ];
 
-        switch ($this->repeatPeriod['period']) {
-            case 'D':
-                $delayTime->addDays($this->repeatPeriod['length']);
-                break;
-            case 'W':
-                $delayTime->addWeeks($this->repeatPeriod['length']);
-                break;
-            case 'M':
-                $delayTime->addMinutes($this->repeatPeriod['length']);
-                break;
-            default:
-                $delayTime->addMinutes(0);
+        $period = $this->repeatPeriod['period'];
+        $length = $this->repeatPeriod['length'];
+
+        if (! array_key_exists($period, $repeatPeriodMethodMap)) {
+            return;
         }
+
+        $method = $repeatPeriodMethodMap[$period];
+        $delayTime->$method($length);
 
         $todo->update(['send_time' => $delayTime]);
 

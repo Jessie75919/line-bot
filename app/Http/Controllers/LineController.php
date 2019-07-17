@@ -26,6 +26,8 @@ class LineController extends Controller
     {
         $package = $request->all();
 
+        \Log::info(__METHOD__ . ' => ' . print_r($package, true));
+
         $finalResponse = $this->lineMainService->handle($package);
 
         return isset($finalResponse) ? response()->json($finalResponse) : null;
