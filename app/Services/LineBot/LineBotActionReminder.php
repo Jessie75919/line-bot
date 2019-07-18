@@ -177,7 +177,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
         foreach ($todos as $todo) {
             $responseText .= " 編號：{$todo->id} \n 提醒內容：{$todo->message} \n 提醒時間：{$todo->send_time} \n ";
             $repeatPeriod = $todo->repeat_period;
-            $responseText .= $repeatPeriod ? "{$repeatPeriod} 重複一次 " : "\n";
+            $responseText .= $repeatPeriod ? "({$repeatPeriod} 重複一次)" : "\n";
         }
 
         \Log::info("responseText => {$responseText}");
