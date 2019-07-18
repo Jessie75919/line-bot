@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: jessie
- * Date: 2018/4/4星期三
- * Time: 下午6:18
- */
-
 namespace App\Services\LineBot;
 
 use Exception;
@@ -101,6 +94,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
                 'receive_channel_id' => $this->payload['channelId'],
                 'message'            => $this->payload['message']['value'],
                 'send_time'          => $targetTime,
+                'repeat_period' => $this->repeatPeriod['length'] . $this->repeatPeriod['period'],
                 'is_sent'            => 0
             ]);
 
@@ -137,6 +131,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
         $pattern = '/remR(.*)/m';
         if (preg_match($pattern, $purposeKey)) {
             $repeatPeriod = preg_replace($pattern, '$1', $purposeKey);
+            // [3,W(week)]
             $numberWithPeriod =
                 explode(
                     ',',
@@ -148,7 +143,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
                 );
             $this->repeatPeriod = [
                 'period' => $numberWithPeriod[1],
-                'length' => $numberWithPeriod[2] === '' ? 1 : (int)$numberWithPeriod[2]
+                'length' => $numberWithPeriod[2] === '' ? 1 : (int) $numberWithPeriod[2]
             ];
         }
 
@@ -181,7 +176,8 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
 
         foreach ($todos as $todo) {
             $responseText .= " 編號：{$todo->id} \n 提醒內容：{$todo->message} \n 提醒時間：{$todo->send_time} \n ";
-            $responseText .= " \n";
+            $repeatPeriod = $todo->repeat_period;
+            $responseText .= $repeatPeriod ? "{$repeatPeriod} 重複一次 " : "\n";
         }
 
         \Log::info("responseText => {$responseText}");
@@ -194,7 +190,6 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
     {
         $dateStr = $this->payload['message']['key'];
         $dateParser = new DateParser($dateStr);
-
 
         try {
             /** @var Carbon $targetTime */
@@ -214,8 +209,11 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
             $delayTime = $dateParser->getDelayTime($targetTime);
             $isSuccess = $this->setQueue($delayTime, $todoList->id);
 
-            $successMessage = " [提醒時間]\n {$targetTime->toDateTimeString()}\n============= \n " .
+            $repeatPeriod = $todoList->repeat_period;
+            $successMessage = " [提醒時間]\n {$targetTime->toDateTimeString()}\n------------ \n " .
                 "[提醒內容]\n {$this->payload['message']['value']}";
+            $successMessage .= $repeatPeriod ? " ({$repeatPeriod} 重複一次) " : "\n";
+
             return $isSuccess
                 ? $successMessage
                 : LineBotMessageResponser::ERROR_MESSAGE;

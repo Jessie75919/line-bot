@@ -14,9 +14,9 @@ class TodoList extends Model
     protected $fillable = [
         'send_channel_id',
         'receive_channel_id',
+        'repeat_period',
         'message',
         'send_time',
         'is_sent'
     ];
-
 }

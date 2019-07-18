@@ -29,7 +29,9 @@ class LineBotMainService
 
         $responseText = $dispatchHandler->handle();
 
-        if (! $responseText) {
+        dd($responseText);
+
+        if (!$responseText) {
             return null;
         }
 
