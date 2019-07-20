@@ -64,6 +64,24 @@ class LineBotMessageReceiver
     }
 
 
+    /**
+     * @return string
+     */
+    public function getUserDataType(): string
+    {
+        return $this->userDataType;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getMemory()
+    {
+        return $this->memory;
+    }
+
+
     /** get data of package from user
      * @param $package
      * @return LineBotMessageReceiver

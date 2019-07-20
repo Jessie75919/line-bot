@@ -4,11 +4,13 @@
 namespace App\Services\LineBot;
 
 use LINE\LINEBot;
+use App\Services\LineBot\PushHandler\LineBotPushService;
 
 class LineBotMainService
 {
     /** @var LineBotMessageReceiver */
     private $lineBotReceiver;
+    /* @var LINEBot */
     private $lineBot;
 
 
@@ -24,24 +26,34 @@ class LineBotMainService
 
     public function handle($package)
     {
-        $dispatchHandler =
-            $this->lineBotReceiver->handle($package);
+        $dispatchHandler = $this->lineBotReceiver->handle($package);
 
         if (! $dispatchHandler) {
             return null;
         }
 
-        $responseText = $dispatchHandler->handle();
+        $payload = $dispatchHandler->handle();
 
-        dd($responseText);
-
-        if (! $responseText) {
+        if (! $payload) {
             return null;
         }
 
-        /** @var string $replyToken */
-        $replyToken = $this->lineBotReceiver->getReplyToken();
+        $dataType = $this->lineBotReceiver->getUserDataType();
 
-        return $this->lineBot->replyText($replyToken, $responseText);
+        if ($dataType === 'text') {
+            /** @var string $replyToken */
+            $replyToken = $this->lineBotReceiver->getReplyToken();
+            return $this->lineBot->replyText($replyToken, $payload);
+        }
+
+        if ($dataType === 'location') {
+            $lineBotPushService = new LineBotPushService();
+            
+            $template = $lineBotPushService->buildTemplateMessageBuilder($payload, '有訊息！請到手機上查看囉！');
+
+            $channelId = $this->lineBotReceiver->getMemory()->channel_id;
+
+            return  $lineBotPushService->pushMessage($channelId, $template);
+        }
     }
 }

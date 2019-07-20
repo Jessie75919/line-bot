@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\LineBot\LineBotMainService;
-use function app;
 
 class LineController extends Controller
 {
@@ -24,8 +23,13 @@ class LineController extends Controller
 
     public function index(Request $request)
     {
-        $finalResponse = $this->lineMainService->handle($request->all());
+        $response = $this->lineMainService->handle($request->all());
 
-        return isset($finalResponse) ? response()->json($finalResponse) : null;
+        dd($response);
+
+
+        \Log::info(__METHOD__ . ' => ' . print_r($response, true));
+
+        return isset($response) ? response()->json($response) : null;
     }
 }
