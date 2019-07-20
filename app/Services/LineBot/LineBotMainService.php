@@ -32,13 +32,21 @@ class LineBotMainService
             return null;
         }
 
+        $dataType = $this->lineBotReceiver->getUserDataType();
+        $channelId = $this->lineBotReceiver->getMemory()->channel_id;
+
+        $lineBotPushService = null;
+
+        if ($dataType === 'location') {
+            $lineBotPushService = new LineBotPushService();
+            $lineBotPushService->pushMessage($channelId, '搜尋中...請稍等喔！');
+        }
+
         $payload = $dispatchHandler->handle();
 
         if (! $payload) {
             return null;
         }
-
-        $dataType = $this->lineBotReceiver->getUserDataType();
 
         if ($dataType === 'text') {
             /** @var string $replyToken */
@@ -47,12 +55,7 @@ class LineBotMainService
         }
 
         if ($dataType === 'location') {
-            $lineBotPushService = new LineBotPushService();
-            
             $template = $lineBotPushService->buildTemplateMessageBuilder($payload, '有訊息！請到手機上查看囉！');
-
-            $channelId = $this->lineBotReceiver->getMemory()->channel_id;
-
             return  $lineBotPushService->pushMessage($channelId, $template);
         }
     }

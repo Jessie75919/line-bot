@@ -21,8 +21,7 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
     {
         $this->payload = $payload;
         $this->placeApi = (app(GooglePlaceApiService::class))
-            ->setPayload($payload)
-            ->setMaxprice(1000);
+            ->setPayload($payload);
     }
 
 
