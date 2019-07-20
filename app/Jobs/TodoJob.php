@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Services\LineBot\LineBotPushService;
+use App\Services\LineBot\LineBotActionReminder;
 
 class TodoJob implements ShouldQueue
 {
@@ -28,15 +29,13 @@ class TodoJob implements ShouldQueue
      * @param      $channelId
      * @param      $message
      * @param      $todoListId
-     * @param null $repeatPeriod
      */
-    public function __construct($channelId, $message, $todoListId, $repeatPeriod = null)
+    public function __construct($channelId, $message, $todoListId)
     {
         $this->lineBotPushService = app(LineBotPushService::class);
         $this->channelId = $channelId;
         $this->message = $message;
         $this->todoListId = $todoListId;
-        $this->repeatPeriod = $repeatPeriod;
     }
 
 
@@ -50,7 +49,7 @@ class TodoJob implements ShouldQueue
 
         $todo = TodoList::find($this->todoListId);
         if ($todo) {
-            if ($this->repeatPeriod) {
+            if ($todo->repeat_period) {
                 $this->setNewQueueJob($todo);
             } else {
                 $todo->delete();
@@ -67,13 +66,15 @@ class TodoJob implements ShouldQueue
     {
         $delayTime = now('Asia/Taipei');
         $repeatPeriodMethodMap = [
-            'D' => 'addDays',
-            'W' => 'addWeeks',
-            "M" => 'addMinutes'
+            'D' => 'add' . LineBotActionReminder::PERIOD_MAP['D'] . 's',
+            'W' => 'add' . LineBotActionReminder::PERIOD_MAP['W'] . 's',
+            "M" => 'add' . LineBotActionReminder::PERIOD_MAP['M'] . 's',
         ];
 
-        $period = $this->repeatPeriod['period'];
-        $length = $this->repeatPeriod['length'];
+        $repeatPeriod = json_decode($todo->repeat_period, true);
+
+        $period = $repeatPeriod['period'];
+        $length = $repeatPeriod['length'];
 
         if (! array_key_exists($period, $repeatPeriodMethodMap)) {
             return;
@@ -88,8 +89,7 @@ class TodoJob implements ShouldQueue
             new TodoJob(
                 $todo->send_channel_id,
                 $todo->message,
-                $todo->id,
-                $this->repeatPeriod
+                $todo->id
             )
         )->delay($delayTime);
     }
