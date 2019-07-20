@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\LineBot;
+namespace App\Services\LineBot\ActionHandler;
 
 use Exception;
 use Carbon\Carbon;
@@ -8,6 +8,8 @@ use App\Jobs\TodoJob;
 use App\Models\TodoList;
 use App\Services\Date\DateParser;
 use App\Repository\LineBot\TodoListRepo;
+use App\Services\LineBot\TypePayloadHandler;
+use App\Services\LineBot\LineBotMessageResponser;
 
 class LineBotActionReminder implements LineBotActionHandlerInterface
 {
@@ -129,7 +131,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
     private function updateDetailPurpose()
     {
         $originMessage = $this->payload['message']['origin'];
-        $breakdownMessage = LineBotMessageReceiver::breakdownMessage($originMessage);
+        $breakdownMessage = TypePayloadHandler\TextTypePayloadHandler::breakdownMessage($originMessage);
 
         $purposeKey = $breakdownMessage[0];
         $pattern = '/remR(.*)/m';
@@ -234,11 +236,14 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
      * @param $repeatPeriod
      * @return string
      */
-    private function getPeriodMeaning($repeatPeriod): string
+    private function getPeriodMeaning($repeatPeriod): ?string
     {
-        $repeatPeriod = $repeatPeriod
-            ? json_decode($repeatPeriod, true)
-            : null;
+        if (! $repeatPeriod) {
+            return null;
+        }
+
+        $repeatPeriod = json_decode($repeatPeriod, true);
+
         return "(" . $repeatPeriod['length'] . self::PERIOD_MAP[$repeatPeriod['period']] . " 重複一次) \n";
     }
 }

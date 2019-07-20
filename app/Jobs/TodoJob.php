@@ -8,8 +8,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\LineBot\LineBotPushService;
-use App\Services\LineBot\LineBotActionReminder;
+use App\Services\LineBot\PushHandler\LineBotPushService;
+use App\Services\LineBot\ActionHandler\LineBotActionReminder;
 
 class TodoJob implements ShouldQueue
 {

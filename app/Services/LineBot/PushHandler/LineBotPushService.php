@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\LineBot;
+namespace App\Services\LineBot\PushHandler;
 
 use LINE\LINEBot;
 use LINE\LINEBot\Response;

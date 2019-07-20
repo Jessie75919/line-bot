@@ -27,9 +27,15 @@ class LineBotMainService
         $dispatchHandler =
             $this->lineBotReceiver->handle($package);
 
+        if (! $dispatchHandler) {
+            return null;
+        }
+
         $responseText = $dispatchHandler->handle();
 
-        if (!$responseText) {
+        dd($responseText);
+
+        if (! $responseText) {
             return null;
         }
 

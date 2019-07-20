@@ -1,22 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jessie
- * Date: 2019-07-07
- * Time: 10:21
- */
 
-namespace App\Services\LineBot;
+namespace App\Services\LineBot\ActionHandler;
 
-class LineBotActionCommonReplier implements LineBotActionHandlerInterface
+use App\Services\LineBot\LineBotMessageResponser;
+
+class LineBotCommandHelper implements LineBotActionHandlerInterface
 {
-    private $payload;
+
+    protected $payload;
 
 
-    /**
-     * LineBotCommonReplier constructor.
-     * @param $payload
-     */
     public function __construct($payload)
     {
         $this->payload = $payload;

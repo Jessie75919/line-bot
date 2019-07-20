@@ -6,9 +6,10 @@
  * Time: 下午6:11
  */
 
-namespace App\Services\LineBot;
+namespace App\Services\LineBot\ActionHandler;
 
 use App\Models\Message;
+use App\Services\LineBot\LineBotMessageResponser;
 
 class LineBotActionLearner implements LineBotActionHandlerInterface
 {

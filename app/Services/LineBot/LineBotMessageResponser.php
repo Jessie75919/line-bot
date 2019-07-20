@@ -32,7 +32,7 @@ class LineBotMessageResponser
      * @param $userMsg
      * @return string
      */
-    public function keywordReply($userMsg): string
+    public function keywordReply($userMsg): ?string
     {
         $resp = Message::where('keyword', $userMsg)
                        ->where('channel_id', $this->channelId)->get();

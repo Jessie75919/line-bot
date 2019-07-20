@@ -86,7 +86,7 @@ class DateParser
     }
 
 
-    private function isNeedToPlus12($timeInterval): bool
+    private function isNeedToPlus12($timeInterval, $dateCarbon): bool
     {
         return in_array($timeInterval, ['下午', '晚上']);
     }
@@ -125,7 +125,9 @@ class DateParser
     private function createTargetTime(string $dateTime, bool $isNeedPlus12Hours = false)
     {
         $targetTime = Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
-        return $isNeedPlus12Hours ? $targetTime->addHours(12) : $targetTime;
+        return $isNeedPlus12Hours
+            ? $targetTime->addHours(12)
+            : $targetTime;
     }
 
 
@@ -144,11 +146,11 @@ class DateParser
     }
 
 
-    private function dateTimeFormatParse($date, $dateAlias, $time): array
+    private function dateTimeFormatParse(Carbon $dateCarbon, $dateAlias, $time): array
     {
-        $isNeedPlus12 = $this->isNeedToPlus12($dateAlias);
+        $isNeedPlus12 = $this->isNeedToPlus12($dateAlias, $dateCarbon);
         $time = $this->timeFormatParse($time);
-        return ["{$date} {$time}", $isNeedPlus12];
+        return ["{$dateCarbon->toDateString()} {$time}", $isNeedPlus12];
     }
 
 
@@ -165,6 +167,7 @@ class DateParser
     /**
      * @param $datetimeStr
      * @return Carbon
+     * @throws \InvalidArgumentException
      */
     private function handleForFormalDatetime($datetimeStr): Carbon
     {
@@ -180,6 +183,8 @@ class DateParser
         $date = $payload[0];
         $time = $payload[1];
 
+        $date = Carbon::createFromFormat('Y-m-d H:s', "$date $time", 'Asia/Taipei');
+
         return $this->createTargetTimeWithDateStrAndTime($time, $date);
     }
 
@@ -190,10 +195,8 @@ class DateParser
      */
     private function handleForTimeAliasDatetime($datetimeStr): Carbon
     {
-        $todayStr = Carbon::now('Asia/Taipei')->toDateString();
-
-        $dateData = $this->handleTimeAliasDatetime($datetimeStr, $todayStr);
-
+        $now = Carbon::now('Asia/Taipei');
+        $dateData = $this->handleTimeAliasDatetime($datetimeStr, $now);
         return $this->createTargetTime($dateData[0], $dateData[1]);
     }
 
@@ -206,10 +209,10 @@ class DateParser
 
     /**
      * @param        $datetimeStr
-     * @param string $dateStr
+     * @param        $dateCarbon
      * @return array
      */
-    private function handleTimeAliasDatetime($datetimeStr, string $dateStr): array
+    private function handleTimeAliasDatetime($datetimeStr, $dateCarbon): array
     {
         $times = explode(
             ',',
@@ -220,7 +223,7 @@ class DateParser
             )
         );
 
-        return $this->dateTimeFormatParse($dateStr, $times[0], $times[1]);
+        return $this->dateTimeFormatParse($dateCarbon, $times[0], $times[1]);
     }
 
 
@@ -257,7 +260,7 @@ class DateParser
 
         $targetDate = Carbon::now('Asia/Taipei')->addDays($addDays);
 
-        return $this->createTargetTimeWithDateStrAndTime($time, $targetDate->toDateString());
+        return $this->createTargetTimeWithDateStrAndTime($time, $targetDate);
     }
 
 
@@ -280,18 +283,18 @@ class DateParser
         $addDays = $this->getAddDaysCountFromCrossDay($crossDay);
         $targetDate = Carbon::now('Asia/Taipei')->addDays($addDays);
 
-        return $this->createTargetTimeWithDateStrAndTime($time, $targetDate->toDateString());
+        return $this->createTargetTimeWithDateStrAndTime($time, $targetDate);
     }
 
 
     /**
      * @param string $time
-     * @param string $targetDateStr
+     * @param        $targetDate
      * @return Carbon
      */
-    private function createTargetTimeWithDateStrAndTime(string $time, string $targetDateStr): Carbon
+    private function createTargetTimeWithDateStrAndTime(string $time, $targetDate): Carbon
     {
-        $dateData = $this->handleTimeAliasDatetime($time, $targetDateStr);
+        $dateData = $this->handleTimeAliasDatetime($time, $targetDate);
         return $this->createTargetTime($dateData[0], $dateData[1]);
     }
 }

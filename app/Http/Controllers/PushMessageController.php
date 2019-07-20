@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Memory;
 use Illuminate\Http\Request;
-use App\Services\LineBot\LineBotPushService;
+use App\Services\LineBot\PushHandler\LineBotPushService;
 use function app;
 use function redirect;
 

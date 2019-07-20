@@ -24,9 +24,7 @@ class LineController extends Controller
 
     public function index(Request $request)
     {
-        $package = $request->all();
-
-        $finalResponse = $this->lineMainService->handle($package);
+        $finalResponse = $this->lineMainService->handle($request->all());
 
         return isset($finalResponse) ? response()->json($finalResponse) : null;
     }

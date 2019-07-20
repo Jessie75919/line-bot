@@ -6,7 +6,7 @@
  * Time: 09:47
  */
 
-namespace App\Services\LineBot;
+namespace App\Services\LineBot\ActionHandler;
 
 interface LineBotActionHandlerInterface
 {
