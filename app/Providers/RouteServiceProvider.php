@@ -64,7 +64,7 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function mapFoodyRoutes()
     {
-        Route::domain('http://foody.localhost')
+        Route::domain(env('APP_URL'))
             ->namespace($this->foodyNamespace)
             ->group(base_path('routes/foody.php'));
     }
