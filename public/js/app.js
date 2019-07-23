@@ -70075,12 +70075,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery_ui_ui_widgets_sortable_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery_ui_ui_widgets_sortable_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery_validation__ = __webpack_require__("./node_modules/jquery-validation/dist/jquery.validate.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery_validation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery_validation__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash__ = __webpack_require__("./node_modules/lodash/lodash.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment__ = __webpack_require__("./node_modules/moment/moment.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_moment__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lightpick__ = __webpack_require__("./node_modules/lightpick/lightpick.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lightpick___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_lightpick__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lightpick__ = __webpack_require__("./node_modules/lightpick/lightpick.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lightpick___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lightpick__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash__ = __webpack_require__("./node_modules/lodash/lodash.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_moment__ = __webpack_require__("./node_modules/moment/moment.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_moment__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when

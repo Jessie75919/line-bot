@@ -3,8 +3,8 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
-use Illuminate\Support\Collection;
 use App\Services\Google\GooglePlaceApiService;
+use Illuminate\Support\Collection;
 
 class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
 {
@@ -33,7 +33,7 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
 
         $formatShops = $this->formatShops($shops);
 
-        return $formatShops->take(10);
+        return $formatShops;
     }
 
 
@@ -56,18 +56,22 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
         return $shops->map(function ($item) {
             $detail = $this->placeApi->getShopDetailApi($item->place_id)->result;
             $isOpenNow = null;
+            //            $photoUrl = null;
 
             try {
+                $photoUrl = $this->placeApi->getPhotoRefUrl($item->photos[0]->photo_reference);
                 $isOpenNow = $detail->opening_hours ? $detail->opening_hours->open_now : null;
             } catch (\Exception $e) {
+                \Log::info(__METHOD__." => ".$e);
+                //                dd($item, $detail, $e);
             }
 
-            return [
-                'photo_url'  => $this->placeApi->getPhotoRefUrl($item->photos[0]->photo_reference),
-                'website'    => $detail->website ?? '',
+            return (object) [
+                'photo_url' => $photoUrl ?? url('images/shop.png'),
+                'website' => $detail->website ?? '',
                 'is_opening' => $isOpenNow ? '還在營業中！' : '已休息囉！',
-                'label'      => mb_substr($item->name, 0, 40, "utf-8"),
-                'url'        => 'http://maps.google.com/?q=' .
+                'label' => mb_substr($item->name, 0, 40, "utf-8"),
+                'url' => "http://maps.google.com/?q=".
                     "{$item->geometry->location->lat},{$item->geometry->location->lng}",
             ];
         });

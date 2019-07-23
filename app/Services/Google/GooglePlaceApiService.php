@@ -23,11 +23,11 @@ class GooglePlaceApiService
 
     public function getShopDetailApi($placeId)
     {
-        $url = self::PLACE_API_URL . '/details/json?';
+        $url = self::PLACE_API_URL.'/details/json?';
         $payload = http_build_query([
-            'placeid'  => $placeId,
-            'key'      => $this->placeApiKey,
-            'language' => config('google_api.place_api.language')
+            'placeid' => $placeId,
+            'key' => $this->placeApiKey,
+            'language' => config('google_api.place_api.language'),
         ]);
 
         $curlHelper = $this->curlHelper->get($url, $payload);
@@ -41,25 +41,25 @@ class GooglePlaceApiService
 
     public function getPhotoRefUrl($photoRef)
     {
-        $url = self::PLACE_API_URL . '/photo?';
+        $url = self::PLACE_API_URL.'/photo?';
         $payload = http_build_query([
-            'maxwidth'       => 400,
-            'sensor'         => false,
+            'maxwidth' => 300,
+            'sensor' => false,
             'photoreference' => $photoRef,
-            'key'            => $this->placeApiKey
+            'key' => $this->placeApiKey,
         ]);
-        return $url . $payload;
+        return $url.$payload;
     }
 
 
     public function getPhotoRefApi(string $photoRef)
     {
-        $url = self::PLACE_API_URL . '/photo?';
+        $url = self::PLACE_API_URL.'/photo?';
         $payload = http_build_query([
-            'maxwidth'       => 400,
-            'sensor'         => false,
+            'maxwidth' => 400,
+            'sensor' => false,
             'photoreference' => $photoRef,
-            'key'            => $this->placeApiKey
+            'key' => $this->placeApiKey,
         ]);
 
         $curlHelper = $this->curlHelper->get($url, $payload);
@@ -76,13 +76,13 @@ class GooglePlaceApiService
      */
     public function nearBySearchApi()
     {
-        $url = self::PLACE_API_URL . '/nearbysearch/json?';
+        $url = self::PLACE_API_URL.'/nearbysearch/json?';
         $payload = http_build_query([
-            'radius'   => config('google_api.place_api.radius'),
+            'radius' => config('google_api.place_api.radius'),
             'language' => config('google_api.place_api.language'),
-            'types'    => config('google_api.place_api.types'),
-            'key'      => $this->placeApiKey,
-            'location' => "{$this->payload['message']['latitude']},{$this->payload['message']['longitude']}",
+            'types' => config('google_api.place_api.types'),
+            'key' => $this->placeApiKey,
+            'location' => "{$this->payload['latitude']},{$this->payload['longitude']}",
             //            'maxprice' => $this->maxprice
         ]);
 
@@ -96,7 +96,7 @@ class GooglePlaceApiService
 
 
     /**
-     * @param mixed $payload
+     * @param  mixed  $payload
      * @return GooglePlaceApiService
      */
     public function setPayload($payload)
@@ -107,7 +107,7 @@ class GooglePlaceApiService
 
 
     /**
-     * @param mixed $maxprice
+     * @param  mixed  $maxprice
      * @return GooglePlaceApiService
      */
     public function setMaxprice($maxprice)
