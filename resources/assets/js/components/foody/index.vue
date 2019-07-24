@@ -38,10 +38,7 @@
 						<div class="row">
 							<div class="col-md-4" v-for="shop in shops">
 								<div class="card mb-4 shadow-sm">
-									<a :href="shop.url" target="_blank">
-										<img :src="shop.photo_url"
-										     class="card-img-top">
-									</a>
+
 									<div class="card-body">
 										<p class="card-text"> {{ shop.label }} </p>
 										<div class="d-flex justify-content-between align-items-center">

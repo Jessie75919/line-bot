@@ -2,8 +2,8 @@
 
 return [
     'place_api' => [
-        'radius'   => 100,
+        'radius' => env('NEAR_BY_SEARCH_RADIUS'),
         'language' => 'zh-TW',
-        'types'    => 'food'
-    ]
+        'types' => 'food',
+    ],
 ];

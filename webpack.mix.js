@@ -1,4 +1,4 @@
-let mix = require('laravel-mix');
+let mix     = require('laravel-mix');
 //let webpack = require('webpack');
 const Clean = require('clean-webpack-plugin');
 
@@ -55,8 +55,9 @@ mix.combine([
 mix.minify('public/css/all.css').version();
 
 mix.js('resources/assets/js/app.js', 'public/js');
-mix.js('resources/assets/js/components/foody/foody.js', 'public/js');
 mix.js('node_modules/jquery-ui/ui/core.js', 'public/js');
+mix.js('resources/assets/js/components/foody/foody.js', 'public/js');
+mix.minify('public/js/foody.js').version();
 
 mix.babel([
 //    'resources/assets/js/libs/ckeditor/ckeditor.js',

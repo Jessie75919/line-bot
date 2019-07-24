@@ -72,9 +72,10 @@ class GooglePlaceApiService
 
 
     /**
+     * @param  null  $pageToken
      * @return mixed
      */
-    public function nearBySearchApi()
+    public function nearBySearchApi($pageToken = null)
     {
         $url = self::PLACE_API_URL.'/nearbysearch/json?';
         $payload = http_build_query([
@@ -83,7 +84,7 @@ class GooglePlaceApiService
             'types' => config('google_api.place_api.types'),
             'key' => $this->placeApiKey,
             'location' => "{$this->payload['latitude']},{$this->payload['longitude']}",
-            //            'maxprice' => $this->maxprice
+            'pagetoken' => $pageToken,
         ]);
 
         $curlHelper = $this->curlHelper->get($url, $payload);

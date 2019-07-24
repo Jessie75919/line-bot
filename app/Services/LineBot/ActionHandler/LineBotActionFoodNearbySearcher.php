@@ -27,19 +27,27 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
 
     public function handle()
     {
-        $rawData = $this->getDataFromGooglePlaceAPI();
+        $nextPageTokenOrigin = 'abc';
+        $shops = collect([]);
 
-        $shops = $this->filterFoodTypeShops($rawData);
+        while (isset($nextPageTokenOrigin) && count($shops) < 50) {
+            [$result, $nextPageToken] = $this->getDataFromGooglePlaceAPI();
+            $nextPageTokenOrigin = $nextPageToken;
+            $shops = $shops->merge($this->filterFoodTypeShops($result));
+        }
 
-        $formatShops = $this->formatShops($shops);
-
-        return $formatShops;
+        return $this->formatShops($shops);
     }
 
 
     private function getDataFromGooglePlaceAPI()
     {
-        return $this->placeApi->nearBySearchApi()->results;
+        $data = $this->placeApi->nearBySearchApi();
+
+        return [
+            $data->results,
+            isset($data->next_page_token) ? $data->next_page_token : null,
+        ];
     }
 
 
@@ -56,20 +64,28 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
         return $shops->map(function ($item) {
             $detail = $this->placeApi->getShopDetailApi($item->place_id)->result;
             $isOpenNow = null;
-            //            $photoUrl = null;
+            $photoUrl = null;
 
             try {
-                $photoUrl = $this->placeApi->getPhotoRefUrl($item->photos[0]->photo_reference);
-                $isOpenNow = $detail->opening_hours ? $detail->opening_hours->open_now : null;
+                if (isset($item->photos)) {
+                    $photoUrl = $this->placeApi->getPhotoRefUrl($item->photos[0]->photo_reference);
+                } else {
+                    $photoUrl = url('images/shop.png');
+                }
+
+                $isOpenNow = isset($detail->opening_hours)
+                    ? $detail->opening_hours->open_now
+                        ? '還在營業中！' : '已休息囉！'
+                    : '---';
+
             } catch (\Exception $e) {
                 \Log::info(__METHOD__." => ".$e);
-                //                dd($item, $detail, $e);
             }
 
             return (object) [
-                'photo_url' => $photoUrl ?? url('images/shop.png'),
+                'photo_url' => $photoUrl,
                 'website' => $detail->website ?? '',
-                'is_opening' => $isOpenNow ? '還在營業中！' : '已休息囉！',
+                'is_opening' => $isOpenNow,
                 'label' => mb_substr($item->name, 0, 40, "utf-8"),
                 'url' => "http://maps.google.com/?q=".
                     "{$item->geometry->location->lat},{$item->geometry->location->lng}",
