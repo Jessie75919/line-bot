@@ -38,9 +38,16 @@
 						<div class="row">
 							<div class="col-md-4" v-for="shop in shops">
 								<div class="card mb-4 shadow-sm">
-
 									<div class="card-body">
-										<p class="card-text"> {{ shop.label }} </p>
+										<h5 class="card-title">
+											{{ shop.label }}
+										</h5>
+										<p class="card-text">
+											Google評價：
+											<span class="badge badge-primary">
+													 {{shop.rating}}
+												 </span>
+										</p>
 										<div class="d-flex justify-content-between align-items-center">
 											<div class="btn-group">
 												<a :href="shop.url" class="btn btn-sm btn-outline-secondary"

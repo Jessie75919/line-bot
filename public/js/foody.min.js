@@ -147,6 +147,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -14345,8 +14352,29 @@ var render = function() {
                         return _c("div", { staticClass: "col-md-4" }, [
                           _c("div", { staticClass: "card mb-4 shadow-sm" }, [
                             _c("div", { staticClass: "card-body" }, [
+                              _c("h5", { staticClass: "card-title" }, [
+                                _vm._v(
+                                  "\n\t\t\t\t\t\t\t\t\t\t" +
+                                    _vm._s(shop.label) +
+                                    "\n\t\t\t\t\t\t\t\t\t"
+                                )
+                              ]),
+                              _vm._v(" "),
                               _c("p", { staticClass: "card-text" }, [
-                                _vm._v(" " + _vm._s(shop.label) + " ")
+                                _vm._v(
+                                  "\n\t\t\t\t\t\t\t\t\t\tGoogle評價：\n\t\t\t\t\t\t\t\t\t\t"
+                                ),
+                                _c(
+                                  "span",
+                                  { staticClass: "badge badge-primary" },
+                                  [
+                                    _vm._v(
+                                      "\n\t\t\t\t\t\t\t\t\t\t\t\t " +
+                                        _vm._s(shop.rating) +
+                                        "\n\t\t\t\t\t\t\t\t\t\t\t "
+                                    )
+                                  ]
+                                )
                               ]),
                               _vm._v(" "),
                               _c(

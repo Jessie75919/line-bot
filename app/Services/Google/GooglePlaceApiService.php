@@ -88,6 +88,7 @@ class GooglePlaceApiService
         ]);
 
         $curlHelper = $this->curlHelper->get($url, $payload);
+
         if ($curlHelper->isSuccessful()) {
             return $curlHelper->getContents();
         }

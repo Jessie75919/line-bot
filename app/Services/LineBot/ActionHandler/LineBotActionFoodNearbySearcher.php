@@ -27,34 +27,47 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
 
     public function handle()
     {
-        $nextPageTokenOrigin = 'abc';
         $shops = collect([]);
+        $round = 1;
 
-        while (isset($nextPageTokenOrigin) && count($shops) < 50) {
-            [$result, $nextPageToken] = $this->getDataFromGooglePlaceAPI();
-            $nextPageTokenOrigin = $nextPageToken;
+        $nextPageToken = null;
+
+        do {
+            $response = $this->getDataFromGooglePlaceAPI($nextPageToken);
+
+            $result = $response->results;
+
+            $nextPageToken = isset($response->next_page_token)
+                ? $response->next_page_token
+                : null;
+
+            \Log::info($nextPageToken);
+            \Log::info($response->status);
+
             $shops = $shops->merge($this->filterFoodTypeShops($result));
-        }
 
-        return $this->formatShops($shops);
+            $round++;
+
+        } while (isset($nextPageToken) && count($shops) < env('GOOGLE_SEARCH_SHOPS_COUNT'));
+
+
+        return $this->formatShops($shops->random(count($shops)));
     }
 
 
-    private function getDataFromGooglePlaceAPI()
+    private function getDataFromGooglePlaceAPI($nextPageToken)
     {
-        $data = $this->placeApi->nearBySearchApi();
-
-        return [
-            $data->results,
-            isset($data->next_page_token) ? $data->next_page_token : null,
-        ];
+        return $this->placeApi->nearBySearchApi($nextPageToken);
     }
 
 
     private function filterFoodTypeShops($rawData)
     {
         return collect($rawData)->filter(function ($item) {
-            return in_array('food', $item->types);
+            return in_array('food', $item->types) ||
+                in_array('restaurant', $item->types) ||
+                in_array('bakery', $item->types) ||
+                in_array('cafe', $item->types);
         });
     }
 
@@ -86,6 +99,7 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
                 'photo_url' => $photoUrl,
                 'website' => $detail->website ?? '',
                 'is_opening' => $isOpenNow,
+                'rating' => $item->rating,
                 'label' => mb_substr($item->name, 0, 40, "utf-8"),
                 'url' => "http://maps.google.com/?q=".
                     "{$item->geometry->location->lat},{$item->geometry->location->lng}",

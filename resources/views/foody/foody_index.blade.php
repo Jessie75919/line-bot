@@ -10,7 +10,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="api-url" content="{{ env('API_URL') }}">
-    <title>Document</title>
+    <title>Foody</title>
 </head>
 <body>
 
