@@ -3,8 +3,8 @@
 
 namespace App\Services\LineBot;
 
-use LINE\LINEBot;
 use App\Services\LineBot\PushHandler\LineBotPushService;
+use LINE\LINEBot;
 
 class LineBotMainService
 {
@@ -32,14 +32,10 @@ class LineBotMainService
             return null;
         }
 
-        $dataType = $this->lineBotReceiver->getUserDataType();
-        $channelId = $this->lineBotReceiver->getMemory()->channel_id;
-
-        $lineBotPushService = null;
+        [$replyToken, $dataType, $channelId] = $this->getUserData();
 
         if ($dataType === 'location') {
-            $lineBotPushService = new LineBotPushService();
-            $lineBotPushService->pushMessage($channelId, '搜尋中...請稍等喔！');
+            return $this->lineBot->replyText($replyToken, '搜尋中...請稍等喔！');
         }
 
         $payload = $dispatchHandler->handle();
@@ -49,14 +45,25 @@ class LineBotMainService
         }
 
         if ($dataType === 'text') {
-            /** @var string $replyToken */
-            $replyToken = $this->lineBotReceiver->getReplyToken();
             return $this->lineBot->replyText($replyToken, $payload);
         }
 
         if ($dataType === 'location') {
+            $lineBotPushService = new LineBotPushService();
             $template = $lineBotPushService->buildTemplateMessageBuilder($payload, '有訊息！請到手機上查看囉！');
-            return  $lineBotPushService->pushMessage($channelId, $template);
+            return $lineBotPushService->pushMessage($channelId, $template);
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function getUserData(): array
+    {
+        /** @var string $replyToken */
+        $replyToken = $this->lineBotReceiver->getReplyToken();
+        $dataType = $this->lineBotReceiver->getUserDataType();
+        $channelId = $this->lineBotReceiver->getMemory()->channel_id;
+        return [$replyToken, $dataType, $channelId];
     }
 }
