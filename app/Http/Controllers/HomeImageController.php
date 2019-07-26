@@ -45,12 +45,14 @@ class HomeImageController extends Controller
 
         $lastQueryString = $this->getQueryString($request);
 
-        return view('consoles.homeImage.index',
+        return view(
+            'consoles.homeImage.index',
             compact(
                 'homeImages',
                 'lastQueryStatus',
                 'lastQueryString'
-            ));
+            )
+        );
     }
 
 

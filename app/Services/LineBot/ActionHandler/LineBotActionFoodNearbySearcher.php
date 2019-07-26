@@ -28,7 +28,6 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
     public function handle()
     {
         $shops = collect([]);
-        $round = 1;
 
         $nextPageToken = null;
 
@@ -41,17 +40,10 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
                 ? $response->next_page_token
                 : null;
 
-            \Log::info($nextPageToken);
-            \Log::info($response->status);
-
             $shops = $shops->merge($this->filterFoodTypeShops($result));
-
-            $round++;
-
         } while (isset($nextPageToken) && count($shops) < env('GOOGLE_SEARCH_SHOPS_COUNT'));
 
-
-        return $this->formatShops($shops->random(count($shops)));
+        return $this->formatShops($shops);
     }
 
 
@@ -64,10 +56,7 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
     private function filterFoodTypeShops($rawData)
     {
         return collect($rawData)->filter(function ($item) {
-            return in_array('food', $item->types) ||
-                in_array('restaurant', $item->types) ||
-                in_array('bakery', $item->types) ||
-                in_array('cafe', $item->types);
+            return in_array('food', $item->types);
         });
     }
 
@@ -88,11 +77,10 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
 
                 $isOpenNow = isset($detail->opening_hours)
                     ? $detail->opening_hours->open_now
-                        ? '還在營業中！' : '已休息囉！'
+                    ? '還在營業中！' : '已休息囉！'
                     : '---';
-
             } catch (\Exception $e) {
-                \Log::info(__METHOD__." => ".$e);
+                \Log::info(__METHOD__ . " => " . $e);
             }
 
             return (object) [
@@ -101,7 +89,7 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
                 'is_opening' => $isOpenNow,
                 'rating' => $item->rating,
                 'label' => mb_substr($item->name, 0, 40, "utf-8"),
-                'url' => "http://maps.google.com/?q=".
+                'url' => "http://maps.google.com/?q=" .
                     "{$item->geometry->location->lat},{$item->geometry->location->lng}",
             ];
         });
