@@ -1,12 +1,11 @@
 <?php
 
-
 namespace App\Services\LineBot;
 
 use App\Models\Memory;
-use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
 use App\Services\LineBot\ActionHandler\LineBotActionHandlerInterface;
 use App\Services\LineBot\TypePayloadHandler\LocationTypePayloadHandler;
+use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
 
 class LineBotMessageReceiver
 {
@@ -18,21 +17,19 @@ class LineBotMessageReceiver
     private $userDataType;
     private $memory;
 
-
     public function handle($package)
     {
-        \Log::info('package = ' . print_r($package, true));
+        \Log::info('package = '.print_r($package, true));
 
         if (! ($this->initData($package))) {
             return null;
         }
 
-        \Log::info('channelId = ' . $this->channelId);
+        \Log::info('channelId = '.$this->channelId);
 
         return $this->createMemory($this->channelId)
-                    ->dispatchByPayloadType();
+            ->dispatchByPayloadType();
     }
-
 
     /**
      * @return string
@@ -41,7 +38,6 @@ class LineBotMessageReceiver
     {
         return $this->replyToken;
     }
-
 
     public function dispatchByPayloadType(): LineBotActionHandlerInterface
     {
@@ -59,10 +55,7 @@ class LineBotMessageReceiver
                 ->preparePayload()
                 ->dispatch();
         }
-
-
     }
-
 
     /**
      * @return string
@@ -72,7 +65,6 @@ class LineBotMessageReceiver
         return $this->userDataType;
     }
 
-
     /**
      * @return mixed
      */
@@ -80,7 +72,6 @@ class LineBotMessageReceiver
     {
         return $this->memory;
     }
-
 
     /** get data of package from user
      * @param $package
@@ -117,8 +108,8 @@ class LineBotMessageReceiver
                     case 'location':
                         $this->userDataType = 'location';
                         $this->userData = [
-                            'address'   => $message['address'],
-                            'latitude'  => $message['latitude'],
+                            'address' => $message['address'],
+                            'latitude' => $message['latitude'],
                             'longitude' => $message['longitude'],
                         ];
                         return $this;
@@ -128,7 +119,6 @@ class LineBotMessageReceiver
 
         return null;
     }
-
 
     /** for the first time user which not has record in DB
      * @param $channelId
@@ -141,7 +131,7 @@ class LineBotMessageReceiver
         if (! $memory) {
             $memory = Memory::create([
                 'channel_id' => $channelId,
-                'is_talk'    => 1
+                'is_talk' => 1,
             ]);
         }
 

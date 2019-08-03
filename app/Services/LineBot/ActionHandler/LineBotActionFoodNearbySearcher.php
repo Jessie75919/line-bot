@@ -69,7 +69,7 @@ class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
 
                 try {
                     if (isset($item->photos)) {
-                        $photoUrl = $this->placeApi->getPhotoRefUrl($item->photos[0]->photo_reference);
+                        $photoUrl = route('place-api.image-preview', ['ref' => $item->photos[0]->photo_reference]);
                     } else {
                         $photoUrl = url('images/shop.png');
                     }

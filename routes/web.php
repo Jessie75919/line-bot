@@ -10,11 +10,14 @@ Route::get("/test", function () {
 })->name("test");
 
 Route::post("/webhook", "LineController@index");
+Route::get(
+    "/place-api/image-preview",
+    "LineController@imagePreview"
+)->name('place-api.image-preview');
 //Route::post("/pushMessage", "PushMessageController@index")->name("pushConsole");
 
 //Route::post("/webhook", "FacebookBotController@post");
 //Route::get("/webhook", "FacebookBotController@get");
-
 
 Auth::routes();
 
@@ -51,16 +54,13 @@ Route::group(["middleware" => ["sanitize", "auth"]], function () {
     Route::get("/merchandise/notices", "ProductNoticeController@index")
         ->name("merchandise.notices.index");
 
-
     /* 首頁主圖管理 */
     Route::get("/homeImage", "HomeImageController@index")
         ->name("homeImage.index");
     Route::get("/homeImage/search", "HomeImageController@search")
         ->name("homeImage.search");
 
-
 });
-
 
 /* No Sanitize */
 Route::group(["middleware" => ["auth"]], function () {
@@ -73,7 +73,6 @@ Route::group(["middleware" => ["auth"]], function () {
     Route::post("/merchandise/notices", "ProductNoticeController@create")
         ->name("merchandise.notices.create");
 });
-
 
 /* Reset Password */
 
