@@ -1,10 +1,9 @@
 <?php
 
-
 namespace App\Services\LineBot\TypePayloadHandler;
 
-use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
 use App\Services\LineBot\ActionHandler\LineBotActionFoodNearbySearcher;
+use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
 
 class LocationTypePayloadHandler implements TypePayloadHandlerInterface
 {
@@ -15,7 +14,6 @@ class LocationTypePayloadHandler implements TypePayloadHandlerInterface
     /** * @var string */
     private $purpose;
 
-
     /**
      * TextPurposeChecker constructor.
      * @param $memory
@@ -25,7 +23,6 @@ class LocationTypePayloadHandler implements TypePayloadHandlerInterface
         $this->memory = $memory;
     }
 
-
     public function checkPurpose($payload)
     {
         $this->rawPayload = $payload;
@@ -33,22 +30,18 @@ class LocationTypePayloadHandler implements TypePayloadHandlerInterface
         return $this;
     }
 
-
     public function preparePayload()
     {
         $this->payload = [
             'channelId' => $this->memory->channel_id,
-            'purpose'   => $this->purpose,
-            'message'   => [
-                'origin'    => $this->rawPayload,
-                'address'   => $this->rawPayload['address'],
-                'latitude'  => $this->rawPayload['latitude'],
-                'longitude' => $this->rawPayload['longitude'],
-            ]
+            'purpose' => $this->purpose,
+            'origin' => $this->rawPayload,
+            'address' => $this->rawPayload['address'],
+            'latitude' => $this->rawPayload['latitude'],
+            'longitude' => $this->rawPayload['longitude'],
         ];
         return $this;
     }
-
 
     public function dispatch()
     {

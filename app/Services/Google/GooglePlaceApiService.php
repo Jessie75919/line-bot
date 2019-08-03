@@ -13,13 +13,11 @@ class GooglePlaceApiService
     /** * @var string */
     private $maxprice = 300;
 
-
     public function __construct($placeApiKey)
     {
         $this->placeApiKey = $placeApiKey;
         $this->curlHelper = new CurlTools();
     }
-
 
     public function getShopDetailApi($placeId)
     {
@@ -38,7 +36,6 @@ class GooglePlaceApiService
         return null;
     }
 
-
     public function getPhotoRefUrl($photoRef)
     {
         $url = self::PLACE_API_URL.'/photo?';
@@ -50,7 +47,6 @@ class GooglePlaceApiService
         ]);
         return $url.$payload;
     }
-
 
     public function getPhotoRefApi(string $photoRef)
     {
@@ -70,7 +66,6 @@ class GooglePlaceApiService
         return null;
     }
 
-
     /**
      * @param  null  $pageToken
      * @return mixed
@@ -87,7 +82,6 @@ class GooglePlaceApiService
             'pagetoken' => $pageToken,
         ]);
 
-
         $curlHelper = $this->curlHelper->get($url, $payload);
 
         if ($curlHelper->isSuccessful()) {
@@ -96,7 +90,6 @@ class GooglePlaceApiService
 
         return null;
     }
-
 
     /**
      * @param  mixed  $payload
@@ -107,7 +100,6 @@ class GooglePlaceApiService
         $this->payload = $payload;
         return $this;
     }
-
 
     /**
      * @param  mixed  $maxprice

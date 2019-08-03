@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services\LineBot;
 
 use App\Services\LineBot\PushHandler\LineBotPushService;
@@ -13,7 +12,6 @@ class LineBotMainService
     /* @var LINEBot */
     private $lineBot;
 
-
     /**
      * LineBotMainService constructor.
      */
@@ -22,7 +20,6 @@ class LineBotMainService
         $this->lineBot = app(LINEBot::class);
         $this->lineBotReceiver = app(LineBotMessageReceiver::class);
     }
-
 
     public function handle($package)
     {
@@ -35,7 +32,7 @@ class LineBotMainService
         [$replyToken, $dataType, $channelId] = $this->getUserData();
 
         if ($dataType === 'location') {
-            return $this->lineBot->replyText($replyToken, '搜尋中...請稍等喔！');
+            $this->lineBot->replyText($replyToken, '搜尋中...請稍等喔！');
         }
 
         $payload = $dispatchHandler->handle();
