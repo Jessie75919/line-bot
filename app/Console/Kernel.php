@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\BodyTemperatureDocsGenerator;
+use App\Console\Commands\Line\LineBotPushMessage;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
 use Illuminate\Console\Scheduling\Schedule;
@@ -12,18 +13,17 @@ class Kernel extends ConsoleKernel
 {
     /**
      * The Artisan commands provided by your application.
-     *
      * @var array
      */
     protected $commands = [
         UrlSpider::class,
         MailTest::class,
-        BodyTemperatureDocsGenerator::class
+        BodyTemperatureDocsGenerator::class,
+        LineBotPushMessage::class,
     ];
 
     /**
      * Define the application's command schedule.
-     *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
@@ -35,7 +35,6 @@ class Kernel extends ConsoleKernel
 
     /**
      * Register the commands for the application.
-     *
      * @return void
      */
     protected function commands()
