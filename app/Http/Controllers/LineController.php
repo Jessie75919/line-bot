@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Google\GooglePlaceApiService;
 use App\Services\LineBot\LineBotMainService;
 use Illuminate\Http\Request;
+use LINE\LINEBot\Constant\HTTPHeader;
 
 class LineController extends Controller
 {
@@ -22,6 +23,18 @@ class LineController extends Controller
 
     public function index(Request $request)
     {
+        $body = $request->getContent();
+        $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
+        $isValid = $this->lineMainService->validateSignature($body, $signature);
+
+        \Log::info(__METHOD__." isValid => ".var_export($isValid));
+        \Log::info(__METHOD__.' => '.
+            print_r(
+                $this->lineMainService->parseEventRequest($body, $signature),
+                true
+            )
+        );
+
         $response = $this->lineMainService->handle($request->all());
 
         \Log::info(__METHOD__.' => '.print_r($response, true));

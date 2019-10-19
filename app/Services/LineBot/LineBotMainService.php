@@ -21,6 +21,21 @@ class LineBotMainService
         $this->lineBotReceiver = app(LineBotMessageReceiver::class);
     }
 
+    /**
+     * @param $body
+     * @param $signature
+     * @return bool
+     */
+    public function validateSignature($body, $signature): bool
+    {
+        return $this->lineBot->validateSignature($body, $signature);
+    }
+
+    public function parseEventRequest($body, $signature)
+    {
+        return $this->lineBot->parseEventRequest($body, $signature);
+    }
+
     public function handle($package)
     {
         $dispatchHandler = $this->lineBotReceiver->handle($package);
