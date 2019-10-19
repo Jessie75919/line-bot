@@ -80,4 +80,12 @@ class LineBotPushService
     {
         $this->lineUserId = $lineUserId;
     }
+
+    /**
+     * @return LINEBot
+     */
+    public function getLineBot(): LINEBot
+    {
+        return $this->lineBot;
+    }
 }
