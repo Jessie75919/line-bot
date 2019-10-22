@@ -108,7 +108,7 @@ class ExchangeRateService
     public function isLessThan($num): bool
     {
         if (! $this->lowest) {
-            return false;
+            $this->getLowest();
         }
 
         return $num >= $this->lowest['sell'];

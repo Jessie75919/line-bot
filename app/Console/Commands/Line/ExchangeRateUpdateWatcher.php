@@ -39,8 +39,7 @@ class ExchangeRateUpdateWatcher extends Command
             $this->exRate
                 ->setCurrency($watch['currency'])
                 ->setType($watch['type'])
-                ->updateCurrent()
-                ->getLowest();
+                ->updateCurrent();
 
             if ($this->exRate->isLessThan($watch['lessThan'])) {
                 $this->exRate->notifyLine('R421b3280799bcde75de0d6c4ddf91d47');
