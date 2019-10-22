@@ -32,7 +32,7 @@ class ExchangeRateUpdateWatcher extends Command
     {
         $watchList = [
             ['currency' => 'JPY', 'type' => 'cash', 'lessThan' => 0.275,],
-            ['currency' => 'USD', 'type' => 'check', 'lessThan' => 30.6,],
+            ['currency' => 'USD', 'type' => 'check', 'lessThan' => 30.65,],
         ];
 
         foreach ($watchList as $watch) {
