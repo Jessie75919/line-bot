@@ -30,9 +30,7 @@ class LineBotPushMessage extends Command
      */
     public function handle()
     {
-        $lineBot = $this->lineBotPush->getLineBot();
-
-        $resp = $this->lineBotPush->pushMessage(
+        $this->lineBotPush->pushMessage(
             'R421b3280799bcde75de0d6c4ddf91d47',
             'hihihihi~ Nice To Meet You !!!!!!!!!!!'
         );
