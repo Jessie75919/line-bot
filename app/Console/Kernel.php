@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\BodyTemperatureDocsGenerator;
+use App\Console\Commands\Line\ExchangeRateUpdateWatcher;
 use App\Console\Commands\Line\LineBotPushMessage;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
@@ -20,6 +21,7 @@ class Kernel extends ConsoleKernel
         MailTest::class,
         BodyTemperatureDocsGenerator::class,
         LineBotPushMessage::class,
+        ExchangeRateUpdateWatcher::class,
     ];
 
     /**
@@ -29,8 +31,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $this->registerScheduleForExchangeRateWatcher($schedule);
     }
 
     /**
@@ -42,5 +43,12 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
+    }
+
+    private function registerScheduleForExchangeRateWatcher(Schedule $schedule)
+    {
+        $schedule->command('line:currency-watcher')
+            ->twiceDaily(7, 11)
+            ->timezone('Asia/Taipei');
     }
 }
