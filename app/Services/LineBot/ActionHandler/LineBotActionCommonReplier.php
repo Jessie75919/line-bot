@@ -10,20 +10,24 @@ namespace App\Services\LineBot\ActionHandler;
 
 use App\Services\LineBot\LineBotMessageResponser;
 
-class LineBotActionCommonReplier implements LineBotActionHandlerInterface
+class LineBotActionCommonReplier extends LineBotActionHandler
 {
     private $payload;
 
-
-    /**
-     * LineBotCommonReplier constructor.
-     * @param $payload
-     */
-    public function __construct($payload)
+    public function preparePayload($rawPayload)
     {
-        $this->payload = $payload;
-    }
+        $this->payload = [
+            'channelId' => $this->channelId,
+            'purpose' => $this->purpose,
+            'message' => [
+                'origin' => $rawPayload,
+                'key' => null,
+                'value' => null,
+            ],
+        ];
 
+        return $this;
+    }
 
     public function handle()
     {

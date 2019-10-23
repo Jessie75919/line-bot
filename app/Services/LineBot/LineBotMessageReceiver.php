@@ -3,7 +3,7 @@
 namespace App\Services\LineBot;
 
 use App\Models\Memory;
-use App\Services\LineBot\ActionHandler\LineBotActionHandlerInterface;
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use App\Services\LineBot\TypePayloadHandler\LocationTypePayloadHandler;
 use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
 
@@ -21,7 +21,7 @@ class LineBotMessageReceiver
     {
         \Log::info('package = '.print_r($package, true));
 
-        if (! ($this->initData($package))) {
+        if (! $this->initData($package)) {
             return null;
         }
 
@@ -39,13 +39,11 @@ class LineBotMessageReceiver
         return $this->replyToken;
     }
 
-    public function dispatchByPayloadType(): LineBotActionHandlerInterface
+    public function dispatchByPayloadType(): LineBotActionHandler
     {
-
         if ($this->userDataType === 'text') {
             return (new TextTypePayloadHandler($this->memory))
                 ->checkPurpose($this->userData)
-                ->preparePayload()
                 ->dispatch();
         }
 

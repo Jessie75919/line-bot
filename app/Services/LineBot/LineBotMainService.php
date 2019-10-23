@@ -14,11 +14,15 @@ class LineBotMainService
 
     /**
      * LineBotMainService constructor.
+     * @param  LINEBot  $lineBot
+     * @param  LineBotMessageReceiver  $lineBotReceiver
      */
-    public function __construct()
-    {
-        $this->lineBot = app(LINEBot::class);
-        $this->lineBotReceiver = app(LineBotMessageReceiver::class);
+    public function __construct(
+        LINEBot $lineBot,
+        LineBotMessageReceiver $lineBotReceiver
+    ) {
+        $this->lineBot = $lineBot;
+        $this->lineBotReceiver = $lineBotReceiver;
     }
 
     /**

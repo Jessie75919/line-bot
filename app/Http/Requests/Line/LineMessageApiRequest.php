@@ -31,6 +31,10 @@ class LineMessageApiRequest extends FormRequest
      */
     public function authorize()
     {
+        if (env('APP_ENV') !== 'production') {
+            return true;
+        }
+
         try {
             return $this->lineBot->validateSignature(
                 $this->getContent(),

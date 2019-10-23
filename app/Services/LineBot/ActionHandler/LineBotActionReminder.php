@@ -2,29 +2,29 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
-use Exception;
-use Carbon\Carbon;
 use App\Jobs\TodoJob;
 use App\Models\TodoList;
-use App\Services\Date\DateParser;
 use App\Repository\LineBot\TodoListRepo;
-use App\Services\LineBot\TypePayloadHandler;
+use App\Services\Date\DateParser;
 use App\Services\LineBot\LineBotMessageResponser;
+use App\Services\LineBot\TypePayloadHandler;
+use Carbon\Carbon;
+use Exception;
 
-class LineBotActionReminder implements LineBotActionHandlerInterface
+class LineBotActionReminder extends LineBotActionHandler
 {
     const PAST_TIME_ERROR = 'PAST_TIME_ERROR';
-    const FORMAT_ERROR    = 'FORMAT_ERROR';
-    const SUCCESS         = 'SUCCESS';
-    const ERROR           = 'ERROR';
-    const STATE           = "STATE";
-    const REMINDER_STATE  = "Reminder-State";
-    const REMINDER        = 'reminder';
+    const FORMAT_ERROR = 'FORMAT_ERROR';
+    const SUCCESS = 'SUCCESS';
+    const ERROR = 'ERROR';
+    const STATE = "STATE";
+    const REMINDER_STATE = "Reminder-State";
+    const REMINDER = 'reminder';
     const REMINDER_DELETE = "Reminder-Delete";
-    const PERIOD_MAP      = [
+    const PERIOD_MAP = [
         'D' => 'Day',
         'W' => 'Week',
-        "M" => 'Minute'
+        "M" => 'Minute',
     ];
 
     private $payload;
@@ -33,20 +33,34 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
     private $messageResponser;
     private $repeatPeriod = null;
 
-
     /**
      * LineBotLearnService constructor.
-     * @param array        $payload
-     * @param TodoListRepo $todoListRepo
+     * @param  array  $rawPayload
+     * @param  TodoListRepo  $todoListRepo
      */
-    public function __construct(array $payload, TodoListRepo $todoListRepo)
+    public function __construct(TodoListRepo $todoListRepo)
     {
-        $this->payload = $payload;
         $this->todoListRepo = $todoListRepo;
         $this->messageResponser = new LineBotMessageResponser($this->payload['channelId'], 'response');
         $this->updateDetailPurpose();
     }
 
+    public function preparePayload($rawPayload)
+    {
+        $breakdownMessage = $this->breakdownMessage($rawPayload);
+
+        $this->payload = [
+            'channelId' => $this->channelId,
+            'purpose' => $this->purpose,
+            'message' => [
+                'origin' => $rawPayload,
+                'key' => count($breakdownMessage) > 0 ? $breakdownMessage[1] : null,
+                'value' => count($breakdownMessage) === 3 ? $breakdownMessage[2] : null,
+            ],
+        ];
+
+        return $this;
+    }
 
     public function handle()
     {
@@ -69,11 +83,10 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
             ->responseToUser();
     }
 
-
     private function setQueue($delayTime, $todoListId): bool
     {
         try {
-            \Log::info("setQueueJob for {$this->payload['channelId']} , " .
+            \Log::info("setQueueJob for {$this->payload['channelId']} , ".
                 "{$this->payload['message']['value']}");
 
             dispatch(
@@ -91,28 +104,26 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
         }
     }
 
-
     private function storeToDB($targetTime)
     {
         try {
             $todo = TodoList::create([
-                'send_channel_id'    => $this->payload['channelId'],
+                'send_channel_id' => $this->payload['channelId'],
                 'receive_channel_id' => $this->payload['channelId'],
-                'message'            => $this->payload['message']['value'],
-                'send_time'          => $targetTime,
-                'repeat_period'      => $this->repeatPeriod ? json_encode($this->repeatPeriod) : null,
-                'is_sent'            => 0
+                'message' => $this->payload['message']['value'],
+                'send_time' => $targetTime,
+                'repeat_period' => $this->repeatPeriod ? json_encode($this->repeatPeriod) : null,
+                'is_sent' => 0,
             ]);
 
             \Log::info("todoId => {$todo->id}");
 
             return $todo;
         } catch (\Exception $e) {
-            \Log::error(__METHOD__ . " => " . $e);
+            \Log::error(__METHOD__." => ".$e);
             return null;
         }
     }
-
 
     private function deleteReminderHandler()
     {
@@ -126,7 +137,6 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
             return "你的提醒編號：{$todoId} 好像沒有刪除成功喔。";
         }
     }
-
 
     private function updateDetailPurpose()
     {
@@ -149,7 +159,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
                 );
             $this->repeatPeriod = [
                 'period' => $numberWithPeriod[1],
-                'length' => $numberWithPeriod[0] === '' ? 1 : (int)$numberWithPeriod[0]
+                'length' => $numberWithPeriod[0] === '' ? 1 : (int) $numberWithPeriod[0],
             ];
         }
 
@@ -166,7 +176,6 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
                 $this->payload['purpose'] = self::REMINDER;
         }
     }
-
 
     /**
      * @return string|null
@@ -192,7 +201,6 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
         return $responseText;
     }
 
-
     private function setReminderHandler()
     {
         $dateStr = $this->payload['message']['key'];
@@ -202,7 +210,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
             /** @var Carbon $targetTime */
             $targetTime = $dateParser->getTargetTime();
         } catch (\Exception $e) {
-            \Log::error(__METHOD__ . " => " . $e);
+            \Log::error(__METHOD__." => ".$e);
             return " 喔 !? 輸入格式好像有點問題喔～ \n 例如：『 提醒;明天早上九點;吃早餐 』。";
         }
 
@@ -217,7 +225,7 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
             $isSuccess = $this->setQueue($delayTime, $todoList->id);
 
             $repeatPeriod = $todoList->repeat_period;
-            $successMessage = " [提醒時間]\n {$targetTime->toDateTimeString()}\n------------ \n " .
+            $successMessage = " [提醒時間]\n {$targetTime->toDateTimeString()}\n------------ \n ".
                 "[提醒內容]\n {$this->payload['message']['value']} ";
 
             $periodMeaning = $this->getPeriodMeaning($todoList->repeat_period);
@@ -231,7 +239,6 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
         }
     }
 
-
     /**
      * @param $repeatPeriod
      * @return string
@@ -244,6 +251,6 @@ class LineBotActionReminder implements LineBotActionHandlerInterface
 
         $repeatPeriod = json_decode($repeatPeriod, true);
 
-        return "(" . $repeatPeriod['length'] . self::PERIOD_MAP[$repeatPeriod['period']] . " 重複一次) \n";
+        return "(".$repeatPeriod['length'].self::PERIOD_MAP[$repeatPeriod['period']]." 重複一次) \n";
     }
 }

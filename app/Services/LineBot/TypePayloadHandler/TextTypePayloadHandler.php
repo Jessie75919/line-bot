@@ -153,25 +153,26 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
     {
         switch ($this->purpose) {
             case $this->isCommonPurpose($this->purpose):
-                $instance = new LineBotActionCommonReplier($this->rawPayload);
+                $instance = new LineBotActionCommonReplier();
                 break;
             case self::HELP:
-                $instance = new LineBotCommandHelper($this->rawPayload);
+                $instance = new LineBotCommandHelper();
                 break;
             case self::LEARN:
-                $instance = new LineBotActionLearner($this->rawPayload);
+                $instance = new LineBotActionLearner();
                 break;
             case self::REMINDER:
                 $todoListRepo = app(TodoListRepo::class);
-                $instance = new LineBotActionReminder($this->rawPayload, $todoListRepo);
+                $instance = new LineBotActionReminder($todoListRepo);
                 break;
             default:
                 $this->purpose = self::HELP;
-                $instance = new LineBotCommandHelper($this->rawPayload);
+                $instance = new LineBotCommandHelper();
         }
 
         return $instance
             ->setChannelId($this->memory->channel_id)
-            ->setPurpose($this->purpose);
+            ->setPurpose($this->purpose)
+            ->preparePayload($this->rawPayload);
     }
 }

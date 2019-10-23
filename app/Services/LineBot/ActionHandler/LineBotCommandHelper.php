@@ -4,17 +4,27 @@ namespace App\Services\LineBot\ActionHandler;
 
 use App\Services\LineBot\LineBotMessageResponser;
 
-class LineBotCommandHelper implements LineBotActionHandlerInterface
+class LineBotCommandHelper extends LineBotActionHandler
 {
 
     protected $payload;
 
-
-    public function __construct($payload)
+    public function preparePayload($rawPayload)
     {
-        $this->payload = $payload;
-    }
+        $breakdownMessage = $this->breakdownMessage($rawPayload);
 
+        $this->payload = [
+            'channelId' => $this->channelId,
+            'purpose' => $this->purpose,
+            'message' => [
+                'origin' => $rawPayload,
+                'key' => count($breakdownMessage) > 0 ? $breakdownMessage[1] : null,
+                'value' => count($breakdownMessage) === 3 ? $breakdownMessage[2] : null,
+            ],
+        ];
+
+        return $this;
+    }
 
     public function handle()
     {

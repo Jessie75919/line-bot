@@ -10,7 +10,7 @@ namespace App\Services\LineBot;
 
 use App\Models\Memory;
 use App\Models\Message;
-use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 
 class LineBotMessageResponser
 {
@@ -93,7 +93,7 @@ class LineBotMessageResponser
 
     public function getHelpDescription()
     {
-        $delimiter = str_replace('|', ' 或 ', TextTypePayloadHandler::DELIMITER_USE);
+        $delimiter = str_replace('|', ' 或 ', LineBotActionHandler::DELIMITER_USE);
         return "#help 幫助文件 \n ".
             "## 分段符 ： {$delimiter} \n ".
             "    ex : 提醒;今天早上九點;吃早餐 \n ".

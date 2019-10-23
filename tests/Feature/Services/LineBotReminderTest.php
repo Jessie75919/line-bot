@@ -2,36 +2,38 @@
 
 namespace Tests\Feature\Services;
 
-use function dd;
-use LINE\LINEBot\Response;
 use Tests\TestCase;
 
 class LineBotReminderTest extends TestCase
 {
 
-
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function ForTodayMorning()
+    /* @test */
+    public function testForTodayMorning()
     {
+        $this->withoutExceptionHandling();
 
         $cmd = '提醒;今天 早上 8:45;泡咖啡';
         $package = $this->getPackage($cmd);
-        $response = $this->call('post', 'webhook', [$package]
-        );
+        $response = $this->post('webhook', [$package]);
 
         $this->assertTrue($response->isSuccessful());
 
     }
 
+    /* @test */
+    public function testHelpCommand()
+    {
+        $cmd = 'help';
+        $package = $this->getPackage($cmd);
+        $response = $this->post('webhook', $package);
+
+        $this->assertTrue($response->isSuccessful());
+    }
 
     public function ForWeekday()
     {
-        $cmd      = '提醒;星期四 早上 8:45;泡咖啡';
-        $package  = $this->getPackage($cmd);
+        $cmd = '提醒;星期四 早上 8:45;泡咖啡';
+        $package = $this->getPackage($cmd);
         $response = $this->call('post', 'webhook', [$package]);
 
         $this->assertTrue($response->isSuccessful());
@@ -40,31 +42,24 @@ class LineBotReminderTest extends TestCase
 
     public function ForNextWeekday()
     {
-        $cmd      = '提醒;下星期三 早上 8:45;泡咖啡';
-        $package  = $this->getPackage($cmd);
+        $cmd = '提醒;下星期三 早上 8:45;泡咖啡';
+        $package = $this->getPackage($cmd);
         $response = $this->call('post', 'webhook', [$package]);
 
         $this->assertTrue($response->isSuccessful());
 
     }
-
 
     public function ForNextNextWeekday()
     {
-        $cmd      = '提醒;下下星期三 早上 8:45;泡咖啡';
-        $package  = $this->getPackage($cmd);
+        $cmd = '提醒;下下星期三 早上 8:45;泡咖啡';
+        $package = $this->getPackage($cmd);
         $response = $this->call('post', 'webhook', [$package]);
 
         $this->assertTrue($response->isSuccessful());
 
     }
 
-
-    /**
-     * A basic test example.
-
-     * @return void
-     */
     public function ForGetState()
     {
 
@@ -79,11 +74,8 @@ class LineBotReminderTest extends TestCase
 
     }
 
-
-
     /**
      * A basic test example.
-     *
      * @return void
      */
     public function ForRandomString()
@@ -100,9 +92,7 @@ class LineBotReminderTest extends TestCase
 
     }
 
-
     /**
-
      */
     public function ForTodayMorningChineseTime()
     {
@@ -137,7 +127,6 @@ class LineBotReminderTest extends TestCase
 
     /**
      * A basic test example.
-     *
      * @return void
      */
     public function ForNoWithTodayAlias()
@@ -153,7 +142,6 @@ class LineBotReminderTest extends TestCase
         $this->assertTrue($response->isSuccessful());
 
     }
-
 
     /**
      *
@@ -173,7 +161,6 @@ class LineBotReminderTest extends TestCase
     }
 
     /**
-
      */
     public function ForTimeWithBigColon()
     {
@@ -182,44 +169,41 @@ class LineBotReminderTest extends TestCase
 
         $package = $this->getPackage($cmd);
 
-
         $response = $this->call('post', 'webhook', [$package]
         );
 
         $this->assertTrue($response->isSuccessful());
-
     }
-
 
     private function getPackage($cmd)
     {
         return [
             'events' => [
                 [
-                    'type'       => 'message',
+                    'type' => 'message',
                     'replyToken' => '73425dfaf88644ada8a43de2cb3d37fd',
-                    'timestamp'  => '1522892959409',
-                    'source'     => [
+                    'timestamp' => '1522892959409',
+                    'source' => [
                         'groupId' => 'C31f1bf838bea0857e40b13c7ea3e94a8',
-                        'userId'  => 'Ub3cb8c2273727454ec52e48cf2388158',
-                        'type'    => 'group'
+                        'userId' => 'Ub3cb8c2273727454ec52e48cf2388158',
+                        'type' => 'group',
                     ],
-                    'message'    => [
-                        'id'   => '7742096355881',
+                    'message' => [
+                        'id' => '7742096355881',
                         'type' => 'text',
-                        'text' =>  $cmd
-                    ]
+                        'text' => $cmd,
+                    ],
                 ],
                 [
                     "replyToken" => "73425dfaf88644ada8a43de2cb3d37fd",
-                    "type"       => "follow",
-                    "timestamp"  => '1462629479859',
-                    "source"     => [
-                        "type"   => "user",
-                        "userId" => "U4af4980629..."
-                    ]
-                ]
-            ]
+                    "type" => "follow",
+                    "timestamp" => '1462629479859',
+                    "source" => [
+                        "type" => "user",
+                        "userId" => "U4af4980629...",
+                    ],
+                ],
+            ],
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace App\Services\LineBot\ActionHandler;
 use App\Services\Google\GooglePlaceApiService;
 use Illuminate\Support\Collection;
 
-class LineBotActionFoodNearbySearcher implements LineBotActionHandlerInterface
+class LineBotActionFoodNearbySearcher extends LineBotActionHandler
 {
     private $payload;
     /* @var GooglePlaceApiService */
