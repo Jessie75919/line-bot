@@ -3,28 +3,27 @@
 namespace App\Services\LineBot\TypePayloadHandler;
 
 use App\Repository\LineBot\TodoListRepo;
-use App\Services\LineBot\ActionHandler\LineBotActionLearner;
-use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
-use App\Services\LineBot\ActionHandler\LineBotActionReminder;
 use App\Services\LineBot\ActionHandler\LineBotActionCommonReplier;
+use App\Services\LineBot\ActionHandler\LineBotActionLearner;
+use App\Services\LineBot\ActionHandler\LineBotActionReminder;
+use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
 
 class TextTypePayloadHandler implements TypePayloadHandlerInterface
 {
-    const SPEAK         = 'speak';
-    const SHUT_UP       = 'shutUp';
-    const LEARN         = 'learn';
-    const TALK          = 'talk';
-    const HELP          = 'help';
-    const RESPONSE      = 'response';
-    const REMINDER      = 'reminder';
-    const STATE         = "state";
-    const DELIMITER_USE = ';|_|、|，';
-    const DELIMITER     = '(' . self::DELIMITER_USE . ')';
+    const SPEAK = 'speak';
+    const SHUT_UP = 'shutUp';
+    const LEARN = 'learn';
+    const RATE = 'rate';
+    const TALK = 'talk';
+    const HELP = 'help';
+    const RESPONSE = 'response';
+    const REMINDER = 'reminder';
+    const STATE = "state";
+
     private $memory;
     private $rawPayload;
     private $payload;
     private $purpose;
-
 
     /**
      * TextPurposeChecker constructor.
@@ -34,20 +33,6 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
     {
         $this->memory = $memory;
     }
-
-
-    /** Dissect the Message if it is a learning command with <學;key;value>
-     * @param $userMessage
-     * @return array
-     */
-    public static function breakdownMessage($userMessage): array
-    {
-        return collect(preg_split('/' . self::DELIMITER . '/', $userMessage))
-            ->map(function ($item) {
-                return trim($item);
-            })->toArray();
-    }
-
 
     /**
      * @param $purpose
@@ -62,7 +47,6 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
             self::HELP === $purpose;
     }
 
-
     public function checkPurpose($textPayload)
     {
         $this->rawPayload = $textPayload;
@@ -74,14 +58,21 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         }
 
         // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
-        $pattern = "/^(提醒|rem|reminder|remR.*){1}\s?" . self::DELIMITER . "(.*)/";
+        $pattern = "/^(提醒|rem|reminder|remR.*){1}\s?".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $textPayload) == 1) {
             $this->purpose = self::REMINDER;
             return $this;
         }
 
+        // 匯率查詢指令
+        $pattern = "/^(匯率|rate){1}\s?([A-Z]{3})/m";
+        if (preg_match($pattern, $textPayload) == 1) {
+            $this->purpose = self::RATE;
+            return $this;
+        }
+
         // 學習類型指令
-        $pattern = "/^(學|learn){1}\s?" . self::DELIMITER . "(.*)/";
+        $pattern = "/^(學|learn){1}\s?".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $textPayload) == 1) {
             $this->purpose = self::LEARN;
             return $this;
@@ -110,10 +101,9 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         return $this;
     }
 
-
     /**
-     * @param string $keyword
-     * @param string $mode
+     * @param  string  $keyword
+     * @param  string  $mode
      * @return bool
      */
     public function isSettingCmd(string $keyword, string $mode): bool
@@ -138,50 +128,50 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         }
     }
 
-
-    public function preparePayload()
-    {
-        $breakdownMessage = self::breakdownMessage($this->rawPayload);
-
-        $this->payload = [
-            'channelId' => $this->memory->channel_id,
-            'purpose'   => $this->purpose,
-            'message'   => [
-                'origin' => $this->rawPayload,
-                'key'    => $this->isCommonPurpose($this->purpose)
-                    ? null
-                    : count($breakdownMessage) > 0 ? $breakdownMessage[1] : null,
-                'value'  => $this->isCommonPurpose($this->purpose)
-                    ? null
-                    : count($breakdownMessage) === 3 ? $breakdownMessage[2] : null,
-            ]
-        ];
-
-        return $this;
-    }
-
+    //    public function preparePayload()
+    //    {
+    //        $breakdownMessage = self::breakdownMessage($this->rawPayload);
+    //
+    //        $this->payload = [
+    //            'channelId' => $this->memory->channel_id,
+    //            'purpose' => $this->purpose,
+    //            'message' => [
+    //                'origin' => $this->rawPayload,
+    //                'key' => $this->isCommonPurpose($this->purpose)
+    //                    ? null
+    //                    : count($breakdownMessage) > 0 ? $breakdownMessage[1] : null,
+    //                'value' => $this->isCommonPurpose($this->purpose)
+    //                    ? null
+    //                    : count($breakdownMessage) === 3 ? $breakdownMessage[2] : null,
+    //            ],
+    //        ];
+    //
+    //        return $this;
+    //    }
 
     public function dispatch()
     {
         switch ($this->purpose) {
             case $this->isCommonPurpose($this->purpose):
-                return new LineBotActionCommonReplier($this->payload);
-
+                $instance = new LineBotActionCommonReplier($this->rawPayload);
+                break;
             case self::HELP:
-                return new LineBotCommandHelper($this->payload);
+                $instance = new LineBotCommandHelper($this->rawPayload);
                 break;
-
             case self::LEARN:
-                return new LineBotActionLearner($this->payload);
+                $instance = new LineBotActionLearner($this->rawPayload);
                 break;
-
             case self::REMINDER:
                 $todoListRepo = app(TodoListRepo::class);
-                return new LineBotActionReminder($this->payload, $todoListRepo);
-
+                $instance = new LineBotActionReminder($this->rawPayload, $todoListRepo);
+                break;
             default:
-                $this->payload['purpose'] = 'help';
-                return new LineBotCommandHelper($this->payload);
+                $this->purpose = self::HELP;
+                $instance = new LineBotCommandHelper($this->rawPayload);
         }
+
+        return $instance
+            ->setChannelId($this->memory->channel_id)
+            ->setPurpose($this->purpose);
     }
 }
