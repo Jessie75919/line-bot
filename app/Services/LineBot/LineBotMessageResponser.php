@@ -10,6 +10,7 @@ namespace App\Services\LineBot;
 
 use App\Models\Memory;
 use App\Models\Message;
+use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
 
 class LineBotMessageResponser
 {
@@ -19,14 +20,12 @@ class LineBotMessageResponser
     private $purpose;
     private $content;
 
-
     public function __construct($channelId, $purpose, $content = null)
     {
         $this->channelId = $channelId;
         $this->purpose = $purpose;
         $this->content = $content;
     }
-
 
     /**
      * @param $userMsg
@@ -40,7 +39,6 @@ class LineBotMessageResponser
         return count($resp) != 0 ? $resp->random()->message : null;
     }
 
-
     /**
      * @param  bool  $shutUp
      */
@@ -48,7 +46,6 @@ class LineBotMessageResponser
     {
         Memory::where('channel_id', $this->channelId)->update(['is_talk' => $shutUp]);
     }
-
 
     /**
      * @return string
@@ -76,7 +73,6 @@ class LineBotMessageResponser
         }
     }
 
-
     /**
      * @param  mixed  $purpose
      */
@@ -84,7 +80,6 @@ class LineBotMessageResponser
     {
         $this->purpose = $purpose;
     }
-
 
     /**
      * @param  null  $content
@@ -96,10 +91,9 @@ class LineBotMessageResponser
         return $this;
     }
 
-
     public function getHelpDescription()
     {
-        $delimiter = str_replace('|', ' 或 ', LineBotMessageReceiver::DELIMITER_USE);
+        $delimiter = str_replace('|', ' 或 ', TextTypePayloadHandler::DELIMITER_USE);
         return "#help 幫助文件 \n ".
             "## 分段符 ： {$delimiter} \n ".
             "    ex : 提醒;今天早上九點;吃早餐 \n ".
