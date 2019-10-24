@@ -2,47 +2,38 @@
 
 namespace App\Console\Commands\Line;
 
+use App\Services\API\GuzzleApi;
 use App\Services\ExchangeRate\ExchangeRateService;
-use App\Services\LineBot\PushHandler\LineBotPushService;
 use Illuminate\Console\Command;
 
 class ExchangeRateUpdateWatcher extends Command
 {
     protected $signature = 'line:currency-watcher';
     protected $description = 'currency watcher';
-    /**
-     * @var ExchangeRateService
-     */
-    private $exRate;
-    /**
-     * @var LineBotPushService
-     */
-    private $lineBotPushService;
+    /** @var GuzzleApi */
+    private $api;
 
-    public function __construct(
-        ExchangeRateService $exRate,
-        LineBotPushService $lineBotPushService
-    ) {
+    public function __construct(GuzzleApi $api)
+    {
         parent::__construct();
-        $this->exRate = $exRate;
-        $this->lineBotPushService = $lineBotPushService;
+        $this->api = $api;
     }
 
     public function handle()
     {
         $watchList = [
-            ['currency' => 'JPY', 'type' => 'cash', 'lessThan' => 0.275,],
+            ['currency' => 'JPY', 'type' => 'cash', 'lessThan' => 0.28,],
             ['currency' => 'USD', 'type' => 'check', 'lessThan' => 30.65,],
         ];
 
         foreach ($watchList as $watch) {
-            $this->exRate
+            $exRate = (new ExchangeRateService($this->api))
                 ->setCurrency($watch['currency'])
                 ->setType($watch['type'])
                 ->updateCurrent();
 
-            if ($this->exRate->isLessThan($watch['lessThan'])) {
-                $this->exRate->notifyLine('R421b3280799bcde75de0d6c4ddf91d47');
+            if ($exRate->isLessThan($watch['lessThan'])) {
+                $exRate->notifyLine('R421b3280799bcde75de0d6c4ddf91d47');
             }
         }
     }

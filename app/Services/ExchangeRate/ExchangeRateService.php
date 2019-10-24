@@ -4,6 +4,7 @@ namespace App\Services\ExchangeRate;
 
 use App\Services\API\GuzzleApi;
 use App\Services\LineBot\PushHandler\LineBotPushService;
+use Illuminate\Support\Collection;
 
 class ExchangeRateService
 {
@@ -13,8 +14,8 @@ class ExchangeRateService
     private $type = 'cash';
     /** @var GuzzleApi */
     private $api;
-    /* @var array */
-    private $exRates = [];
+    /* @var Collection */
+    private $exRates = null;
     private $lowest = null;
 
     /**
@@ -60,14 +61,15 @@ class ExchangeRateService
             return [];
         }
 
-        $collection = $this->exRates
-            ->sortBy('sell');
+        /* @var Collection $collection */
+        $collection = $this->exRates->sortBy('sell');
 
         $this->lowest = $this->type === 'cash'
             ? $collection->first(function ($value) {
                 return $value['comment'] === '免手續費';
             })
             : $collection->first();
+        return $this->lowest;
     }
 
     /**
@@ -95,7 +97,7 @@ class ExchangeRateService
         if (empty($lowest)) {
             return '';
         }
-        return "[{$this->getTypeStr()}] 購入提醒！
+        return "[{$this->getTypeStr()}] 訊息
   - 幣別：{$this->currency}
   - 銀行：{$lowest['bank']}
   - 買入：{$lowest['buy']}
