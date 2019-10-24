@@ -1,16 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jessie
- * Date: 2018/3/26星期一
- * Time: 下午9:22
- */
 
 namespace App\Services\LineBot;
 
 use App\Models\Memory;
 use App\Models\Message;
-use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 
 class LineBotMessageResponser
 {
@@ -93,7 +86,7 @@ class LineBotMessageResponser
 
     public function getHelpDescription()
     {
-        $delimiter = str_replace('|', ' 或 ', LineBotActionHandler::DELIMITER_USE);
+        $delimiter = str_replace('|', ' 或 ', TypePayloadHandler\TextTypePayloadHandler::DELIMITER_USE);
         return "#help 幫助文件 \n ".
             "## 分段符 ： {$delimiter} \n ".
             "    ex : 提醒;今天早上九點;吃早餐 \n ".

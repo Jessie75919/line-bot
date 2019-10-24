@@ -8,10 +8,10 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
+use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
+
 abstract class LineBotActionHandler
 {
-    const DELIMITER_USE = ';|_|、|，';
-    const DELIMITER = '('.self::DELIMITER_USE.')';
     protected $purpose;
     protected $channelId;
 
@@ -19,15 +19,19 @@ abstract class LineBotActionHandler
      * @param $userMessage
      * @return array
      */
-    public static function breakdownMessage($userMessage): array
+    public function breakdownMessage($userMessage): array
     {
-        return collect(preg_split('/'.self::DELIMITER.'/', $userMessage))
+        return collect(
+            preg_split('/'.TextTypePayloadHandler::DELIMITER.'/', $userMessage)
+        )
             ->map(function ($item) {
                 return trim($item);
             })->toArray();
     }
 
     abstract public function handle();
+
+    abstract public function preparePayload($rawPayload);
 
     /**
      * @param  mixed  $purpose
