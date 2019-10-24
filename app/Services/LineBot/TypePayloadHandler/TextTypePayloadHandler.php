@@ -5,6 +5,7 @@ namespace App\Services\LineBot\TypePayloadHandler;
 use App\Repository\LineBot\TodoListRepo;
 use App\Services\LineBot\ActionHandler\LineBotActionCommonReplier;
 use App\Services\LineBot\ActionHandler\LineBotActionLearner;
+use App\Services\LineBot\ActionHandler\LineBotActionRateWatcher;
 use App\Services\LineBot\ActionHandler\LineBotActionReminder;
 use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
 
@@ -19,6 +20,8 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
     const RESPONSE = 'response';
     const REMINDER = 'reminder';
     const STATE = "state";
+    public const DELIMITER_USE = ';|_|、|，';
+    public const DELIMITER = '('.TextTypePayloadHandler::DELIMITER_USE.')';
 
     private $memory;
     private $rawPayload;
@@ -65,7 +68,7 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         }
 
         // 匯率查詢指令
-        $pattern = "/^(匯率|rate){1}\s?([A-Z]{3})/m";
+        $pattern = "/^(匯率|rate)".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $textPayload) == 1) {
             $this->purpose = self::RATE;
             return $this;
@@ -128,27 +131,6 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         }
     }
 
-    //    public function preparePayload()
-    //    {
-    //        $breakdownMessage = self::breakdownMessage($this->rawPayload);
-    //
-    //        $this->payload = [
-    //            'channelId' => $this->memory->channel_id,
-    //            'purpose' => $this->purpose,
-    //            'message' => [
-    //                'origin' => $this->rawPayload,
-    //                'key' => $this->isCommonPurpose($this->purpose)
-    //                    ? null
-    //                    : count($breakdownMessage) > 0 ? $breakdownMessage[1] : null,
-    //                'value' => $this->isCommonPurpose($this->purpose)
-    //                    ? null
-    //                    : count($breakdownMessage) === 3 ? $breakdownMessage[2] : null,
-    //            ],
-    //        ];
-    //
-    //        return $this;
-    //    }
-
     public function dispatch()
     {
         switch ($this->purpose) {
@@ -157,6 +139,9 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
                 break;
             case self::HELP:
                 $instance = new LineBotCommandHelper();
+                break;
+            case self::RATE:
+                $instance = new LineBotActionRateWatcher();
                 break;
             case self::LEARN:
                 $instance = new LineBotActionLearner();
