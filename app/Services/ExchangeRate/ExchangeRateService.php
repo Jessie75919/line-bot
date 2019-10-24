@@ -8,6 +8,16 @@ use Illuminate\Support\Collection;
 
 class ExchangeRateService
 {
+    const CURRENCY_MAP = [
+        'JPY' => '日幣',
+        'USD' => '美金',
+        'CNY' => '人民幣',
+        'KRW' => '韓幣',
+        'GBP' => '英鎊',
+        'EUR' => '歐元',
+        'THB' => '泰銖',
+        'HKD' => '港幣',
+    ];
     /* @var string */
     protected $currency = 'JPY';
     /* @var string */
@@ -83,6 +93,21 @@ class ExchangeRateService
     }
 
     /**
+     * @param $currencyStr
+     * @return ExchangeRateService
+     * @throws \Exception
+     */
+    public function setChineseCurrency($currencyStr)
+    {
+        if (! in_array($currencyStr, array_values(self::CURRENCY_MAP))) {
+            throw new \Exception("Currency Not Found");
+        }
+
+        $this->currency = array_search($currencyStr, self::CURRENCY_MAP);
+        return $this;
+    }
+
+    /**
      * @param  string  $type
      * @return ExchangeRateService
      */
@@ -97,8 +122,11 @@ class ExchangeRateService
         if (empty($lowest)) {
             return '';
         }
+
+        $currencyChinese = self::CURRENCY_MAP[$this->currency];
+
         return "[{$this->getTypeStr()}] 訊息
-  - 幣別：{$this->currency}
+  - 幣別：{$currencyChinese}
   - 銀行：{$lowest['bank']}
   - 買入：{$lowest['buy']}
   - 賣出：{$lowest['sell']}
