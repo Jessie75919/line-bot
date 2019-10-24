@@ -7,7 +7,6 @@ use App\Models\TodoList;
 use App\Repository\LineBot\TodoListRepo;
 use App\Services\Date\DateParser;
 use App\Services\LineBot\LineBotMessageResponser;
-use App\Services\LineBot\TypePayloadHandler;
 use Carbon\Carbon;
 use Exception;
 
@@ -42,7 +41,6 @@ class LineBotActionReminder extends LineBotActionHandler
     {
         $this->todoListRepo = $todoListRepo;
         $this->messageResponser = new LineBotMessageResponser($this->payload['channelId'], 'response');
-        $this->updateDetailPurpose();
     }
 
     public function preparePayload($rawPayload)
@@ -59,6 +57,7 @@ class LineBotActionReminder extends LineBotActionHandler
             ],
         ];
 
+        $this->updateDetailPurpose();
         return $this;
     }
 
@@ -141,8 +140,7 @@ class LineBotActionReminder extends LineBotActionHandler
     private function updateDetailPurpose()
     {
         $originMessage = $this->payload['message']['origin'];
-        $breakdownMessage = TypePayloadHandler\TextTypePayloadHandler::breakdownMessage($originMessage);
-
+        $breakdownMessage = $this->breakdownMessage($originMessage);
         $purposeKey = $breakdownMessage[0];
         $pattern = '/remR(.*)/m';
         if (preg_match($pattern, $purposeKey)) {
