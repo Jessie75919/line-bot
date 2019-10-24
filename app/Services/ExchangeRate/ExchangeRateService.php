@@ -17,6 +17,7 @@ class ExchangeRateService
         'EUR' => '歐元',
         'THB' => '泰銖',
         'HKD' => '港幣',
+        'AUD' => '澳幣',
     ];
     /* @var string */
     protected $currency = 'JPY';
