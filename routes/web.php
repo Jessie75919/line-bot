@@ -10,6 +10,9 @@ Route::get("/test", function () {
 })->name("test");
 
 Route::post("/webhook", "LineController@index");
+
+Route::get("/line-liff/endpoint", 'LineController@liffEndpoint');
+
 Route::get(
     "/place-api/image-preview",
     "LineController@imagePreview"

@@ -44,4 +44,9 @@ class LineController extends Controller
             ->make($placeApi->getPhotoRefApi($photoRef))
             ->header("Content-Type", 'image/png');
     }
+
+    public function liffEndpoint()
+    {
+        return view('line.line-liff');
+    }
 }
