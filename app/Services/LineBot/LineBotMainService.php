@@ -35,6 +35,11 @@ class LineBotMainService
         return $this->lineBot->validateSignature($body, $signature);
     }
 
+    /**
+     * @param $body
+     * @param $signature
+     * @return LINEBot\Event\BaseEvent[]
+     */
     public function parseEventRequest($body, $signature)
     {
         return $this->lineBot->parseEventRequest($body, $signature);
