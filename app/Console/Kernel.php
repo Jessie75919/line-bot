@@ -48,7 +48,7 @@ class Kernel extends ConsoleKernel
     private function registerScheduleForExchangeRateWatcher(Schedule $schedule)
     {
         $schedule->command('line:currency-watcher')
-            ->twiceDaily(7, 11)
+            ->dailyAt(11)
             ->timezone('Asia/Taipei');
     }
 }
