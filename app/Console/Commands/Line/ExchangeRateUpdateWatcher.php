@@ -22,7 +22,7 @@ class ExchangeRateUpdateWatcher extends Command
     public function handle()
     {
         $watchList = [
-            ['currency' => 'JPY', 'type' => 'cash', 'lessThan' => 0.28,],
+            ['currency' => 'JPY', 'type' => 'cash', 'lessThan' => 0.27,],
             ['currency' => 'USD', 'type' => 'check', 'lessThan' => 30.65,],
         ];
 
