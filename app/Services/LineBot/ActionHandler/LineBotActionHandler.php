@@ -31,8 +31,6 @@ abstract class LineBotActionHandler
 
     abstract public function handle();
 
-    abstract public function preparePayload($rawPayload);
-
     /**
      * @param  mixed  $purpose
      * @return LineBotActionHandler
