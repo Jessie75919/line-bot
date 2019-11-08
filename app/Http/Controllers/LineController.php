@@ -15,20 +15,23 @@ class LineController extends Controller
 
     /**
      * LineController constructor.
+     * @param  LineBotMainService  $lineBotMainService
      */
-    public function __construct()
+    public function __construct(LineBotMainService $lineBotMainService)
     {
         \Log::info('Line Bot Starting .... ');
-        $this->lineMainService = app(LineBotMainService::class);
+        $this->lineMainService = $lineBotMainService;
     }
 
     public function index(LineMessageApiRequest $request)
     {
         $body = $request->getContent();
         $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
-        //        $messageEvt = $this->lineMainService->parseEventRequest($body, $signature);
 
-        $response = $this->lineMainService->handle($request->all());
+        $messageEvt = $this->lineMainService->parseEventRequest($body, $signature);
+
+        $response = $this->lineMainService->handle($messageEvt[0]);
+
         \Log::info(__METHOD__.' => '.print_r($response, true));
 
         return isset($response) ? response()->json($response) : null;
