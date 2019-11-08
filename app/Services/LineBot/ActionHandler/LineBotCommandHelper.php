@@ -11,15 +11,13 @@ class LineBotCommandHelper extends LineBotActionHandler
 
     public function preparePayload($rawPayload)
     {
-        $breakdownMessage = $this->breakdownMessage($rawPayload);
-
         $this->payload = [
             'channelId' => $this->channelId,
             'purpose' => $this->purpose,
             'message' => [
                 'origin' => $rawPayload,
-                'key' => count($breakdownMessage) > 0 ? $breakdownMessage[1] : null,
-                'value' => count($breakdownMessage) === 3 ? $breakdownMessage[2] : null,
+                'key' => null,
+                'value' => null,
             ],
         ];
 
