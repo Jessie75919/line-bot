@@ -56,7 +56,7 @@ class LineBotMainService
         if ($dataType === 'location') {
             $lineBotPushService = new LineBotPushService();
             $templateMessageBuilder = $lineBotPushService->buildTemplateMessageBuilder($payload, '有訊息！請到手機上查看囉！');
-            $this->lineBot->replyMessage($replyToken, $$templateMessageBuilder);
+            $this->lineBot->replyMessage($replyToken, $templateMessageBuilder);
         }
     }
 }
