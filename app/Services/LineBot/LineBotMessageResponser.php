@@ -52,17 +52,6 @@ class LineBotMessageResponser
                 return $this->getHelpDescription();
             case 'talk':
                 return $this->keywordReply($this->content);
-            case 'speak':
-                $this->setTalk(1);
-                return self::GENERAL_RESPONSE;
-            case 'shutUp':
-                $this->setTalk(0);
-                return self::GENERAL_RESPONSE;
-            case 'state':
-                $isTalk = Memory::where('channel_id', $this->channelId)->first()->is_talk;
-                $stateText = "channel_id : \n [ {$this->channelId } \n";
-
-                return ! $isTalk ? $stateText." 目前處於 \n [ 閉嘴狀態 ]" : $stateText." 目前處於 \n [可以講話狀態 ]";
         }
     }
 
@@ -107,9 +96,6 @@ class LineBotMessageResponser
             "  ### 學習關鍵字回應指令： 輸入 apple 機器人回應你蘋果 \n".
             "      關鍵字 => [學、learn]\n ".
             "        - 學;apple;蘋果 \n ".
-            "        - learn;apple;蘋果 \n ".
-            "  ### 狀態查詢指令： 回應機器人目前的狀態 \n".
-            "      關鍵字 => [ jc ]\n ".
-            "        - jc 狀態 \n ";
+            "        - learn;apple;蘋果 \n ";
     }
 }

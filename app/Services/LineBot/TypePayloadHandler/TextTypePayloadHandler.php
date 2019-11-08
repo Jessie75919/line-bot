@@ -11,15 +11,12 @@ use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
 
 class TextTypePayloadHandler implements TypePayloadHandlerInterface
 {
-    const SPEAK = 'speak';
-    const SHUT_UP = 'shutUp';
     const LEARN = 'learn';
     const RATE = 'rate';
     const TALK = 'talk';
     const HELP = 'help';
     const RESPONSE = 'response';
     const REMINDER = 'reminder';
-    const STATE = "state";
     public const DELIMITER_USE = ';|_|、|，';
     public const DELIMITER = '('.TextTypePayloadHandler::DELIMITER_USE.')';
 
@@ -81,60 +78,15 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
             return $this;
         }
 
-        // 設定類型指令
-        if ($this->isSettingCmd($textPayload, self::STATE)) {
-            $this->purpose = self::STATE;
-            return $this;
-        }
-
-        if (! $this->memory->is_talk) {
-            if ($this->isSettingCmd($textPayload, self::TALK)) {
-                $this->purpose = self::SPEAK;
-                return $this;
-            }
-        }
-
-        if ($this->isSettingCmd($textPayload, self::SHUT_UP)) {
-            $this->purpose = self::SHUT_UP;
-            return $this;
-        }
-
         $this->purpose = self::TALK;
 
         return $this;
     }
 
-    /**
-     * @param  string  $keyword
-     * @param  string  $mode
-     * @return bool
-     */
-    public function isSettingCmd(string $keyword, string $mode): bool
-    {
-        $talkCmd = ['講話', '說話', '開口'];
-        $shutUpCmd = ['閉嘴', '安靜', '吵死了'];
-        $stateCmd = ['狀態'];
-
-        if (strtolower(substr($keyword, 0, 2)) != 'jc') {
-            return false;
-        }
-
-        $cmd = explode(' ', $keyword)[1];
-
-        switch ($mode) {
-            case self::TALK:
-                return in_array($cmd, $talkCmd);
-            case self::SHUT_UP:
-                return in_array($cmd, $shutUpCmd);
-            case self::STATE:
-                return in_array($cmd, $stateCmd);
-        }
-    }
-
     public function dispatch()
     {
         switch ($this->purpose) {
-            case $this->isCommonPurpose($this->purpose):
+            case self::TALK:
                 $instance = new LineBotActionCommonReplier();
                 break;
             case self::HELP:
