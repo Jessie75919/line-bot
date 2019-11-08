@@ -6,50 +6,38 @@ use App\Models\Memory;
 use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use App\Services\LineBot\TypePayloadHandler\LocationTypePayloadHandler;
 use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
+use LINE\LINEBot\Event\BaseEvent;
+use LINE\LINEBot\Event\MessageEvent\LocationMessage;
+use LINE\LINEBot\Event\MessageEvent\TextMessage;
 
 class LineBotMessageReceiver
 {
-    public $replyToken;
-    public $userData;
-    public $channelId;
     public $purpose;
-    /** * @var string */
     private $userDataType;
     private $memory;
 
-    public function handle($package)
+    public function getHandler(BaseEvent $messageEvent)
     {
-        \Log::info('package = '.print_r($package, true));
+        \Log::info(__METHOD__.' => '.print_r($messageEvent, true));
 
-        if (! $this->initData($package)) {
-            return null;
-        }
-
-        \Log::info('channelId = '.$this->channelId);
-
-        return $this->createMemory($this->channelId)
-            ->dispatchByPayloadType();
+        return $this->createMemory($messageEvent)
+            ->dispatchByPayloadType($messageEvent);
     }
 
-    /**
-     * @return string
-     */
-    public function getReplyToken(): string
+    public function dispatchByPayloadType(BaseEvent $messageEvent): LineBotActionHandler
     {
-        return $this->replyToken;
-    }
 
-    public function dispatchByPayloadType(): LineBotActionHandler
-    {
-        if ($this->userDataType === 'text') {
+        if ($messageEvent instanceof TextMessage) {
+            $this->userDataType = 'text';
             return (new TextTypePayloadHandler($this->memory))
-                ->checkPurpose($this->userData)
+                ->checkPurpose($messageEvent)
                 ->dispatch();
         }
 
-        if ($this->userDataType === 'location') {
+        if ($messageEvent instanceof LocationMessage) {
+            $this->userDataType = 'location';
             return (new LocationTypePayloadHandler($this->memory))
-                ->checkPurpose($this->userData)
+                ->checkPurpose($messageEvent)
                 ->preparePayload()
                 ->dispatch();
         }
@@ -63,77 +51,16 @@ class LineBotMessageReceiver
         return $this->userDataType;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getMemory()
-    {
-        return $this->memory;
-    }
-
-    /** get data of package from user
-     * @param $package
-     * @return LineBotMessageReceiver
-     */
-    private function initData($package)
-    {
-        /** @var  array */
-        $data = $package['events']['0'];
-
-        /** @var  string */
-        $type = $data['type'];
-
-        /** @var array */
-        $source = $data['source'];
-
-        /** @var  array */
-        $message = $data['message'];
-
-        $this->replyToken = $data['replyToken'];
-
-        switch ($type) {
-            case 'message':
-                // deals with source
-                $sourceType = $source['type'];
-                $this->channelId = $source["{$sourceType}Id"];
-
-                // deals with message
-                switch ($message['type']) {
-                    case 'text':
-                        $this->userData = $message['text'];
-                        $this->userDataType = 'text';
-                        return $this;
-                    case 'location':
-                        $this->userDataType = 'location';
-                        $this->userData = [
-                            'address' => $message['address'],
-                            'latitude' => $message['latitude'],
-                            'longitude' => $message['longitude'],
-                        ];
-                        return $this;
-                }
-                break;
-        }
-
-        return null;
-    }
-
     /** for the first time user which not has record in DB
-     * @param $channelId
+     * @param $messageEvent
      * @return LineBotMessageReceiver
      */
-    private function createMemory($channelId)
+    private function createMemory($messageEvent)
     {
-        $memory = Memory::where('channel_id', $channelId)->first();
+        $channelId =
+            $messageEvent->isGroupEvent() ? $messageEvent->getGroupId() : $messageEvent->getUserId();
 
-        if (! $memory) {
-            $memory = Memory::create([
-                'channel_id' => $channelId,
-                'is_talk' => 1,
-            ]);
-        }
-
-        $this->memory = $memory;
+        $this->memory = Memory::firstOrCreate(['channel_id' => $channelId], ['is_talk' => 1]);
         return $this;
     }
 }
