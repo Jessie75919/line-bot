@@ -35,7 +35,7 @@ class LineBotMessageReceiver
             $this->userDataType = 'location';
             return (new LocationTypePayloadHandler($this->memory))
                 ->checkPurpose($messageEvent)
-                ->preparePayload()
+                ->preparePayload($messageEvent)
                 ->dispatch();
         }
     }
