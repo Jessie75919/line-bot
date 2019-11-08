@@ -18,15 +18,12 @@ class LineBotMessageReceiver
 
     public function getHandler(BaseEvent $messageEvent)
     {
-        \Log::info(__METHOD__.' => '.print_r($messageEvent, true));
-
         return $this->createMemory($messageEvent)
             ->dispatchByPayloadType($messageEvent);
     }
 
     public function dispatchByPayloadType(BaseEvent $messageEvent): LineBotActionHandler
     {
-
         if ($messageEvent instanceof TextMessage) {
             $this->userDataType = 'text';
             return (new TextTypePayloadHandler($this->memory))

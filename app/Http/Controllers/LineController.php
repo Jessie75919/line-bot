@@ -30,6 +30,8 @@ class LineController extends Controller
 
         $messageEvt = $this->lineMainService->parseEventRequest($body, $signature);
 
+        \Log::info(__METHOD__.' => '.print_r($messageEvt, true));
+
         $response = $this->lineMainService->handle($messageEvt[0]);
 
         \Log::info(__METHOD__.' => '.print_r($response, true));
