@@ -4,6 +4,7 @@ namespace App\Services\LineBot;
 
 use App\Services\LineBot\PushHandler\LineBotPushService;
 use LINE\LINEBot;
+use LINE\LINEBot\Event\BaseEvent;
 
 class LineBotMainService
 {
@@ -28,16 +29,6 @@ class LineBotMainService
     /**
      * @param $body
      * @param $signature
-     * @return bool
-     */
-    public function validateSignature($body, $signature): bool
-    {
-        return $this->lineBot->validateSignature($body, $signature);
-    }
-
-    /**
-     * @param $body
-     * @param $signature
      * @return LINEBot\Event\BaseEvent[]
      */
     public function parseEventRequest($body, $signature)
@@ -45,19 +36,16 @@ class LineBotMainService
         return $this->lineBot->parseEventRequest($body, $signature);
     }
 
-    public function handle($package)
+    public function handle(BaseEvent $messageEvent)
     {
-        $dispatchHandler = $this->lineBotReceiver->handle($package);
+        $dispatchHandler = $this->lineBotReceiver->getHandler($messageEvent);
 
         if (! $dispatchHandler) {
             return null;
         }
 
-        [$replyToken, $dataType, $channelId] = $this->getUserData();
-
-        if ($dataType === 'location') {
-            $this->lineBot->replyText($replyToken, '搜尋中...請稍等喔！');
-        }
+        $replyToken = $messageEvent->getReplyToken();
+        $dataType = $this->lineBotReceiver->getUserDataType();
 
         $payload = $dispatchHandler->handle();
 
@@ -71,20 +59,8 @@ class LineBotMainService
 
         if ($dataType === 'location') {
             $lineBotPushService = new LineBotPushService();
-            $template = $lineBotPushService->buildTemplateMessageBuilder($payload, '有訊息！請到手機上查看囉！');
-            return $lineBotPushService->pushMessage($channelId, $template);
+            $templateMessageBuilder = $lineBotPushService->buildTemplateMessageBuilder($payload, '有訊息！請到手機上查看囉！');
+            $this->lineBot->replyMessage($replyToken, $$templateMessageBuilder);
         }
-    }
-
-    /**
-     * @return array
-     */
-    private function getUserData(): array
-    {
-        /** @var string $replyToken */
-        $replyToken = $this->lineBotReceiver->getReplyToken();
-        $dataType = $this->lineBotReceiver->getUserDataType();
-        $channelId = $this->lineBotReceiver->getMemory()->channel_id;
-        return [$replyToken, $dataType, $channelId];
     }
 }
