@@ -8,6 +8,7 @@ use App\Services\LineBot\ActionHandler\LineBotActionLearner;
 use App\Services\LineBot\ActionHandler\LineBotActionRateWatcher;
 use App\Services\LineBot\ActionHandler\LineBotActionReminder;
 use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
+use LINE\LINEBot\Event\MessageEvent;
 
 class TextTypePayloadHandler implements TypePayloadHandlerInterface
 {
@@ -34,46 +35,34 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         $this->memory = $memory;
     }
 
-    /**
-     * @param $purpose
-     * @return bool
-     */
-    public function isCommonPurpose($purpose): bool
+    public function checkPurpose(MessageEvent $textMessage)
     {
-        return self::SPEAK === $purpose ||
-            self::SHUT_UP === $purpose ||
-            self::TALK === $purpose ||
-            self::STATE === $purpose ||
-            self::HELP === $purpose;
-    }
-
-    public function checkPurpose($textPayload)
-    {
-        $this->rawPayload = $textPayload;
+        $this->rawPayload = $textMessage->getText();
+        $text = $textMessage->getText();
 
         // Help指令
-        if (strtolower($textPayload) === 'help') {
+        if (strtolower($text) === self::HELP) {
             $this->purpose = self::HELP;
             return $this;
         }
 
         // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
         $pattern = "/^(提醒|rem|reminder|remR.*){1}\s?".self::DELIMITER."(.*)/";
-        if (preg_match($pattern, $textPayload) == 1) {
+        if (preg_match($pattern, $text) == 1) {
             $this->purpose = self::REMINDER;
             return $this;
         }
 
         // 匯率查詢指令
         $pattern = "/^(匯率|rate)".self::DELIMITER."(.*)/";
-        if (preg_match($pattern, $textPayload) == 1) {
+        if (preg_match($pattern, $text) == 1) {
             $this->purpose = self::RATE;
             return $this;
         }
 
         // 學習類型指令
         $pattern = "/^(學|learn){1}\s?".self::DELIMITER."(.*)/";
-        if (preg_match($pattern, $textPayload) == 1) {
+        if (preg_match($pattern, $text) == 1) {
             $this->purpose = self::LEARN;
             return $this;
         }
