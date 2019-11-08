@@ -34,7 +34,6 @@ class LineBotActionReminder extends LineBotActionHandler
 
     /**
      * LineBotLearnService constructor.
-     * @param  array  $rawPayload
      * @param  TodoListRepo  $todoListRepo
      */
     public function __construct(TodoListRepo $todoListRepo)
