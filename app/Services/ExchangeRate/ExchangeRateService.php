@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 
 class ExchangeRateService
 {
+    const NOTIFIED_AT = 11;
     /* @var string */
     protected $currency = 'JPY';
     /* @var string */

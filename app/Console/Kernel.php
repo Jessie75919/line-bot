@@ -7,6 +7,7 @@ use App\Console\Commands\Line\ExchangeRateUpdateWatcher;
 use App\Console\Commands\Line\LineBotPushMessage;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
+use App\Services\ExchangeRate\ExchangeRateService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -48,7 +49,7 @@ class Kernel extends ConsoleKernel
     private function registerScheduleForExchangeRateWatcher(Schedule $schedule)
     {
         $schedule->command('line:currency-watcher')
-            ->dailyAt(11)
+            ->dailyAt(ExchangeRateService::NOTIFIED_AT)
             ->timezone('Asia/Taipei');
     }
 }
