@@ -2,7 +2,6 @@
 
 namespace App\Services\LineBot;
 
-use App\Models\Memory;
 use App\Models\Message;
 
 class LineBotMessageResponser
@@ -30,14 +29,6 @@ class LineBotMessageResponser
             ->where('channel_id', $this->channelId)->get();
 
         return count($resp) != 0 ? $resp->random()->message : null;
-    }
-
-    /**
-     * @param  bool  $shutUp
-     */
-    public function setTalk(bool $shutUp)
-    {
-        Memory::where('channel_id', $this->channelId)->update(['is_talk' => $shutUp]);
     }
 
     /**
