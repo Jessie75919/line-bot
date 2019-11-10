@@ -111,10 +111,10 @@ class ExchangeRateService
         return $this;
     }
 
-    public function toFormatCurrencyReportMessage(array $lowest): string
+    public function toFormatCurrencyReportMessage(?array $lowest = null): string
     {
         if (empty($lowest)) {
-            return '';
+            $lowest = $this->getLowest();
         }
 
         return "[{$this->getTypeStr()}] 訊息
