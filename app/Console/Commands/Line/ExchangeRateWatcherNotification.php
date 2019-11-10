@@ -7,7 +7,7 @@ use App\Services\API\GuzzleApi;
 use App\Services\ExchangeRate\ExchangeRateService;
 use Illuminate\Console\Command;
 
-class ExchangeRateUpdateWatcher extends Command
+class ExchangeRateWatcherNotification extends Command
 {
     protected $signature = 'line:currency-watcher';
     protected $description = 'currency watcher';
