@@ -144,13 +144,12 @@ class ExchangeRateService
         );
     }
 
-    public function subscribe(Memory $memory, string $currencyName): bool
+    public function subscribe(Memory $memory, string $currencyName)
     {
-        $currency = Currency::where('name', $currencyName)->first();
-        if (! $currency) {
+        if (! $currency = Currency::where('name', $currencyName)->first()) {
             throw new \Exception("Currency Not Found");
         }
-        $memory->currencies()->attach($currency->id);
+        return $memory->currencies()->attach($currency->id);
     }
 
     private function getTypeStr(): string
