@@ -10,7 +10,7 @@ class Currency extends Model
         'name', 'alias',
     ];
 
-    public function momories()
+    public function memories()
     {
         return $this->belongsToMany('\App\Models\Memory');
     }
