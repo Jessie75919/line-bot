@@ -11,7 +11,7 @@ namespace App\Services\LineBot\ActionHandler;
 use App\Services\API\GuzzleApi;
 use App\Services\ExchangeRate\ExchangeRateService;
 
-class LineBotActionRateWatcher extends LineBotActionHandler
+class LineBotActionRateQuerier extends LineBotActionHandler
 {
     private $payload;
     /**
@@ -40,8 +40,9 @@ class LineBotActionRateWatcher extends LineBotActionHandler
     public function handle()
     {
         $rate = $this->exRate
-            ->subscribe($this->memory, $this->currentChineseStr);
-
+            ->setChineseCurrency($this->currentChineseStr)
+            ->updateCurrent()
+            ->getLowest();
         return $this->exRate->formatMessage($rate);
     }
 }
