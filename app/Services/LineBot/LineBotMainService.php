@@ -38,11 +38,11 @@ class LineBotMainService
 
     public function handle(BaseEvent $messageEvent)
     {
-        if (! $dispatchHandler = $this->lineBotReceiver->getHandler($messageEvent)) {
+        if (! $handler = $this->lineBotReceiver->getHandler($messageEvent)) {
             return null;
         }
 
-        if (! $responsePayload = $dispatchHandler->handle()) {
+        if (! $responsePayload = $handler->handle()) {
             return null;
         }
 
