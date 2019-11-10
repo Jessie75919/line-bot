@@ -36,7 +36,7 @@ class ExchangeRateService
             ->get([
                 't' => 'currency',
                 'q' => $this->type,
-                'iso' => $this->currency,
+                'iso' => $this->currency->alias,
             ]);
 
         if ($this->api->isSuccessful()) {
@@ -91,13 +91,12 @@ class ExchangeRateService
      */
     public function setChineseCurrency($currencyStr)
     {
-        $currency = Currency::where('name', $currencyStr)->first();
+        $this->currency = Currency::where('name', $currencyStr)->first();
 
-        if (! $currency) {
+        if (! $this->currency) {
             throw new \Exception("Currency Not Found");
         }
 
-        $this->currency = $currency->alias;
         return $this;
     }
 
@@ -117,10 +116,8 @@ class ExchangeRateService
             return '';
         }
 
-        $currencyChinese = self::CURRENCY_MAP[$this->currency];
-
         return "[{$this->getTypeStr()}] 訊息
-  - 幣別：{$currencyChinese}
+  - 幣別：{$this->currency->name}
   - 銀行：{$lowest['bank']}
   - 買入：{$lowest['buy']}
   - 賣出：{$lowest['sell']}
