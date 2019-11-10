@@ -18,9 +18,13 @@ class Memory extends Model
         'echo2',
     ];
 
-
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function currencies()
+    {
+        return $this->belongsToMany('\App\Models\Currency');
     }
 }
