@@ -42,7 +42,7 @@ class LineBotMainService
             return null;
         }
 
-        if (! $payload = $dispatchHandler->handle()) {
+        if (! $responsePayload = $dispatchHandler->handle()) {
             return null;
         }
 
@@ -50,13 +50,14 @@ class LineBotMainService
         $dataType = $this->lineBotReceiver->getUserDataType();
 
         if ($dataType === 'text') {
-            return $this->lineBot->replyText($replyToken, $payload);
+            return $this->lineBot->replyText($replyToken, $responsePayload);
         }
 
         if ($dataType === 'location') {
-            $lineBotPushService = new LineBotPushService();
-            $templateMessageBuilder = $lineBotPushService->buildTemplateMessageBuilder($payload, '有訊息！請到手機上查看囉！');
-            $this->lineBot->replyMessage($replyToken, $templateMessageBuilder);
+            $this->lineBot->replyMessage(
+                $replyToken,
+                (new LineBotPushService())->buildTemplateMessageBuilder($responsePayload)
+            );
         }
     }
 }
