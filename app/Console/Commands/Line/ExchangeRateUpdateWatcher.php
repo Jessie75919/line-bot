@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Line;
 
+use App\Models\Currency;
 use App\Services\API\GuzzleApi;
 use App\Services\ExchangeRate\ExchangeRateService;
 use Illuminate\Console\Command;
@@ -21,20 +22,17 @@ class ExchangeRateUpdateWatcher extends Command
 
     public function handle()
     {
-        $watchList = [
-            ['currency' => 'JPY', 'type' => 'cash', 'lessThan' => 0.29,],
-            ['currency' => 'USD', 'type' => 'check', 'lessThan' => 30.65,],
-        ];
+        $currencies = Currency::all();
 
-        foreach ($watchList as $watch) {
+        foreach ($currencies as $currency) {
             $exRate = (new ExchangeRateService($this->api))
-                ->setCurrency($watch['currency'])
-                ->setType($watch['type'])
-                ->updateCurrent();
+                ->setCurrency($currency)
+                ->fetchNowCurrencyValue();
 
-            if ($exRate->isLessThan($watch['lessThan'])) {
-                $exRate->notifyLine('R421b3280799bcde75de0d6c4ddf91d47');
-            }
+            $currency->memories->each(function ($memory) use ($exRate) {
+                //                echo $exRate->toFormatCurrencyReportMessage();
+                $exRate->notifyLine($memory->channel_id);
+            });
         }
     }
 }
