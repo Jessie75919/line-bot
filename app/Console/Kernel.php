@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\BodyTemperatureDocsGenerator;
-use App\Console\Commands\Line\ExchangeRateUpdateWatcher;
+use App\Console\Commands\Line\ExchangeRateWatcherNotification;
 use App\Console\Commands\Line\LineBotPushMessage;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
         MailTest::class,
         BodyTemperatureDocsGenerator::class,
         LineBotPushMessage::class,
-        ExchangeRateUpdateWatcher::class,
+        ExchangeRateWatcherNotification::class,
     ];
 
     /**
