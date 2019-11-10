@@ -8,6 +8,7 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
+use App\Models\Memory;
 use App\Services\API\GuzzleApi;
 use App\Services\ExchangeRate\ExchangeRateService;
 
@@ -39,9 +40,10 @@ class LineBotActionRateWatcher extends LineBotActionHandler
 
     public function handle()
     {
+        $memory = Memory::where('channel_id', $this->channelId)->first();
         $rate = $this->exRate
-            ->subscribe($this->memory, $this->currentChineseStr);
+            ->subscribe($memory, $this->currentChineseStr);
 
-        return $this->exRate->formatMessage($rate);
+        return $this->exRate->toFormatCurrencyReportMessage($rate);
     }
 }

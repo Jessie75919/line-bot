@@ -110,7 +110,7 @@ class ExchangeRateService
         return $this;
     }
 
-    public function formatMessage(array $lowest): string
+    public function toFormatCurrencyReportMessage(array $lowest): string
     {
         if (empty($lowest)) {
             return '';
@@ -140,7 +140,7 @@ class ExchangeRateService
         $lineBotPushService = app(LineBotPushService::class);
         $lineBotPushService->pushMessage(
             $channelId,
-            $this->formatMessage($this->lowest)
+            $this->toFormatCurrencyReportMessage($this->lowest)
         );
     }
 
@@ -149,7 +149,7 @@ class ExchangeRateService
         if (! $currency = Currency::where('name', $currencyName)->first()) {
             throw new \Exception("Currency Not Found");
         }
-        return $memory->currencies()->attach($currency->id);
+        $memory->currencies()->attach($currency->id);
     }
 
     private function getTypeStr(): string

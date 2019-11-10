@@ -43,6 +43,6 @@ class LineBotActionRateQuerier extends LineBotActionHandler
             ->setChineseCurrency($this->currentChineseStr)
             ->updateCurrent()
             ->getLowest();
-        return $this->exRate->formatMessage($rate);
+        return $this->exRate->toFormatCurrencyReportMessage($rate);
     }
 }
