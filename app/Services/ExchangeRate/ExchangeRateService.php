@@ -147,6 +147,15 @@ class ExchangeRateService
         );
     }
 
+    public function subscribe(Memory $memory, string $currencyName): bool
+    {
+        $currency = Currency::where('name', $currencyName)->first();
+        if (! $currency) {
+            throw new \Exception("Currency Not Found");
+        }
+        $memory->currencies()->attach($currency->id);
+    }
+
     private function getTypeStr(): string
     {
         return $this->type === 'cash' ? '現金匯率' : '即期匯率';
