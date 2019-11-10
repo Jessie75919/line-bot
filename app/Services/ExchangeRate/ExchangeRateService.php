@@ -150,16 +150,33 @@ class ExchangeRateService
         if (! $this->currency = Currency::where('name', $currencyName)->first()) {
             throw new \Exception("Currency Not Found");
         }
-        $memory->currencies()->attach($this->currency->id);
-        return $this;
+        if (! $memory->currencies->contains($this->currency->id)) {
+            $memory->currencies()->attach($this->currency->id);
+            return $this->toSubscribeSuccessReplyMessage();
+        }
+
+        return $this->toSubscribeRepeatReplyMessage();
     }
 
-    public function toSubscribeSuccessMessage(): string
+    public function toSubscribeSuccessReplyMessage(): string
     {
         $hour = self::NOTIFIED_AT;
         return <<<EOD
+hihi!
+
 已經爲您開啓了 [{$this->currency->name}] 的訂閱，
-會在每天的 {$hour} 點提醒你哦！
+會在每天的 {$hour} 點通知你今日最低的匯率哦！
+EOD;
+    }
+
+    public function toSubscribeRepeatReplyMessage(): string
+    {
+        $hour = self::NOTIFIED_AT;
+        return <<<EOD
+hihi!
+
+您已經訂閱過了 [{$this->currency->name}] 囉，
+一樣會在每天的 {$hour} 點通知你今日最低的匯率哦！
 EOD;
     }
 
