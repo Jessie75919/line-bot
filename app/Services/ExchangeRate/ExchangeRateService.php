@@ -30,7 +30,7 @@ class ExchangeRateService
         $this->api = $api;
     }
 
-    public function updateCurrent()
+    public function fetchNowCurrencyValue()
     {
         $this->api
             ->setUri("https://tw.rter.info/json.php")
