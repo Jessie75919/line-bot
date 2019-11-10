@@ -147,10 +147,20 @@ class ExchangeRateService
 
     public function subscribe(Memory $memory, string $currencyName)
     {
-        if (! $currency = Currency::where('name', $currencyName)->first()) {
+        if (! $this->currency = Currency::where('name', $currencyName)->first()) {
             throw new \Exception("Currency Not Found");
         }
-        $memory->currencies()->attach($currency->id);
+        $memory->currencies()->attach($this->currency->id);
+        return $this;
+    }
+
+    public function toSubscribeSuccessMessage(): string
+    {
+        $hour = self::NOTIFIED_AT;
+        return <<<EOD
+已經爲您開啓了 [{$this->currency->name}] 的訂閱，
+會在每天的 {$hour} 點提醒你哦！
+EOD;
     }
 
     private function getTypeStr(): string
