@@ -2,23 +2,14 @@
 
 namespace App\Services\ExchangeRate;
 
+use App\Models\Currency;
+use App\Models\Memory;
 use App\Services\API\GuzzleApi;
 use App\Services\LineBot\PushHandler\LineBotPushService;
 use Illuminate\Support\Collection;
 
 class ExchangeRateService
 {
-    const CURRENCY_MAP = [
-        'JPY' => '日幣',
-        'USD' => '美金',
-        'CNY' => '人民幣',
-        'KRW' => '韓幣',
-        'GBP' => '英鎊',
-        'EUR' => '歐元',
-        'THB' => '泰銖',
-        'HKD' => '港幣',
-        'AUD' => '澳幣',
-    ];
     /* @var string */
     protected $currency = 'JPY';
     /* @var string */
@@ -100,11 +91,13 @@ class ExchangeRateService
      */
     public function setChineseCurrency($currencyStr)
     {
-        if (! in_array($currencyStr, array_values(self::CURRENCY_MAP))) {
+        $currency = Currency::where('name', $currencyStr)->first();
+
+        if (! $currency) {
             throw new \Exception("Currency Not Found");
         }
 
-        $this->currency = array_search($currencyStr, self::CURRENCY_MAP);
+        $this->currency = $currency->alias;
         return $this;
     }
 
