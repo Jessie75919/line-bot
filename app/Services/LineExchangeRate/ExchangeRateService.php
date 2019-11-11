@@ -11,6 +11,11 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class ExchangeRateService
 {
+    const TYPE_MAP = [
+        'cash' => '現金',
+        'check' => '即期',
+    ];
+
     const NOTIFIED_AT = 11;
     /* @var string */
     protected $currency = 'JPY';
@@ -116,7 +121,7 @@ class ExchangeRateService
             $lowest = $this->getLowest();
         }
 
-        return "[{$this->getTypeStr()}] 訊息
+        return "[{$this->typeEngToChinese($this->type)}] 訊息
   - 幣別：{$this->currency->name}
   - 銀行：{$lowest['bank']}
   - 買入：{$lowest['buy']}
@@ -144,11 +149,13 @@ class ExchangeRateService
         );
     }
 
-    public function subscribe(Memory $memory, string $currencyName)
+    public function subscribe(Memory $memory, string $currencyName, string $ChineseType)
     {
         if (! $this->currency = Currency::where('name', $currencyName)->first()) {
             return $this->toCurrencyNotFoundReplyMessage();
         }
+
+        $type = $this->typeChineseToEng($ChineseType);
 
         if (! $memory->currencies->contains($this->currency->id)) {
             $memory->currencies()->attach($this->currency->id);
@@ -178,7 +185,7 @@ EOD;
         return <<<EOD
 hihi!
 
-已經爲您開啓了 [{$this->currency->name}] 的訂閱，
+已經爲您開啓了 [{$this->currencyWithTypeStr()}] 的訂閱，
 會在每天的 {$hour} 點通知你今日最低的匯率哦！
 EOD;
     }
@@ -189,13 +196,23 @@ EOD;
         return <<<EOD
 hihi!
 
-您已經訂閱過了 [{$this->currency->name}] 囉，
+您已經訂閱過了 [{$this->currencyWithTypeStr()}] 囉，
 一樣會在每天的 {$hour} 點通知你今日最低的匯率哦！
 EOD;
     }
 
-    private function getTypeStr(): string
+    public function typeEngToChinese(string $englishType): string
     {
-        return $this->type === 'cash' ? '現金匯率' : '即期匯率';
+        return self::TYPE_MAP[$englishType].'匯率';
+    }
+
+    public function typeChineseToEng(string $chineseType): ？string
+    {
+        return array_search($chineseType, self::TYPE_MAP);
+    }
+
+    private function currencyWithTypeStr(): string
+    {
+        return "{$this->currency->name} {$this->typeEngToChinese($this->type)}";
     }
 }
