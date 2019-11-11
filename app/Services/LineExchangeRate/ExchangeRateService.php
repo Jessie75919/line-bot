@@ -155,10 +155,10 @@ class ExchangeRateService
             return $this->toCurrencyNotFoundReplyMessage();
         }
 
-        $type = $this->typeChineseToEng($ChineseType);
+        $this->type = $this->typeChineseToEng($ChineseType);
 
         if (! $memory->currencies->contains($this->currency->id)) {
-            $memory->currencies()->attach($this->currency->id, ['type' => $type]);
+            $memory->currencies()->attach($this->currency->id, ['type' => $this->type]);
             return $this->toSubscribeSuccessReplyMessage();
         }
 
@@ -206,7 +206,7 @@ EOD;
         return self::TYPE_MAP[$englishType].'匯率';
     }
 
-    public function typeChineseToEng(string $chineseType): ？string
+    public function typeChineseToEng(string $chineseType)
     {
         return array_search($chineseType, self::TYPE_MAP);
     }
