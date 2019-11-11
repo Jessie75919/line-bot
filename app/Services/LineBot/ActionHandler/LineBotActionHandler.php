@@ -22,11 +22,13 @@ abstract class LineBotActionHandler
     public function breakdownMessage($userMessage): array
     {
         return collect(
-            preg_split('/'.TextTypePayloadHandler::DELIMITER.'/', $userMessage)
-        )
-            ->map(function ($item) {
-                return trim($item);
-            })->toArray();
+            preg_split(
+                '/'.TextTypePayloadHandler::DELIMITER.'/',
+                $userMessage
+            )
+        )->map(function ($item) {
+            return trim($item);
+        })->toArray();
     }
 
     abstract public function handle();
