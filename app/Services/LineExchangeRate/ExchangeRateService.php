@@ -158,7 +158,7 @@ class ExchangeRateService
         $type = $this->typeChineseToEng($ChineseType);
 
         if (! $memory->currencies->contains($this->currency->id)) {
-            $memory->currencies()->attach($this->currency->id);
+            $memory->currencies()->attach($this->currency->id, ['type' => $type]);
             return $this->toSubscribeSuccessReplyMessage();
         }
 
