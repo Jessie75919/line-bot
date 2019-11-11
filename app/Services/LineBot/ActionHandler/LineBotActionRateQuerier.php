@@ -10,6 +10,7 @@ namespace App\Services\LineBot\ActionHandler;
 
 use App\Services\API\GuzzleApi;
 use App\Services\ExchangeRate\ExchangeRateService;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class LineBotActionRateQuerier extends LineBotActionHandler
 {
@@ -39,10 +40,14 @@ class LineBotActionRateQuerier extends LineBotActionHandler
 
     public function handle()
     {
-        $rate = $this->exRate
-            ->setChineseCurrency($this->currentChineseStr)
-            ->fetchNowCurrencyValue()
-            ->getLowest();
-        return $this->exRate->toFormatCurrencyReportMessage($rate);
+        try {
+            $rate = $this->exRate
+                ->setChineseCurrency($this->currentChineseStr)
+                ->fetchNowCurrencyValue()
+                ->getLowest();
+            return $this->exRate->toFormatCurrencyReportMessage($rate);
+        } catch (NotFoundResourceException $e) {
+            return $this->exRate->toCurrencyNotFoundReplyMessage();
+        }
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Memory;
 use App\Services\API\GuzzleApi;
 use App\Services\LineBot\PushHandler\LineBotPushService;
 use Illuminate\Support\Collection;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class ExchangeRateService
 {
@@ -88,14 +89,12 @@ class ExchangeRateService
     /**
      * @param $currencyStr
      * @return ExchangeRateService
-     * @throws \Exception
+     * @throws NotFoundResourceException
      */
     public function setChineseCurrency($currencyStr)
     {
-        $this->currency = Currency::where('name', $currencyStr)->first();
-
-        if (! $this->currency) {
-            throw new \Exception("Currency Not Found");
+        if (! $this->currency = Currency::where('name', $currencyStr)->first()) {
+            throw new NotFoundResourceException("Currency Not Found");
         }
 
         return $this;
@@ -148,14 +147,29 @@ class ExchangeRateService
     public function subscribe(Memory $memory, string $currencyName)
     {
         if (! $this->currency = Currency::where('name', $currencyName)->first()) {
-            throw new \Exception("Currency Not Found");
+            return $this->toCurrencyNotFoundReplyMessage();
         }
+
         if (! $memory->currencies->contains($this->currency->id)) {
             $memory->currencies()->attach($this->currency->id);
             return $this->toSubscribeSuccessReplyMessage();
         }
 
         return $this->toSubscribeRepeatReplyMessage();
+    }
+
+    public function toCurrencyNotFoundReplyMessage(): string
+    {
+        $currencies = Currency::all();
+        $currencyNames = $currencies->implode('name', '、');
+
+        return <<<EOD
+hihi, 
+
+找不到此貨幣的資料！
+
+目前只有支援這個 [{$currencyNames}] 貨幣的匯率喔！
+EOD;
     }
 
     public function toSubscribeSuccessReplyMessage(): string
