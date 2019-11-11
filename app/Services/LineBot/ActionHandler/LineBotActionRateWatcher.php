@@ -40,7 +40,7 @@ class LineBotActionRateWatcher extends LineBotActionHandler
 
     public function handle()
     {
-        $memory = Memory::where('channel_id', $this->channelId)->first();
+        $memory = Memory::getByChannelId($this->channelId);
         return $this->exRate
             ->subscribe($memory, $this->currentChineseStr);
     }

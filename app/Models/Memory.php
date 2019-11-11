@@ -14,6 +14,11 @@ class Memory extends Model
         'channel_id',
     ];
 
+    public static function getByChannelId($channelId): ?Memory
+    {
+        return Memory::where('channel_id', $channelId)->first();
+    }
+
     public function messages()
     {
         return $this->hasMany(Message::class);
