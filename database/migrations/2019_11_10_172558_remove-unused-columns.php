@@ -30,6 +30,7 @@ class RemoveUnusedColumns extends Migration
             $table->string('save_to_received')->nullable();
             $table->string('save_to_reply')->nullable();
             $table->string('echo2')->nullable();
+            $table->string('is_talk')->nullable();
         });
     }
 }
