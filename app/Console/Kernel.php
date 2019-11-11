@@ -7,7 +7,7 @@ use App\Console\Commands\Line\ExchangeRateWatcherNotification;
 use App\Console\Commands\Line\LineBotPushMessage;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
-use App\Services\ExchangeRate\ExchangeRateService;
+use App\Services\LineExchangeRate\ExchangeRateService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

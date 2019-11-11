@@ -4,7 +4,7 @@ namespace App\Console\Commands\Line;
 
 use App\Models\Currency;
 use App\Services\API\GuzzleApi;
-use App\Services\ExchangeRate\ExchangeRateService;
+use App\Services\LineExchangeRate\ExchangeRateService;
 use Illuminate\Console\Command;
 
 class ExchangeRateWatcherNotification extends Command

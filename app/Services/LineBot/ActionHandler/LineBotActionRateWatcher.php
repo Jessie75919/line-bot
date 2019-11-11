@@ -10,7 +10,7 @@ namespace App\Services\LineBot\ActionHandler;
 
 use App\Models\Memory;
 use App\Services\API\GuzzleApi;
-use App\Services\ExchangeRate\ExchangeRateService;
+use App\Services\LineExchangeRate\ExchangeRateService;
 
 class LineBotActionRateWatcher extends LineBotActionHandler
 {
@@ -19,7 +19,8 @@ class LineBotActionRateWatcher extends LineBotActionHandler
      * @var ExchangeRateService
      */
     private $exRate;
-    private $currentChineseStr;
+    private $userInput1;
+    private $userInput2;
 
     /**
      * LineBotActionRateWatcher constructor.
@@ -33,7 +34,10 @@ class LineBotActionRateWatcher extends LineBotActionHandler
     {
         $msgArr = $this->breakdownMessage($rawPayload);
 
-        $this->currentChineseStr = $msgArr[1];
+        /* 日幣＼美金＼澳幣 */
+        $this->userInput1 = $msgArr[1];
+        /* 現金＼即期 */
+        $this->userInput2 = $msgArr[2] ?? '現金';
 
         return $this;
     }
@@ -42,6 +46,6 @@ class LineBotActionRateWatcher extends LineBotActionHandler
     {
         $memory = Memory::getByChannelId($this->channelId);
         return $this->exRate
-            ->subscribe($memory, $this->currentChineseStr);
+            ->subscribe($memory, $this->userInput1, $this->userInput2);
     }
 }

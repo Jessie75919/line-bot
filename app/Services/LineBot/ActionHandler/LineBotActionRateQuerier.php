@@ -9,7 +9,7 @@
 namespace App\Services\LineBot\ActionHandler;
 
 use App\Services\API\GuzzleApi;
-use App\Services\ExchangeRate\ExchangeRateService;
+use App\Services\LineExchangeRate\ExchangeRateService;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class LineBotActionRateQuerier extends LineBotActionHandler

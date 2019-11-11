@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\ExchangeRate;
+namespace App\Services\LineExchangeRate;
 
 use App\Models\Currency;
 use App\Models\Memory;
