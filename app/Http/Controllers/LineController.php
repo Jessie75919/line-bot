@@ -7,6 +7,7 @@ use App\Services\Google\GooglePlaceApiService;
 use App\Services\LineBot\LineBotMainService;
 use Illuminate\Http\Request;
 use LINE\LINEBot\Constant\HTTPHeader;
+use LINE\LINEBot\Event\MessageEvent;
 
 class LineController extends Controller
 {
@@ -28,6 +29,7 @@ class LineController extends Controller
         $body = $request->getContent();
         $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
 
+        /* @var MessageEvent $messageEvt */
         $messageEvt = $this->lineMainService->parseEventRequest($body, $signature);
 
         \Log::info(__METHOD__.' => '.print_r($messageEvt, true));
