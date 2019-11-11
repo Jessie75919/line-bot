@@ -52,10 +52,9 @@ class LineBotMessageReceiver
      * @param $messageEvent
      * @return LineBotMessageReceiver
      */
-    private function createMemory($messageEvent)
+    private function createMemory(TextMessage $messageEvent)
     {
-        $channelId =
-            $messageEvent->isGroupEvent() ? $messageEvent->getGroupId() : $messageEvent->getUserId();
+        $channelId = $messageEvent->getEventSourceId();
 
         $this->memory = Memory::firstOrCreate(['channel_id' => $channelId], ['is_talk' => 1]);
         return $this;
