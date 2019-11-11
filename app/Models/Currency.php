@@ -12,6 +12,8 @@ class Currency extends Model
 
     public function memories()
     {
-        return $this->belongsToMany('\App\Models\Memory');
+        return $this->belongsToMany('\App\Models\Memory')
+            ->withTimestamps()
+            ->withPivot('type');
     }
 }

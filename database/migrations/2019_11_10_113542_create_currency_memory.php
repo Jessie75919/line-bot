@@ -16,6 +16,7 @@ class CreateCurrencyMemory extends Migration
             $table->increments('id');
             $table->unsignedInteger('memory_id');
             $table->unsignedInteger('currency_id');
+            $table->string('type', 10);
             $table->index(['memory_id', 'currency_id']);
             $table->timestamps();
         });
