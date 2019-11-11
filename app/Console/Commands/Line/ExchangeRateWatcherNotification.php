@@ -25,14 +25,25 @@ class ExchangeRateWatcherNotification extends Command
         $currencies = Currency::all();
 
         foreach ($currencies as $currency) {
-            $exRate = (new ExchangeRateService($this->api))
-                ->setCurrency($currency)
-                ->fetchNowCurrencyValue();
+            foreach (['cash', 'check'] as $type) {
+                $memories = $currency->memories()
+                    ->wherePivot('type', $type)
+                    ->get();
 
-            $currency->memories->each(function ($memory) use ($exRate) {
-                //                echo $exRate->toFormatCurrencyReportMessage();
-                $exRate->notifyLine($memory->channel_id);
-            });
+                if ($memories->isEmpty()) {
+                    continue;
+                }
+
+                $exRate = (new ExchangeRateService($this->api))
+                    ->setCurrency($currency)
+                    ->setType($type)
+                    ->fetchNowCurrencyValue();
+
+                $memories->each(function ($memory) use ($exRate) {
+                    //                    echo $exRate->toFormatCurrencyReportMessage();
+                    $exRate->notifyLine($memory->channel_id);
+                });
+            }
         }
     }
 }
