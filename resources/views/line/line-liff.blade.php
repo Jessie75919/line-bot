@@ -150,7 +150,7 @@
         this.liffService.close();
       },
       submit() {
-        this.sendTextMessage(`weight，{weight：${this.bodyStatus.weight}, fat：${this.bodyStatus.fat}}`);
+        this.sendTextMessage(`weight，${JSON.stringify(this.bodyStatus)}`);
       }
     },
     created() {
