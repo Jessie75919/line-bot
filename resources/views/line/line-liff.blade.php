@@ -66,9 +66,9 @@
       this.liff
         .init({ liffId: this.liffToken })
         .then(() => {
-//          if (!this.isLoggedIn()) {
-//            self.login();
-//          }
+          if (!this.isLoggedIn()) {
+            self.login();
+          }
           console.log('liff init successfully');
         })
         .catch(err => window.alert('Error getting profile: ' + err));
@@ -131,6 +131,7 @@
       },
       sendTextMessage(text) {
         this.liffService.sendTextMessage(text);
+        this.liffService.close();
       }
     },
     created() {
