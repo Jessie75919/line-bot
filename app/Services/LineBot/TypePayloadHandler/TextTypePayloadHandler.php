@@ -8,6 +8,7 @@ use App\Services\LineBot\ActionHandler\LineBotActionLearner;
 use App\Services\LineBot\ActionHandler\LineBotActionRateQuerier;
 use App\Services\LineBot\ActionHandler\LineBotActionRateWatcher;
 use App\Services\LineBot\ActionHandler\LineBotActionReminder;
+use App\Services\LineBot\ActionHandler\LineBotActionWeightHelper;
 use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
 use LINE\LINEBot\Event\MessageEvent;
 
@@ -18,6 +19,7 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
     const RATE = 'rate';
     const TALK = 'talk';
     const HELP = 'help';
+    const WEIGHT = 'weight';
     const RESPONSE = 'response';
     const REMINDER = 'reminder';
     const RATE_WATCHER = 'rate_watcher';
@@ -57,6 +59,13 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
             return $this;
         }
 
+        /* 減重小幫手 */
+        $pattern = "/^(體重|weight|body)".self::DELIMITER."(.*)/";
+        if (preg_match($pattern, $text) == 1) {
+            $this->purpose = self::WEIGHT;
+            return $this;
+        }
+
         // 匯率查詢指令
         $pattern = "/^(匯率|rate)".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
@@ -85,6 +94,7 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
 
     public function dispatch()
     {
+        \Log::info(__METHOD__." => ".$this->purpose);
         switch ($this->purpose) {
             case self::TALK:
                 $instance = new LineBotActionCommonReplier();
@@ -94,6 +104,9 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
                 break;
             case self::RATE:
                 $instance = new LineBotActionRateQuerier();
+                break;
+            case self::WEIGHT:
+                $instance = new LineBotActionWeightHelper();
                 break;
             case self::RATE_WATCHER:
                 $instance = new LineBotActionRateWatcher();
