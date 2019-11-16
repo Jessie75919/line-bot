@@ -8,6 +8,7 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
+use App\Models\Memory;
 use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
 use LINE\LINEBot;
 
@@ -69,5 +70,10 @@ abstract class LineBotActionHandler
     {
         $this->channelId = $channelId;
         return $this;
+    }
+
+    public function getMemory(): ?Memory
+    {
+        return Memory::getByChannelId($this->channelId);
     }
 }
