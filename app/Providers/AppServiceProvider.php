@@ -2,20 +2,17 @@
 
 namespace App\Providers;
 
-use LINE\LINEBot;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\ServiceProvider;
 use App\Services\Google\GooglePlaceApiService;
 use App\Services\LineBot\LineBotMessageReceiver;
 use App\Services\LineBot\PushHandler\LineBotPushService;
-use function env;
-
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
+use LINE\LINEBot;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
      * @return void
      */
     public function boot()
@@ -25,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
      * @return void
      */
     public function register()
@@ -39,8 +35,8 @@ class AppServiceProvider extends ServiceProvider
     private function lineBotRegister()
     {
         $this->app->singleton(LINEBot::class, function () {
-            $httpClient = new LINEBot\HTTPClient\CurlHTTPClient(env('CHANNEL_TOKEN'));
-            return new LINEBot($httpClient, ['channelSecret' => env('CHANNEL_SECRET')]);
+            $httpClient = new LINEBot\HTTPClient\CurlHTTPClient(config('line.line.channel_token'));
+            return new LINEBot($httpClient, ['channelSecret' => config('line.channel_secret')]);
         });
     }
 
@@ -54,10 +50,9 @@ class AppServiceProvider extends ServiceProvider
     private function lineBotServiceRegister()
     {
         $this->app->singleton(LineBotPushService::class, function () {
-            return  new LineBotPushService();
+            return new LineBotPushService();
         });
     }
-
 
     private function lineBotReceiveMessageRegister()
     {
