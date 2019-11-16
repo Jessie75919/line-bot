@@ -54,6 +54,12 @@ class LineController extends Controller
 
     public function liffEndpoint()
     {
-        return view('line.line-liff', ['liffToken' => config('line.liff_token'),]);
+        return view(
+            'line.line-liff',
+            [
+                'liffToken' => config('line.liff_token'),
+                'today' => now('Asia/Taipei')->toDateString(),
+            ]
+        );
     }
 }
