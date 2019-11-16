@@ -54,6 +54,6 @@ class LineController extends Controller
 
     public function liffEndpoint()
     {
-        return view('line.line-liff');
+        return view('line.line-liff', ['liffToken' => config('line.liff_token'),]);
     }
 }
