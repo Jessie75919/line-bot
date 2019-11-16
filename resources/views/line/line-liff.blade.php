@@ -139,9 +139,6 @@
       close() {
         this.liffService.close();
       },
-      speak() {
-        this.sendTextMessage('ggyy');
-      },
       login() {
         this.liffService.login();
       },
