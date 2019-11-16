@@ -8,6 +8,7 @@
 </head>
 <body>
 <input type="hidden" id="liff-token" value="{{$liffToken}}">
+<input type="hidden" id="today" value="{{$today}}">
 @verbatim
     <div id="app">
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
@@ -26,21 +27,34 @@
                 </ul>
             </div>
         </nav>
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <button class="btn btn-primary" @click="close">Close</button>
-            <button class="btn btn-default" @click="speak">Speak</button>
-            <button class="btn btn-info" @click="profile">Profile</button>
-            <button class="btn btn-warning" @click="login">Login</button>
+        <div class="container mt-3">
+            <h3>今日：{{today}}</h3>
+            <form>
+                <div class="form-group-lg">
+                    <label for="weight">體重</label>
+                    <input type="number" class="form-control" id="weight" v-model="bodyStatus.weight">
+                </div>
+                <div class="form-group-lg mt-3">
+                    <label for="fat">體脂（%）</label>
+                    <input type="number" class="form-control" id="fat" v-model="bodyStatus.fat">
+                </div>
+                <div class="form-group-lg text-center">
+                    <button type="button"
+                            :disabled="!bodyStatus.weight || !bodyStatus.fat"
+                            @click.prevent="submit"
+                            class="btn btn-primary btn-lg mt-4 w-100">
+                        記錄
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 @endverbatim
 
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/vconsole@3.2.0/dist/vconsole.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 <script>
@@ -115,6 +129,11 @@
     el: '#app',
     data: {
       liffService: new LiffService(liff),
+      today: document.getElementById('today').value,
+      bodyStatus: {
+        weight: null,
+        fat: null
+      }
     },
     methods: {
       close() {
@@ -132,6 +151,9 @@
       sendTextMessage(text) {
         this.liffService.sendTextMessage(text);
         this.liffService.close();
+      },
+      submit() {
+        this.sendTextMessage(`weight，{weight：${this.bodyStatus.weight}, fat：${this.bodyStatus.fat}}`);
       }
     },
     created() {
