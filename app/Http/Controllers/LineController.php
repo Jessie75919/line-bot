@@ -27,6 +27,7 @@ class LineController extends Controller
     public function index(LineMessageApiRequest $request)
     {
         $body = $request->getContent();
+
         $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
 
         /* @var MessageEvent $messageEvt */
@@ -38,7 +39,7 @@ class LineController extends Controller
 
         \Log::info(__METHOD__.' => '.print_r($response, true));
 
-        return isset($response) ? response()->json($response) : null;
+        return response(200);
     }
 
     public function imagePreview(Request $request)
