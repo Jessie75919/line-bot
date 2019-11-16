@@ -2,7 +2,6 @@
 
 namespace App\Services\LineBot;
 
-use App\Services\LineBot\PushHandler\LineBotPushService;
 use LINE\LINEBot;
 use LINE\LINEBot\Event\BaseEvent;
 
@@ -42,22 +41,10 @@ class LineBotMainService
             return null;
         }
 
-        if (! $responsePayload = $handler->handle()) {
+        if (! $responseMessage = $handler->handle()) {
             return null;
         }
 
-        $replyToken = $messageEvent->getReplyToken();
-        $dataType = $this->lineBotReceiver->getUserDataType();
-
-        if ($dataType === 'text') {
-            return $this->lineBot->replyText($replyToken, $responsePayload);
-        }
-
-        if ($dataType === 'location') {
-            $this->lineBot->replyMessage(
-                $replyToken,
-                (new LineBotPushService())->buildTemplateMessageBuilder($responsePayload)
-            );
-        }
+        return $handler->reply($messageEvent->getReplyToken(), $responseMessage);
     }
 }

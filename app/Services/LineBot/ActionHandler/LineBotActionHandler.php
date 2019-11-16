@@ -9,11 +9,24 @@
 namespace App\Services\LineBot\ActionHandler;
 
 use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
+use LINE\LINEBot;
 
 abstract class LineBotActionHandler
 {
     protected $purpose;
     protected $channelId;
+    /**
+     * @var LINEBot
+     */
+    protected $LINEBot;
+
+    /**
+     * LineBotActionHandler constructor.
+     */
+    public function __construct()
+    {
+        $this->LINEBot = app(LINEBot::class);
+    }
 
     /** Dissect the Message if it is a learning command with <學;key;value>
      * @param $userMessage
@@ -32,6 +45,11 @@ abstract class LineBotActionHandler
     }
 
     abstract public function handle();
+
+    public function reply(string $replyToken, $replyMessage)
+    {
+        return $this->LINEBot->replyText($replyToken, $replyMessage);
+    }
 
     /**
      * @param  mixed  $purpose

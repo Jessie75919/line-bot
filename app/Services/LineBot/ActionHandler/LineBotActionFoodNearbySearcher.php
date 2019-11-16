@@ -3,6 +3,7 @@
 namespace App\Services\LineBot\ActionHandler;
 
 use App\Services\Google\GooglePlaceApiService;
+use App\Services\LineBot\PushHandler\LineBotPushService;
 use Illuminate\Support\Collection;
 
 class LineBotActionFoodNearbySearcher extends LineBotActionHandler
@@ -43,6 +44,14 @@ class LineBotActionFoodNearbySearcher extends LineBotActionHandler
         return array_key_exists('channelId', $this->payload)
             ? $this->formatShops($shops)->take(10)
             : $this->formatShops($shops);
+    }
+
+    public function reply(string $replyToken, $replyMessage)
+    {
+        $this->LINEBot->replyMessage(
+            $replyToken,
+            (new LineBotPushService())->buildTemplateMessageBuilder($replyMessage)
+        );
     }
 
     private function getDataFromGooglePlaceAPI($nextPageToken)
@@ -94,4 +103,5 @@ class LineBotActionFoodNearbySearcher extends LineBotActionHandler
             }
         });
     }
+
 }

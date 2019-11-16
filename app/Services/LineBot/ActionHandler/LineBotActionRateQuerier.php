@@ -26,6 +26,7 @@ class LineBotActionRateQuerier extends LineBotActionHandler
      */
     public function __construct()
     {
+        parent::__construct();
         $this->exRate = new ExchangeRateService(new GuzzleApi());
     }
 
