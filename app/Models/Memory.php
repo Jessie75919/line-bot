@@ -28,4 +28,9 @@ class Memory extends Model
     {
         return $this->belongsToMany('\App\Models\Currency');
     }
+
+    public function weights()
+    {
+        return $this->hasMany('\App\Models\Weight');
+    }
 }
