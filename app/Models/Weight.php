@@ -15,6 +15,7 @@ class Weight extends Model
         'memory_id',
         'weight',
         'fat',
+        'bmi',
     ];
 
     public static function hasTodayRecordFor(Memory $memory): bool

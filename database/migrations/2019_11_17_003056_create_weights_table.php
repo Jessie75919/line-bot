@@ -17,6 +17,7 @@ class CreateWeightsTable extends Migration
             $table->unsignedInteger('memory_id');
             $table->float('weight')->nullable();
             $table->float('fat')->nullable();
+            $table->float('bmi')->nullable();
             $table->timestamps();
         });
     }
