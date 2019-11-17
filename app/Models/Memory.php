@@ -33,4 +33,9 @@ class Memory extends Model
     {
         return $this->hasMany('\App\Models\Weight');
     }
+
+    public function weightSetting()
+    {
+        return $this->hasOne('\App\Models\WeightSetting');
+    }
 }
