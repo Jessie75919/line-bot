@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            height: 800px;
+        }
+    </style>
 </head>
 <body>
 <input type="hidden" id="liff-token" value="{{$liffToken}}">
@@ -42,8 +47,8 @@
 <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 <script>
   var vConsole = new VConsole();
-  //  Vue.config.devtools = true;
-  //  Vue.config.silent = false;
+  Vue.config.devtools = true;
+  Vue.config.silent = false;
 
   class LiffService {
     get profile() {
@@ -69,7 +74,7 @@
             self.login();
           }
         })
-        //        .then(() => this.getProfile())
+        .then(() => this.getProfile())
         .catch(err => window.alert('Error getting profile: ' + err));
     }
 
