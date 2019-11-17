@@ -3,6 +3,10 @@
 namespace App\Services\LineBot\ActionHandler;
 
 use App\Models\Weight;
+use App\Models\WeightSetting;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
+use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 
 class LineBotActionWeightHelper extends LineBotActionHandler
 {
@@ -31,31 +35,22 @@ class LineBotActionWeightHelper extends LineBotActionHandler
         }
 
         if ($this->input === '記錄') {
-            return $this->buildOpenPanelFlex();
+            return $this->buildOpenPanel();
         }
 
         try {
             $weightInputs = json_decode($this->input, true);
-
             if (! is_array($weightInputs)) {
                 return null;
             }
 
-            if (count($weightInputs) !== 2) {
-                return null;
+            /* 目標設定 */
+            if ($this->purpose === 'weight_goal') {
+                return $this->saveGoal($weightInputs);
             }
 
-            if (! isset($weightInputs['weight']) || ! isset($weightInputs['fat'])) {
-                return null;
-            }
-
-            $todayWeight = Weight::saveRecordForToday(
-                $this->getMemory(),
-                $weightInputs['weight'],
-                $weightInputs['fat']
-            );
-
-            return $this->replySaveMessage($todayWeight);
+            /* 每日記錄 */
+            return $this->saveDailyRecord($weightInputs);
 
         } catch (\Exception $e) {
             \Log::error(__METHOD__.' => '.$e);
@@ -76,12 +71,17 @@ class LineBotActionWeightHelper extends LineBotActionHandler
         return $diff >= 0 ? '增加' : '減少';
     }
 
-    private function buildOpenPanelFlex()
+    /**
+     * @return TemplateMessageBuilder
+     */
+    private function buildOpenPanel(): TemplateMessageBuilder
     {
-        return <<<EOD
-    請點我網站開啓輸入畫面：
-    {$this->inputUrl}
-EOD;
+        $target = new ConfirmTemplateBuilder('減重小幫手來囉！', [
+            new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_input')),
+            new UriTemplateActionBuilder('目標設定', config('line.link_of_weight_setting')),
+        ]);
+
+        return new TemplateMessageBuilder('請查看手機的訊息唷！', $target);
     }
 
     private function replySaveMessage($todayWeight)
@@ -141,5 +141,63 @@ EOD;
         }
 
         return '加油！要記得每天記錄喔，我會在提醒你的！';
+    }
+
+    private function saveGoal(array $weightInputs): string
+    {
+        if (count($weightInputs) !== 3) {
+            return $this->errorMessage();
+        }
+
+        if (! isset($weightInputs['height']) ||
+            ! isset($weightInputs['goal_fat']) ||
+            ! isset($weightInputs['goal_weight'])
+        ) {
+            return $this->errorMessage();
+        }
+
+        WeightSetting::updateOrCreate(
+            ['memory_id' => $this->getMemory()->id],
+            [
+                'height' => $weightInputs['height'],
+                'goal_fat' => $weightInputs['goal_fat'],
+                'goal_weight' => $weightInputs['goal_weight'],
+            ]
+        );
+
+        return $this->replySaveGoalMessage($weightInputs);
+    }
+
+    private function saveDailyRecord(array $weightInputs): string
+    {
+        if (count($weightInputs) !== 2) {
+            return $this->errorMessage();
+        }
+
+        if (! isset($weightInputs['weight']) || ! isset($weightInputs['fat'])) {
+            return $this->errorMessage();
+        }
+
+        $todayWeight = Weight::saveRecordForToday(
+            $this->getMemory(),
+            $weightInputs['weight'],
+            $weightInputs['fat']
+        );
+
+        return $this->replySaveMessage($todayWeight);
+    }
+
+    private function errorMessage(): string
+    {
+        return "噢噢！輸入好像有點問題喔 Q_Q";
+    }
+
+    private function replySaveGoalMessage(array $weightInputs)
+    {
+        return <<<EOD
+已經幫你設定好以下的目標：
+體重：{$weightInputs['goal_weight']} kg
+體脂：{$weightInputs['goal_fat']} %
+EOD;
     }
 }
