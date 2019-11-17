@@ -11,11 +11,11 @@
                 </div>
                 <div class="form-group-lg mt-3">
                     <label for="weight">目標體重（kg）</label>
-                    <input type="number" class="form-control" id="weight" v-model="setting.weight">
+                    <input type="number" class="form-control" id="weight" v-model="setting.goal_weight">
                 </div>
                 <div class="form-group-lg mt-3">
                     <label for="fat">目標體脂（%）</label>
-                    <input type="number" class="form-control" id="fat" v-model="setting.fat">
+                    <input type="number" class="form-control" id="fat" v-model="setting.goal_fat">
                 </div>
                 <div class="form-group-lg text-center">
                     <button type="button"
@@ -39,8 +39,8 @@
           appUrl: document.getElementById('app_url').value,
           setting: {
             height: null,
-            weight: null,
-            fat: null
+            goal_weight: null,
+            goal_fat: null
           }
         },
         methods: {
@@ -57,7 +57,7 @@
         },
         computed: {
           isReady() {
-            return this.setting.weight && this.setting.fat && this.setting.height;
+            return this.setting.goal_weight && this.setting.goal_fat && this.setting.height;
           }
         },
         async created() {
