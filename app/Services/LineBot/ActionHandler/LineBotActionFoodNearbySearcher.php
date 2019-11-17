@@ -3,8 +3,11 @@
 namespace App\Services\LineBot\ActionHandler;
 
 use App\Services\Google\GooglePlaceApiService;
-use App\Services\LineBot\PushHandler\LineBotPushService;
 use Illuminate\Support\Collection;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
+use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 
 class LineBotActionFoodNearbySearcher extends LineBotActionHandler
 {
@@ -50,8 +53,41 @@ class LineBotActionFoodNearbySearcher extends LineBotActionHandler
     {
         $this->LINEBot->replyMessage(
             $replyToken,
-            (new LineBotPushService())->buildTemplateMessageBuilder($replyMessage)
+            $this->buildTemplateMessageBuilder($replyMessage)
         );
+    }
+
+    /**
+     * @param  Collection  $payload
+     * @param  string  $altText
+     * @return TemplateMessageBuilder
+     */
+    public function buildTemplateMessageBuilder(Collection $payload, $altText = ''): TemplateMessageBuilder
+    {
+        $columnTemplateBuilders = [];
+
+        foreach ($payload as $item) {
+            $urlActions = [];
+
+            if ($item->website) {
+                $urlActions[] = new UriTemplateActionBuilder('Google 地圖查看', $item->url);
+                $urlActions[] = new UriTemplateActionBuilder('前往官網', $item->website);
+            } else {
+                $urlActions[] = new UriTemplateActionBuilder('Google 地圖查看', $item->url);
+                $urlActions[] = new UriTemplateActionBuilder('Google 地圖查看', $item->url);
+            }
+
+            $columnTemplateBuilders[] = new CarouselColumnTemplateBuilder(
+                $item->label,
+                $item->is_opening,
+                $item->photo_url,
+                $urlActions
+            );
+
+        }
+
+        $target = new CarouselTemplateBuilder($columnTemplateBuilders);
+        return new TemplateMessageBuilder($altText, $target);
     }
 
     private function getDataFromGooglePlaceAPI($nextPageToken)
