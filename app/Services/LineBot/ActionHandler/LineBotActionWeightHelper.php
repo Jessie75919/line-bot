@@ -37,8 +37,6 @@ class LineBotActionWeightHelper extends LineBotActionHandler
         try {
             $weightInputs = json_decode($this->input, true);
 
-            \Log::info(__METHOD__.' => '.print_r($weightInputs, true));
-
             if (! is_array($weightInputs)) {
                 return null;
             }
