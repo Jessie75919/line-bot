@@ -2,16 +2,20 @@
 
 $routeName = "/product/product";
 
-//Route::get("/", function () {
-//    return view("consoles.merchandise.index");
-//});
-Route::get("/test", function () {
-    return view("consoles.products.test");
-})->name("test");
+// ------------------------------------------------------------------------------
+//  Line API
+// ------------------------------------------------------------------------------
+Route::group(['prefix' => 'line'], function () {
+    /* Line Message Api webhook */
+    Route::post("webhook", "Line\LineController@index");
 
-Route::post("/webhook", "LineController@index");
-
-Route::get("/line-liff/endpoint", 'LineController@liffEndpoint');
+    /* Line Liff pages */
+    Route::group(['prefix' => 'liff'], function () {
+        Route::group(['prefix' => 'weight'], function () {
+            Route::get("input", 'Line\LiffWeightController@input');
+        });
+    });
+});
 
 Route::get(
     "/place-api/image-preview",

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Line;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Line\LineMessageApiRequest;
 use App\Services\Google\GooglePlaceApiService;
 use App\Services\LineBot\LineBotMainService;
@@ -51,16 +52,5 @@ class LineController extends Controller
         return response()
             ->make($placeApi->getPhotoRefApi($photoRef))
             ->header("Content-Type", 'image/png');
-    }
-
-    public function liffEndpoint()
-    {
-        return view(
-            'line.line-liff',
-            [
-                'liffToken' => config('line.liff_token'),
-                'today' => now('Asia/Taipei')->toDateString(),
-            ]
-        );
     }
 }
