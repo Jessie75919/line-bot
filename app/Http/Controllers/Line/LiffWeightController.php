@@ -33,6 +33,14 @@ class LiffWeightController extends Controller
     public function mySetting(string $userId)
     {
         $memory = Memory::getByChannelId($userId);
-        return response()->json(['setting' => $memory->weightSetting]);
+        $weightSetting = $memory->weightSetting;
+
+        return response()->json([
+            'setting' => [
+                'height' => $weightSetting->height,
+                'goal_fat' => $weightSetting->goal_fat,
+                'goal_weight' => $weightSetting->goal_weight,
+            ],
+        ]);
     }
 }

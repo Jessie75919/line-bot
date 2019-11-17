@@ -20,11 +20,12 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
     const TALK = 'talk';
     const HELP = 'help';
     const WEIGHT = 'weight';
+    const WEIGHT_GOAL = 'weight_goal';
     const RESPONSE = 'response';
     const REMINDER = 'reminder';
     const RATE_WATCHER = 'rate_watcher';
 
-    public const DELIMITER_USE = ';|_|、|，';
+    public const DELIMITER_USE = ';|、|，';
     public const DELIMITER = '('.self::DELIMITER_USE.')';
 
     private $memory;
@@ -66,6 +67,13 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
             return $this;
         }
 
+        /* 減重設定小幫手 */
+        $pattern = "/^(weight-goal)".self::DELIMITER."(.*)/";
+        if (preg_match($pattern, $text) == 1) {
+            $this->purpose = self::WEIGHT_GOAL;
+            return $this;
+        }
+
         // 匯率查詢指令
         $pattern = "/^(匯率|rate)".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
@@ -94,7 +102,6 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
 
     public function dispatch()
     {
-        \Log::info(__METHOD__." => ".$this->purpose);
         switch ($this->purpose) {
             case self::TALK:
                 $instance = new LineBotActionCommonReplier();
@@ -105,7 +112,7 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
             case self::RATE:
                 $instance = new LineBotActionRateQuerier();
                 break;
-            case self::WEIGHT:
+            case self::WEIGHT || self::WEIGHT_GOAL:
                 $instance = new LineBotActionWeightHelper();
                 break;
             case self::RATE_WATCHER:
