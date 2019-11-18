@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 /**
  * @property float weight
  * @property float fat
+ * @property mixed bmi
  */
 class Weight extends Model
 {
@@ -41,7 +42,7 @@ class Weight extends Model
             ->get();
     }
 
-    public static function saveRecordForToday(Memory $memory, $weight, $fat): Model
+    public static function saveRecordForToday(Memory $memory, $weight, $fat, $bmi): Model
     {
         $todayStr = now('Asia/Taipei')->toDateString();
 
@@ -52,6 +53,7 @@ class Weight extends Model
         $payload = [
             'weight' => $weight,
             'fat' => $fat,
+            'bmi' => $bmi,
         ];
 
         if ($weightModel) {

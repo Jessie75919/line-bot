@@ -139,11 +139,12 @@ EOD;
 EOD;
     }
 
-    private function getRecordWording($todayWeight): string
+    private function getRecordWording(Weight $weight): string
     {
         return <<<EOD
-☆ 體重： {$todayWeight->weight} kg
-★ 體脂： {$todayWeight->fat} %
+☆ 體重： {$weight->weight} kg
+★ 體脂： {$weight->fat} %
+☆ BMI： {$weight->bmi} %
 EOD;
     }
 
@@ -157,7 +158,7 @@ EOD;
             return '👍 棒棒喔！要繼續保持唷！';
         }
 
-        return '🤩 加油！要記得每天記錄喔，我會在提醒你的！';
+        return '😃 加油！要記得每天記錄喔，我會在提醒你的！';
     }
 
     private function saveGoal(array $weightInputs): string
@@ -187,7 +188,7 @@ EOD;
 
     private function saveDailyRecord(array $weightInputs): string
     {
-        if (count($weightInputs) !== 2) {
+        if (count($weightInputs) !== 3) {
             return $this->errorMessage();
         }
 
@@ -198,7 +199,8 @@ EOD;
         $todayWeight = Weight::saveRecordForToday(
             $this->getMemory(),
             $weightInputs['weight'],
-            $weightInputs['fat']
+            $weightInputs['fat'],
+            $weightInputs['bmi'] ?? null
         );
 
         return $this->replySaveMessage($todayWeight);
