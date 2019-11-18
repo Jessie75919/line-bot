@@ -108,16 +108,16 @@ class LineBotActionWeightHelper extends LineBotActionHandler
         $finalWords = $this->getFinalWords($diffWeight, $diffFat);
 
         return <<<EOD
-您昨天的記錄是：
-體重： {$yesterdayWeight->weight} kg
-體脂： {$yesterdayWeight->fat} %
+👉 昨日體重記錄：
+ {$this->getRecordWording($yesterdayWeight)}
 
-今天的記錄是：
-體重： {$todayWeight->weight} kg
-體脂： {$todayWeight->fat} %
+📅 今日體重記錄：
+{$this->getRecordWording($todayWeight)}
 
-體重比昨天{$this->getMoreOrLessStr($diffWeight)}了 {$diffWeight} kg
-體脂比昨天{$this->getMoreOrLessStr($diffFat)}了 {$diffFat} % 
+ * 體重比昨天{$this->getMoreOrLessStr($diffWeight)}了 {$diffWeight} kg
+ * 體脂比昨天{$this->getMoreOrLessStr($diffFat)}了 {$diffFat} % 
+
+{$this->getDiffWithGoal($todayWeight)}
 
 {$finalWords}
 EOD;
@@ -125,29 +125,39 @@ EOD;
 
     private function messageForToday($todayWeight)
     {
+        $diffWithGoal = $this->getDiffWithGoal($todayWeight);
         return <<<EOD
-找不到昨日的記錄。
+😐️ 找不到昨日的記錄。
 
-今日體重記錄：
-體重： {$todayWeight->weight} kg
-體脂： {$todayWeight->fat} %
+📅 今日體重記錄：
+{$this->getRecordWording($todayWeight)}
+
+{$this->getDiffWithGoal($todayWeight)}
 
 {$this->getFinalWords(0, 0)}
 
 EOD;
     }
 
+    private function getRecordWording($todayWeight): string
+    {
+        return <<<EOD
+☆ 體重： {$todayWeight->weight} kg
+★ 體脂： {$todayWeight->fat} %
+EOD;
+    }
+
     private function getFinalWords(float $diffWeight, float $diffFat)
     {
         if ($diffWeight > 0 && $diffFat > 0) {
-            return '記得要運動，飲食要均衡喔！';
+            return '😮️ 記得要運動，飲食要均衡喔！';
         }
 
         if ($diffWeight < 0 && $diffFat < 0) {
-            return '棒棒喔！要繼續保持唷！';
+            return '👍 棒棒喔！要繼續保持唷！';
         }
 
-        return '加油！要記得每天記錄喔，我會在提醒你的！';
+        return '🤩 加油！要記得每天記錄喔，我會在提醒你的！';
     }
 
     private function saveGoal(array $weightInputs): string
@@ -202,9 +212,25 @@ EOD;
     private function replySaveGoalMessage(array $weightInputs)
     {
         return <<<EOD
-已經幫你設定好以下的目標：
-體重：{$weightInputs['goal_weight']} kg
-體脂：{$weightInputs['goal_fat']} %
+👍 已經幫你設定好以下的目標：
+ ☆ 體重：{$weightInputs['goal_weight']} kg
+ ★ 體脂：{$weightInputs['goal_fat']} %
+EOD;
+    }
+
+    private function getDiffWithGoal($todayWeight)
+    {
+        $setting = $this->getMemory()->weightSetting;
+        if (! $setting) {
+            return '';
+        }
+        $diffWeight = $todayWeight->weight - $setting->goal_weight;
+        $diffFat = $todayWeight->fat - $setting->goal_fat;
+
+        return <<<EOD
+💪 與目標差距：
+ ☆ 體重：相差 {$diffWeight} kg
+ ★ 體脂：相差 {$diffFat} %
 EOD;
     }
 }
