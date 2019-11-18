@@ -206,7 +206,7 @@ EOD;
 
     private function errorMessage(): string
     {
-        return "噢噢！輸入好像有點問題喔 Q_Q";
+        return "噢噢！輸入好像有點問題喔 😱";
     }
 
     private function replySaveGoalMessage(array $weightInputs)
