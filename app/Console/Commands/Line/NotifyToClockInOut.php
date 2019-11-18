@@ -73,7 +73,7 @@ class NotifyToClockInOut extends Command
         ];
 
         $flex = FlexMessageBuilder::builder()
-            ->setAltText('要記得打卡喔！')
+            ->setAltText($wording[$mode]['wording'])
             ->setContents(
                 BubbleContainerBuilder::builder()
                     ->setBody(
