@@ -82,6 +82,9 @@ class NotifyToClockInOut extends Command
                     ->setSize(BubleContainerSize::GIGA)
             );
 
-        $lineBot->pushMessage('C728ab38fdce52d7a538de2dc738d4723', $flex);
+        /* company group */
+        //        $lineBot->pushMessage('C728ab38fdce52d7a538de2dc738d4723', $flex);
+        /* jc */
+        $lineBot->pushMessage('U1f1c825c5fc74690c561e00c1a0c3f48', $flex);
     }
 }
