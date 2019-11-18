@@ -76,11 +76,18 @@ class LineBotActionWeightHelper extends LineBotActionHandler
      */
     private function buildOpenPanel(): TemplateMessageBuilder
     {
-        $target = new ConfirmTemplateBuilder('減重小幫手來囉！', [
-            new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_input')),
-            new UriTemplateActionBuilder('目標設定', config('line.link_of_weight_setting')),
-        ]);
-
+        $weightSetting = $this->getMemory()->weightSetting()->exists();
+        if (! $weightSetting) {
+            $target = new ConfirmTemplateBuilder('請先輸入目標設定', [
+                new UriTemplateActionBuilder('點我進行設定', config('line.link_of_weight_setting')),
+                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_input')),
+            ]);
+        } else {
+            $target = new ConfirmTemplateBuilder('減重小幫手來囉！', [
+                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_input')),
+                new UriTemplateActionBuilder('目標設定', config('line.link_of_weight_setting')),
+            ]);
+        }
         return new TemplateMessageBuilder('請查看手機的訊息唷！', $target);
     }
 
