@@ -34,7 +34,7 @@ class LineBotActionWeightHelper extends LineBotActionHandler
             return null;
         }
 
-        if ($this->input === '記錄') {
+        if ($this->input === '記錄' || $this->input === '紀錄') {
             return $this->buildOpenPanel();
         }
 
