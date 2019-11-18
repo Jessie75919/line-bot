@@ -61,7 +61,7 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         }
 
         /* 減重小幫手 */
-        $pattern = "/^(體重|weight|body)".self::DELIMITER."(.*)/";
+        $pattern = "/^(體重|weight)".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
             $this->purpose = self::WEIGHT;
             return $this;
