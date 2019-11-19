@@ -111,6 +111,7 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
 
     public function dispatch()
     {
+        \Log::info(__METHOD__." => ".$this->purpose);
         switch ($this->purpose) {
             case self::TALK:
                 $instance = new LineBotActionCommonReplier();
@@ -121,7 +122,8 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
             case self::RATE:
                 $instance = new LineBotActionRateQuerier();
                 break;
-            case self::WEIGHT || self::WEIGHT_GOAL:
+            case self::WEIGHT_GOAL:
+            case self::WEIGHT:
                 $instance = new LineBotActionWeightHelper();
                 break;
             case self::RATE_WATCHER:
