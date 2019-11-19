@@ -19,6 +19,11 @@ class Weight extends Model
         'bmi',
     ];
 
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    ];
+
     public static function hasTodayRecordFor(Memory $memory): bool
     {
         $todayStr = now('Asia/Taipei')->toDateString();
@@ -30,6 +35,14 @@ class Weight extends Model
         return self::getBeforeRecordsFor($memory, 1)
             ->take(-1)
             ->first();
+    }
+
+    public static function getLastTimeRecord(Memory $memory): ?Weight
+    {
+        return $memory->weights()
+            ->whereDate('created_at', '<=', now('Asia/Taipei')->toDateString())
+            ->orderBy('created_at', 'desc')
+            ->take(2)->get()[1];
     }
 
     public static function getBeforeRecordsFor(Memory $memory, int $day): Collection

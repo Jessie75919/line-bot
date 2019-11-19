@@ -93,29 +93,29 @@ class LineBotActionWeightHelper extends LineBotActionHandler
 
     private function replySaveMessage($todayWeight)
     {
-        $yesterdayWeight = Weight::getYesterdayRecord($this->getMemory());
-        if ($yesterdayWeight) {
-            return $this->messageWithYesterday($yesterdayWeight, $todayWeight);
+        $lastTimeWeight = Weight::getLastTimeRecord($this->getMemory());
+        if ($lastTimeWeight) {
+            return $this->messageForLastTime($lastTimeWeight, $todayWeight);
         }
 
         return $this->messageForToday($todayWeight);
     }
 
-    private function messageWithYesterday(Weight $yesterdayWeight, $todayWeight)
+    private function messageForLastTime(Weight $lastTimeWeight, $todayWeight)
     {
-        $diffWeight = $todayWeight->weight - $yesterdayWeight->weight;
-        $diffFat = $todayWeight->fat - $yesterdayWeight->fat;
+        $diffWeight = $todayWeight->weight - $lastTimeWeight->weight;
+        $diffFat = $todayWeight->fat - $lastTimeWeight->fat;
         $finalWords = $this->getFinalWords($diffWeight, $diffFat);
 
         return <<<EOD
-👉 昨日體重記錄：
- {$this->getRecordWording($yesterdayWeight)}
+👉 上次記錄 ({$lastTimeWeight->created_at->toDateString()})：
+{$this->getRecordWording($lastTimeWeight)}
 
-📅 今日體重記錄：
+📅 今日記錄：
 {$this->getRecordWording($todayWeight)}
 
- * 體重比昨天{$this->getMoreOrLessStr($diffWeight)}了 {$diffWeight} kg
- * 體脂比昨天{$this->getMoreOrLessStr($diffFat)}了 {$diffFat} % 
+ * 體重比上次{$this->getMoreOrLessStr($diffWeight)}了 {$diffWeight} kg
+ * 體脂比上次{$this->getMoreOrLessStr($diffFat)}了 {$diffFat} % 
 
 {$this->getDiffWithGoal($todayWeight)}
 
@@ -127,9 +127,9 @@ EOD;
     {
         $diffWithGoal = $this->getDiffWithGoal($todayWeight);
         return <<<EOD
-😐️ 找不到昨日的記錄。
+😐️ 找不到上次的記錄。
 
-📅 今日體重記錄：
+📅 今日記錄：
 {$this->getRecordWording($todayWeight)}
 
 {$this->getDiffWithGoal($todayWeight)}
@@ -231,8 +231,8 @@ EOD;
 
         return <<<EOD
 💪 與目標差距：
- ☆ 體重：相差 {$diffWeight} kg
- ★ 體脂：相差 {$diffFat} %
+☆ 體重：相差 {$diffWeight} kg
+★ 體脂：相差 {$diffFat} %
 EOD;
     }
 }
