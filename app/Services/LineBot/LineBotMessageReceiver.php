@@ -9,6 +9,7 @@ use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
 use LINE\LINEBot\Event\BaseEvent;
 use LINE\LINEBot\Event\MessageEvent\LocationMessage;
 use LINE\LINEBot\Event\MessageEvent\TextMessage;
+use LINE\LINEBot\Event\PostbackEvent;
 
 class LineBotMessageReceiver
 {
@@ -25,6 +26,13 @@ class LineBotMessageReceiver
     public function dispatchByPayloadType(BaseEvent $messageEvent): LineBotActionHandler
     {
         if ($messageEvent instanceof TextMessage) {
+            $this->userDataType = 'text';
+            return (new TextTypePayloadHandler($this->memory))
+                ->checkPurpose($messageEvent)
+                ->dispatch();
+        }
+
+        if ($messageEvent instanceof PostbackEvent) {
             $this->userDataType = 'text';
             return (new TextTypePayloadHandler($this->memory))
                 ->checkPurpose($messageEvent)
@@ -51,8 +59,9 @@ class LineBotMessageReceiver
     /** for the first time user which not has record in DB
      * @param $messageEvent
      * @return LineBotMessageReceiver
+     * @throws \LINE\LINEBot\Exception\InvalidEventSourceException
      */
-    private function createMemory(TextMessage $messageEvent)
+    private function createMemory(BaseEvent $messageEvent)
     {
         $channelId = $messageEvent->getEventSourceId();
 

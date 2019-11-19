@@ -10,7 +10,9 @@ use App\Services\LineBot\ActionHandler\LineBotActionRateWatcher;
 use App\Services\LineBot\ActionHandler\LineBotActionReminder;
 use App\Services\LineBot\ActionHandler\LineBotActionWeightHelper;
 use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
+use LINE\LINEBot\Event\BaseEvent;
 use LINE\LINEBot\Event\MessageEvent;
+use LINE\LINEBot\Event\PostbackEvent;
 
 class TextTypePayloadHandler implements TypePayloadHandlerInterface
 {
@@ -25,7 +27,7 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
     const REMINDER = 'reminder';
     const RATE_WATCHER = 'rate_watcher';
 
-    public const DELIMITER_USE = ';|、|，';
+    public const DELIMITER_USE = ';|、|，|=';
     public const DELIMITER = '('.self::DELIMITER_USE.')';
 
     private $memory;
@@ -42,10 +44,17 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         $this->memory = $memory;
     }
 
-    public function checkPurpose(MessageEvent $textMessage)
+    public function checkPurpose(BaseEvent $textMessage)
     {
-        $this->rawPayload = $textMessage->getText();
-        $text = $textMessage->getText();
+        if ($textMessage instanceof PostbackEvent) {
+            /* @var PostbackEvent $textMessage */
+            $this->rawPayload = $textMessage->getPostbackData();
+            $text = $textMessage->getPostbackData();
+        } else {
+            /* @var MessageEvent\TextMessage $textMessage */
+            $text = $textMessage->getText();
+            $this->rawPayload = $textMessage->getText();
+        }
 
         // Help指令
         if (strtolower($text) === self::HELP) {
