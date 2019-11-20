@@ -11,6 +11,9 @@ class WeightSetting extends Model
         'goal_weight',
         'goal_fat',
         'memory_id',
+        'enable_notification',
+        'notify_day',
+        'notify_at',
     ];
 
     public function memory()
