@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\BodyTemperatureDocsGenerator;
 use App\Console\Commands\Line\ExchangeRateWatcherNotification;
 use App\Console\Commands\Line\LineBotPushMessage;
+use App\Console\Commands\Line\NotifyForSaveWeightRecord;
 use App\Console\Commands\Line\NotifyToClockInOut;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
         LineBotPushMessage::class,
         ExchangeRateWatcherNotification::class,
         NotifyToClockInOut::class,
+        NotifyForSaveWeightRecord::class,
     ];
 
     /**
@@ -36,6 +38,7 @@ class Kernel extends ConsoleKernel
     {
         $this->registerScheduleForExchangeRateWatcher($schedule);
         $this->registerScheduleForNotifyClockInOut($schedule);
+        $this->registerScheduleForNotifyWeightRecord($schedule);
     }
 
     /**
@@ -56,19 +59,22 @@ class Kernel extends ConsoleKernel
             ->timezone('Asia/Taipei');
     }
 
+    private function registerScheduleForNotifyWeightRecord(Schedule $schedule)
+    {
+        $schedule->command('line:notify-for-save-record')
+            ->everyThirtyMinutes()
+            ->timezone('Asia/Taipei');
+    }
+
     private function registerScheduleForNotifyClockInOut(Schedule $schedule)
     {
         $schedule->command('line:notify-to-clock-in-out')
+            ->weekdays()
             ->dailyAt(9)
-            ->when(function () {
-                return now('Asia/Taipei')->isWeekday();
-            })
             ->timezone('Asia/Taipei');
         $schedule->command('line:notify-to-clock-in-out')
+            ->weekdays()
             ->dailyAt('18:30')
-            ->when(function () {
-                return now('Asia/Taipei')->isWeekday();
-            })
             ->timezone('Asia/Taipei');
     }
 }
