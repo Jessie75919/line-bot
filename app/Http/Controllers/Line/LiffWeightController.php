@@ -28,14 +28,15 @@ class LiffWeightController extends Controller
         $weightSetting = $memory->weightSetting;
 
         return response()->json([
-            'setting' => [
-                'height' => $weightSetting->height,
-                'goal_fat' => $weightSetting->goal_fat,
-                'goal_weight' => $weightSetting->goal_weight,
-                'enable_notification' => $weightSetting->enable_notification,
-                'notify_day' => $weightSetting->notify_day,
-                'notify_at' => $weightSetting->notify_at,
-            ],
+            'setting' => isset($weightSetting)
+                ? [
+                    'height' => $weightSetting->height,
+                    'goal_fat' => $weightSetting->goal_fat,
+                    'goal_weight' => $weightSetting->goal_weight,
+                    'enable_notification' => $weightSetting->enable_notification,
+                    'notify_day' => $weightSetting->notify_day,
+                    'notify_at' => $weightSetting->notify_at,
+                ] : null,
         ]);
     }
 }
