@@ -99,13 +99,13 @@
                         <div class="form-group-lg mt-3">
                             <label for="notify_day">每週提醒日</label>
                             <select class="form-control" id="notify_day" v-model="setting.notify_day">
-                                <option value="0">星期一</option>
-                                <option value="1">星期二</option>
-                                <option value="2">星期三</option>
-                                <option value="3">星期四</option>
-                                <option value="4">星期五</option>
-                                <option value="5">星期六</option>
-                                <option value="6">星期日</option>
+                                <option value="1">星期一</option>
+                                <option value="2">星期二</option>
+                                <option value="3">星期三</option>
+                                <option value="4">星期四</option>
+                                <option value="5">星期五</option>
+                                <option value="6">星期六</option>
+                                <option value="0">星期日</option>
                             </select>
                         </div>
                         <div class="form-group-lg mt-3">
