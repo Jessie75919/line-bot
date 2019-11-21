@@ -25,7 +25,7 @@ class LineBotActionWeightHelper extends LineBotActionHandler
     public function __construct()
     {
         parent::__construct();
-        $this->inputUrl = config('line.link_of_weight_input');
+        $this->inputUrl = config('line.link_of_weight_index');
     }
 
     public function preparePayload($rawPayload)
@@ -89,11 +89,11 @@ class LineBotActionWeightHelper extends LineBotActionHandler
         if (! $weightSetting) {
             $target = new ConfirmTemplateBuilder('請先輸入目標設定', [
                 new UriTemplateActionBuilder('點我進行設定', config('line.link_of_weight_setting')),
-                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_input')),
+                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index')),
             ]);
         } else {
             $target = new ConfirmTemplateBuilder('減重小幫手來囉！', [
-                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_input')),
+                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index')),
                 new UriTemplateActionBuilder('目標設定', config('line.link_of_weight_setting')),
             ]);
         }

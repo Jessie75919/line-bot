@@ -39,7 +39,7 @@ class NotifyForSaveWeightRecord extends Command
     public function getMessagePanel()
     {
         $target = new ConfirmTemplateBuilder('😉 記得今天要記錄體重喔！', [
-            new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_input')),
+            new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index')),
             new UriTemplateActionBuilder('調整目標設定', config('line.link_of_weight_setting')),
         ]);
         return new TemplateMessageBuilder('請查看手機的訊息唷！', $target);

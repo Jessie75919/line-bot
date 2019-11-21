@@ -11,11 +11,11 @@ class LiffWeightController extends Controller
 {
     public function index(Request $request)
     {
-        $page = $request->all()['page'] ?? 'input';
+        $page = $request->all()['page'] ?? 'index';
         return view(
             "line.weight.{$page}",
             [
-                'liffToken' => Weight::getPageToken(config('line.link_of_weight_input')),
+                'liffToken' => Weight::getPageToken(config('line.link_of_weight_index')),
                 'today' => now('Asia/Taipei')->toDateString(),
                 'page' => $page,
             ]
