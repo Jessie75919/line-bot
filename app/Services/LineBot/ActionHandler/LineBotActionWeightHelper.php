@@ -181,9 +181,7 @@ EOD;
         if (! isset($weightInputs['height']) ||
             ! isset($weightInputs['goal_fat']) ||
             ! isset($weightInputs['goal_weight']) ||
-            ! is_integer($weightInputs['enable_notification']) ||
-            ! is_integer($weightInputs['notify_day']) ||
-            ! isset($weightInputs['notify_at'])
+            ! (bool) ($weightInputs['enable_notification'])
         ) {
             return $this->errorMessage();
         }
