@@ -44,7 +44,7 @@
                 </ul>
             </div>
         </nav>
-        <div class="container mt-3" v-if="page === 'input'">
+        <div class="container mt-3" v-if="page === 'index'">
             <h3>今日：{{today}}</h3>
             <form>
                 <div class="form-group-lg">
