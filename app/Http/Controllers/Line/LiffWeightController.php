@@ -5,27 +5,19 @@ namespace App\Http\Controllers\Line;
 use App\Http\Controllers\Controller;
 use App\Models\Memory;
 use App\Models\Weight;
+use Illuminate\Http\Request;
 
 class LiffWeightController extends Controller
 {
-    public function input()
+    public function index(Request $request)
     {
+        $page = $request->all()['page'] ?? 'input';
         return view(
-            'line.input',
+            "line.weight.{$page}",
             [
                 'liffToken' => Weight::getPageToken(config('line.link_of_weight_input')),
                 'today' => now('Asia/Taipei')->toDateString(),
-            ]
-        );
-    }
-
-    public function setting()
-    {
-        return view(
-            'line.setting',
-            [
-                'liffToken' => Weight::getPageToken(config('line.link_of_weight_setting')),
-                'today' => now('Asia/Taipei')->toDateString(),
+                'page' => $page,
             ]
         );
     }
