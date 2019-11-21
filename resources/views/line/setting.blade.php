@@ -9,6 +9,14 @@
         .fade-enter, .fade-leave-to {
             opacity: 0;
         }
+
+        .time-picker {
+            width: 50%;
+        }
+
+        .time-picker-container {
+            display: flex;
+        }
     </style>
 @endsection
 
@@ -56,12 +64,17 @@
                         </div>
                         <div class="form-group-lg mt-3">
                             <label for="notify_at">提醒時間</label>
-                            <input type="time" class="form-control"
-                                   v-model="setting.notify_at"
-                                   min="09:00"
-                                   max="23:00"
-                                   step="600"
-                            >
+                            <div class="time-picker-container">
+                                <select class="form-control time-picker"
+                                        id="notify_day"
+                                        v-model="time.hour">
+                                    <option :value="hour" v-for="hour in hours">{{hour}} 點</option>
+                                </select>
+                                <select class="form-control time-picker" id="notify_day" v-model="time.minute">
+                                    <option value="00">00 分</option>
+                                    <option value="30">30 分</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </transition>
@@ -85,6 +98,10 @@
         data: {
           liffService: new LiffService(liff),
           appUrl: document.getElementById('app_url').value,
+          time: {
+            hour: '09',
+            minute: '00'
+          },
           setting: {
             height: null,
             goal_weight: null,
@@ -103,6 +120,7 @@
             this.liffService.close();
           },
           submit() {
+            this.$set(this.setting, 'notify_at', `${this.time.hour}:${this.time.minute}`);
             this.sendTextMessage(`weight-goal，${JSON.stringify(this.setting)}`);
           },
         },
@@ -111,9 +129,19 @@
             return this.setting.goal_weight &&
               this.setting.goal_fat &&
               this.setting.height;
+          },
+          hours() {
+            const hours = [...Array(24).keys()];
+            return hours.map(h => h.pad());
           }
         },
         async created() {
+          Number.prototype.pad = function (size) {
+            var s = String(this);
+            while (s.length < (size || 2)) {s = '0' + s;}
+            return s;
+          };
+
           await this.liffService.init();
           const profile = this.liffService.profile;
 
@@ -123,6 +151,13 @@
                 if (res.status === 200) {
                   if (res.data.setting) {
                     this.$set(this, 'setting', res.data.setting);
+                    console.log(res.data.setting.notify_at);
+                    const notifyAt = res.data.setting.notify_at;
+                    if (notifyAt) {
+                      const timeArr = notifyAt.split(':');
+                      this.$set(this['time'], 'hour', timeArr[0]);
+                      this.$set(this['time'], 'minute', timeArr[1]);
+                    }
                   }
                 }
               }
