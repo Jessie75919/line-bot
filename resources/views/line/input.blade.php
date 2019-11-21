@@ -50,15 +50,6 @@
           }
         },
         methods: {
-          close() {
-            this.liffService.close();
-          },
-          login() {
-            this.liffService.login();
-          },
-          profile() {
-            this.liffService.getProfile();
-          },
           sendTextMessage(text) {
             this.liffService.sendTextMessage(text);
             this.liffService.close();

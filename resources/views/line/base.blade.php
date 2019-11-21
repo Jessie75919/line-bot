@@ -10,10 +10,12 @@
             height: 800px;
         }
     </style>
+    @yield('css')
 </head>
 <body>
 <input type="hidden" id="liff-token" value="{{$liffToken}}">
 <input type="hidden" id="today" value="{{$today}}">
+
 
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Give Me Lighter!</a>
@@ -72,7 +74,7 @@
       return this.liff
         .init({ liffId: this.liffToken })
         .then(() => {
-          if (!this.isLoggedIn()) {
+          if (!self.isLoggedIn()) {
             self.login();
           }
         })
@@ -82,6 +84,10 @@
 
     login() {
       return this.liff.login();
+    }
+
+    logout() {
+      return this.liff.logout();
     }
 
     isInClient() {
@@ -107,13 +113,15 @@
         window.alert('You cannot use liff.sendMessages() in an external browser.');
         return;
       }
-      this.liff.sendMessages([{ 'type': 'text', text, }])
-        .then(() => {
+      return this.liff.sendMessages([{ 'type': 'text', text }])
+        .then(function () {
           if (callback) {
             callback();
           }
-        })
-        .catch(error => window.alert('Error sending message: ' + error));
+          return true;
+        }).catch(function (error) {
+          window.alert('Error sending message: ' + error);
+        });
     }
   }
 
