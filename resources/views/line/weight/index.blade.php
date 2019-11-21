@@ -35,8 +35,8 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item" :class="{active: page === 'input'}">
-                        <a class="nav-link" @click="page='input'">記錄<span class="sr-only">(current)</span></a>
+                    <li class="nav-item" :class="{active: page === 'index'}">
+                        <a class="nav-link" @click="page='index'">記錄<span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item" :class="{active: page === 'setting'}">
                         <a class="nav-link" @click="page='setting'">設定<span class="sr-only"></span></a>
