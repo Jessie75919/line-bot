@@ -12,8 +12,7 @@ Route::group(['prefix' => 'line'], function () {
     /* Line Liff pages */
     Route::group(['prefix' => 'liff'], function () {
         Route::group(['prefix' => 'weight'], function () {
-            Route::get("input", 'Line\LiffWeightController@input');
-            Route::get("setting", 'Line\LiffWeightController@setting');
+            Route::get("index", 'Line\LiffWeightController@index');
             Route::get("my-setting/{userId}", 'Line\LiffWeightController@mySetting');
         });
     });
