@@ -224,6 +224,8 @@
                       this.$set(this['time'], 'hour', timeArr[0]);
                       this.$set(this['time'], 'minute', timeArr[1]);
                     }
+                  } else {
+                    this.page = 'setting';
                   }
                 }
               }
