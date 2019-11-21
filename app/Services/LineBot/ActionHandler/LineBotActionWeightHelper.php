@@ -10,6 +10,15 @@ use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 
 class LineBotActionWeightHelper extends LineBotActionHandler
 {
+    const INT_TO_DAY = [
+        '星期日',
+        '星期一',
+        '星期二',
+        '星期三',
+        '星期四',
+        '星期五',
+        '星期六',
+    ];
     private $input;
     private $inputUrl;
 
@@ -163,13 +172,18 @@ EOD;
 
     private function saveGoal(array $weightInputs): string
     {
-        if (count($weightInputs) !== 3) {
+        if (count($weightInputs) !== 6) {
             return $this->errorMessage();
         }
 
+        \Log::info(__METHOD__.' => '.print_r($weightInputs, true));
+
         if (! isset($weightInputs['height']) ||
             ! isset($weightInputs['goal_fat']) ||
-            ! isset($weightInputs['goal_weight'])
+            ! isset($weightInputs['goal_weight']) ||
+            ! is_integer($weightInputs['enable_notification']) ||
+            ! is_integer($weightInputs['notify_day']) ||
+            ! isset($weightInputs['notify_at'])
         ) {
             return $this->errorMessage();
         }
@@ -180,6 +194,9 @@ EOD;
                 'height' => $weightInputs['height'],
                 'goal_fat' => $weightInputs['goal_fat'],
                 'goal_weight' => $weightInputs['goal_weight'],
+                'enable_notification' => $weightInputs['enable_notification'],
+                'notify_day' => $weightInputs['notify_day'],
+                'notify_at' => $weightInputs['notify_at'],
             ]
         );
 
@@ -214,9 +231,29 @@ EOD;
     private function replySaveGoalMessage(array $weightInputs)
     {
         return <<<EOD
-👍 已經幫你設定好以下的目標：
- ☆ 體重：{$weightInputs['goal_weight']} kg
- ★ 體脂：{$weightInputs['goal_fat']} %
+已經幫你設定好以下：
+
+🏁 目標
+☆ 體重：{$weightInputs['goal_weight']} kg
+★ 體脂：{$weightInputs['goal_fat']} %
+ 
+⚙️ 設定
+★ 身高：{$weightInputs['height']} cm
+{$this->settingText($weightInputs)}
+EOD;
+    }
+
+    private function settingText($weightInputs): string
+    {
+        if ($weightInputs['enable_notification'] === 0) {
+            return <<<EOD
+🔕 關閉紀錄提醒
+EOD;
+        }
+        $day = self::INT_TO_DAY[$weightInputs['notify_day']];
+        return <<<EOD
+🔔 開啓紀錄提醒
+⏰ 提醒時間：每週{$day} {$weightInputs['notify_at']}
 EOD;
     }
 
