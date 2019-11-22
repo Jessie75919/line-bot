@@ -22,7 +22,6 @@ Route::get(
     "/place-api/image-preview",
     "LineController@imagePreview"
 )->name('place-api.image-preview');
-//Route::post("/pushMessage", "PushMessageController@index")->name("pushConsole");
 
 //Route::post("/webhook", "FacebookBotController@post");
 //Route::get("/webhook", "FacebookBotController@get");
