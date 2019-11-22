@@ -21,14 +21,14 @@ class NotifyForSaveWeightRecord extends Command
 
         $now = now('Asia/Taipei');
         $day = $now->dayOfWeek;
-        $timeAt = $now->toTimeString();
+        $timeAt = $now->format('H:i');
 
         \Log::info(__METHOD__."[".__LINE__."] => day:{$day} / timeAt:{$timeAt}");
 
         $weightSettings = WeightSetting::with('memory')
             ->where('enable_notification', 1)
             ->where('notify_day', $day)
-            ->where('notify_at', $timeAt)
+            ->where('notify_at', "$timeAt:00")
             ->get();
 
         foreach ($weightSettings as $weightSetting) {
