@@ -18,14 +18,15 @@ class NotifyForSaveWeightRecord extends Command
     public function handle(LineBotPushService $lineBotPushService)
     {
         \Log::info(__METHOD__."[".__LINE__."] => line:notify-for-save-record starting...");
+
         $now = now('Asia/Taipei');
         $day = $now->dayOfWeek;
         $timeAt = $now->toTimeString();
 
         $weightSettings = WeightSetting::with('memory')
-            //            ->where('enable_notification', 1)
-            //            ->where('notify_day', $day)
-            //            ->where('notify_at', $timeAt)
+            ->where('enable_notification', 1)
+            ->where('notify_day', $day)
+            ->where('notify_at', $timeAt)
             ->get();
 
         foreach ($weightSettings as $weightSetting) {
