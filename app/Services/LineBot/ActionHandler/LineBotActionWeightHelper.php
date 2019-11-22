@@ -88,13 +88,13 @@ class LineBotActionWeightHelper extends LineBotActionHandler
         $weightSetting = $this->getMemory()->weightSetting()->exists();
         if (! $weightSetting) {
             $target = new ConfirmTemplateBuilder('請先輸入目標設定', [
-                new UriTemplateActionBuilder('點我進行設定', config('line.link_of_weight_setting')),
-                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index')),
+                new UriTemplateActionBuilder('點我進行設定', config('line.link_of_weight_index').'?page=setting'),
+                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index').'?page=index'),
             ]);
         } else {
             $target = new ConfirmTemplateBuilder('減重小幫手來囉！', [
-                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index')),
-                new UriTemplateActionBuilder('目標設定', config('line.link_of_weight_setting')),
+                new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index').'?page=index'),
+                new UriTemplateActionBuilder('調整目標設定', config('line.link_of_weight_index').'?page=setting'),
             ]);
         }
         return new TemplateMessageBuilder('請查看手機的訊息唷！', $target);
