@@ -26,15 +26,19 @@ class NotifyForSaveWeightRecord extends Command
         $weightSettings = WeightSetting::with('memory')
             ->where('enable_notification', 1)
             ->where('notify_day', $day)
-            ->where('notify_at', $timeAt)
+            ->whereTime('notify_at', '=', $timeAt)
             ->get();
 
         foreach ($weightSettings as $weightSetting) {
             $channelId = $weightSetting->memory->channel_id;
+
+            \Log::info(__METHOD__."[".__LINE__."] => notification to : ".$channelId);
+
             $resp = $lineBotPushService->pushMessage(
                 $channelId,
                 $this->getMessagePanel()
             );
+
             \Log::info(__METHOD__."[".__LINE__."] =>".print_r($resp, true));
         }
 
