@@ -23,6 +23,8 @@ class NotifyForSaveWeightRecord extends Command
         $day = $now->dayOfWeek;
         $timeAt = $now->toTimeString();
 
+        \Log::info(__METHOD__."[".__LINE__."] => day:{$day} / timeAt:{$timeAt}");
+
         $weightSettings = WeightSetting::with('memory')
             ->where('enable_notification', 1)
             ->where('notify_day', $day)
