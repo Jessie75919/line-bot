@@ -30,10 +30,11 @@ class NotifyForSaveWeightRecord extends Command
 
         foreach ($weightSettings as $weightSetting) {
             $channelId = $weightSetting->memory->channel_id;
-            $lineBotPushService->pushMessage(
+            $resp = $lineBotPushService->pushMessage(
                 $channelId,
                 $this->getMessagePanel()
             );
+            \Log::info(__METHOD__."[".__LINE__."] =>".print_r($resp, true));
         }
 
         \Log::info(__METHOD__."[".__LINE__."] => line:notify-for-save-record done !");
