@@ -17,6 +17,7 @@ class NotifyForSaveWeightRecord extends Command
 
     public function handle(LineBotPushService $lineBotPushService)
     {
+        \Log::info(__METHOD__."[".__LINE__."] => line:notify-for-save-record starting...");
         $now = now('Asia/Taipei');
         $day = $now->dayOfWeek;
         $timeAt = $now->toTimeString();
@@ -34,6 +35,8 @@ class NotifyForSaveWeightRecord extends Command
                 $this->getMessagePanel()
             );
         }
+
+        \Log::info(__METHOD__."[".__LINE__."] => line:notify-for-save-record done !");
     }
 
     public function getMessagePanel()
