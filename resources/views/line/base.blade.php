@@ -29,7 +29,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vconsole@3.2.0/dist/vconsole.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 <script>
-  var vConsole = new VConsole();
+  //  var vConsole = new VConsole();
   Vue.config.devtools = true;
   Vue.config.silent = false;
 
