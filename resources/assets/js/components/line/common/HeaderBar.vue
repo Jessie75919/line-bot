@@ -15,13 +15,19 @@
 				    data-target=".navbar-collapse.show" data-toggle="collapse">
 					<a @click="setPage('index')"
 					   class="nav-link"
-					>記錄<span class="sr-only">(current)</span></a>
+					>☀️ 今日記錄<span class="sr-only">(current)</span></a>
 				</li>
 				<li :class="{active: page === 'setting'}" class="nav-item"
 				    data-target=".navbar-collapse.show" data-toggle="collapse">
 					<a @click="setPage('setting')"
 					   class="nav-link"
-					>設定<span class="sr-only"></span></a>
+					>⚙️ 設定<span class="sr-only"></span></a>
+				</li>
+				<li :class="{active: page === 'records'}" class="nav-item"
+				    data-target=".navbar-collapse.show" data-toggle="collapse">
+					<a @click="setPage('records')"
+					   class="nav-link"
+					>🎬️ 歷史記錄<span class="sr-only"></span></a>
 				</li>
 			</ul>
 		</div>
