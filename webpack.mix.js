@@ -1,4 +1,4 @@
-let mix     = require('laravel-mix');
+let mix = require('laravel-mix');
 //let webpack = require('webpack');
 const Clean = require('clean-webpack-plugin');
 
@@ -75,3 +75,9 @@ mix.babel([
 ], 'public/js/all.js').version();
 
 //mix.js('resources/assets/js/app.js', 'public/js');
+
+// ---------------------------------------------
+// Line Liff
+// ---------------------------------------------
+mix.js('resources/assets/js/components/line/line-liff.js', 'public/js');
+mix.minify('public/js/line-liff.js').version();
