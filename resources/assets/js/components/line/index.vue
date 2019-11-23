@@ -19,14 +19,21 @@
 						v-else
 				>
 				</weight-setting>
+				<weight-records :lineLiffApi="lineLiffApi"
+				                @startLoading="setLoading(true)"
+				                @stopLoading="setLoading(false)"
+				                v-else-if="page === 'records'">
+				</weight-records>
 			</transition>
 		</div>
 	</div>
 </template>
 
 <script>
+  import { LineLiffWeightApi } from './api/LineLiffWeightApi';
   import HeaderBar from './common/HeaderBar';
   import WeightInput from './pages/WeightInput';
+  import WeightRecords from './pages/WeightRecords';
   import WeightSetting from './pages/WeightSetting';
   import { LineLiff } from './services/LineLiff';
 
@@ -35,7 +42,8 @@
     components: {
       HeaderBar,
       WeightInput,
-      WeightSetting
+      WeightSetting,
+      WeightRecords
     },
     data() {
       return {
