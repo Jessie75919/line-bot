@@ -13,7 +13,8 @@ Route::group(['prefix' => 'line'], function () {
     Route::group(['prefix' => 'liff'], function () {
         Route::group(['prefix' => 'weight'], function () {
             Route::get("index", 'Line\LiffWeightController@index');
-            Route::get("my-setting/{userId}", 'Line\LiffWeightController@mySetting');
+            Route::get("setting/{memory}", 'Line\LiffWeightController@setting');
+            Route::get("records/{memory}", 'Line\LiffWeightController@weightRecords');
         });
     });
 });
