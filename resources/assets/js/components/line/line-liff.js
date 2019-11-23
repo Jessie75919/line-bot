@@ -1,6 +1,12 @@
 const LineLiff = require('./index');
 const Vue = require('vue');
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
 
+import { download, get, patch, post, remove } from '../../custom/api';
+
+window.api = { get, download, post, patch, remove };
 window.jQuery = require('jquery');
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
