@@ -38,4 +38,9 @@ class Memory extends Model
     {
         return $this->hasOne('\App\Models\WeightSetting');
     }
+
+    public function getRouteKeyName()
+    {
+        return 'channel_id';
+    }
 }
