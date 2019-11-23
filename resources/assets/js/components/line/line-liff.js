@@ -21,6 +21,8 @@ const isProduction = isProd => {
 /* temp hard code Production mode */
 isProduction(false);
 
+Vue.component('Loading', Loading);
+
 new Vue({
   render: h => h(LineLiff),
 }).$mount('#line-liff');

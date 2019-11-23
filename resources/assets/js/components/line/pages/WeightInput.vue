@@ -52,7 +52,7 @@
       submit() {
         this.liffService.sendTextMessage(`weight，${JSON.stringify(this.bodyStatus)}`);
         this.liffService.close();
-      }
+      },
     },
     computed: {
       isInputReady() {

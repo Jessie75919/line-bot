@@ -91,6 +91,9 @@
         this.$set(this.setting, 'notify_at', `${this.time.hour}:${this.time.minute}`);
         this.liffService.sendTextMessage(`weight-goal，${JSON.stringify(this.setting)}`);
         this.liffService.close();
+      },
+      stopLoading() {
+        this.$emit('stopLoading');
       }
     },
     computed: {
@@ -119,6 +122,7 @@
         this.$set(this['time'], 'hour', timeArr[0]);
         this.$set(this['time'], 'minute', timeArr[1]);
       }
+      this.stopLoading();
     }
   };
 </script>

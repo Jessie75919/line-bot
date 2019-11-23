@@ -1,23 +1,27 @@
 <template>
 	<div id="liff">
+		<loading :active.sync="isLoading"
+		         :height="200"
+		         :is-full-page="true"
+		         :width="200"
+		         color="#1c516a"
+		></loading>
 		<header-bar :page="page"
 		            @setPage="setPageHandler"
 		></header-bar>
 		<div class="liff-content">
 			<transition mode="out-in" name="fade">
-				<weight-input
-						:liffService="liffService"
-						:setting="setting"
-						style="position:absolute;"
-						v-if="page ==='index'">
+				<weight-input :liffService="liffService"
+				              :setting="setting"
+				              @startLoading="setLoading(true)"
+				              @stopLoading="setLoading(false)"
+				              v-if="page ==='index'">
 
 				</weight-input>
-				<weight-setting
-						:liffService="liffService"
-						:setting="setting"
-						style="position:absolute;"
-						v-else
-				>
+				<weight-setting :liffService="liffService"
+				                :setting="setting"
+				                @stopLoading="setLoading(false)"
+				                v-else-if="page === 'setting'">
 				</weight-setting>
 				<weight-records :lineLiffApi="lineLiffApi"
 				                @startLoading="setLoading(true)"
@@ -47,9 +51,11 @@
     },
     data() {
       return {
+        isLoading: true,
         liffService: new LineLiff(liff),
         appUrl: document.getElementById('app_url').value,
         page: document.getElementById('page').value,
+        lineLiffApi: null,
         setting: {
           height: null,
           goal_weight: null,
@@ -64,19 +70,23 @@
       setPageHandler(page) {
         this.page = page;
       },
+      setLoading(mode) {
+        this.isLoading = mode;
+      }
     },
     computed: {},
     async created() {
       await this.liffService.init();
       const profile = this.liffService.profile;
-      axios.get(`${this.appUrl}/line/liff/weight/my-setting/${profile.userId}`)
+      this.lineLiffApi = new LineLiffWeightApi(this.appUrl, profile.userId);
+      this.lineLiffApi.getSetting()
         .then(res => {
-            if (res.status === 200) {
-              if (res.data.setting) {
-                this.$set(this, 'setting', res.data.setting);
-              } else {
-                this.page = 'setting';
-              }
+            const setting = res.data.data;
+            if (setting) {
+              this.$set(this, 'setting', setting);
+              this.isLoading = false;
+            } else {
+              this.page = 'setting';
             }
           }
         );
