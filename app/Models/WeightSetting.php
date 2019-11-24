@@ -12,7 +12,7 @@ class WeightSetting extends Model
         'goal_fat',
         'memory_id',
         'enable_notification',
-        'notify_day',
+        'notify_days',
         'notify_at',
     ];
 

@@ -186,6 +186,10 @@ EOD;
             return $this->errorMessage();
         }
 
+        $notifyDaysStr = collect($weightInputs['notify_days'])
+            ->sort()
+            ->implode(',');
+
         WeightSetting::updateOrCreate(
             ['memory_id' => $this->getMemory()->id],
             [
@@ -193,7 +197,7 @@ EOD;
                 'goal_fat' => $weightInputs['goal_fat'],
                 'goal_weight' => $weightInputs['goal_weight'],
                 'enable_notification' => $weightInputs['enable_notification'],
-                'notify_day' => $weightInputs['notify_day'],
+                'notify_days' => $notifyDaysStr,
                 'notify_at' => $weightInputs['notify_at'],
             ]
         );
@@ -229,14 +233,15 @@ EOD;
     private function replySaveGoalMessage(array $weightInputs)
     {
         return <<<EOD
-已經幫你設定好以下：
+😉 已經幫你設定好以下：
 
-🏁 目標
+🏁 目標設定
 ☆ 體重：{$weightInputs['goal_weight']} kg
 ★ 體脂：{$weightInputs['goal_fat']} %
  
-⚙️ 設定
+⚙️ 個人資料
 ★ 身高：{$weightInputs['height']} cm
+
 {$this->settingText($weightInputs)}
 EOD;
     }
@@ -245,13 +250,21 @@ EOD;
     {
         if ($weightInputs['enable_notification'] === 0) {
             return <<<EOD
-🔕 關閉紀錄提醒
+🔕 紀錄提醒：關閉
 EOD;
         }
-        $day = self::INT_TO_DAY[$weightInputs['notify_day']];
+
+        $notifyDaysStr = collect($weightInputs['notify_days'])
+            ->sort()
+            ->map(function ($day) {
+                return self::INT_TO_DAY[$day];
+            })
+            ->implode('、');
+
         return <<<EOD
-🔔 開啓紀錄提醒
-⏰ 提醒時間：每週{$day} {$weightInputs['notify_at']}
+🔔 紀錄提醒：開啓
+📆 提醒日：每週{$notifyDaysStr}
+⏰ 提醒時間：{$weightInputs['notify_at']}
 EOD;
     }
 

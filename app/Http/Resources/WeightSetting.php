@@ -18,7 +18,10 @@ class WeightSetting extends JsonResource
             'goal_fat' => $this->goal_fat,
             'goal_weight' => $this->goal_weight,
             'enable_notification' => $this->enable_notification,
-            'notify_day' => $this->notify_day,
+            'notify_days' =>
+                is_null($this->notify_days)
+                    ? []
+                    : explode(',', $this->notify_days),
             'notify_at' => $this->notify_at,
         ];
     }

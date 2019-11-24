@@ -61,8 +61,8 @@
           goal_weight: null,
           goal_fat: null,
           enable_notification: false,
-          notify_day: null,
           notify_at: null,
+          notify_days: []
         },
       };
     },
