@@ -112,8 +112,8 @@ class LineBotActionWeightHelper extends LineBotActionHandler
 
     private function messageForLastTime(Weight $lastTimeWeight, $todayWeight)
     {
-        $diffWeight = $todayWeight->weight - $lastTimeWeight->weight;
-        $diffFat = $todayWeight->fat - $lastTimeWeight->fat;
+        $diffWeight = round($todayWeight->weight - $lastTimeWeight->weight, 2);
+        $diffFat = round($todayWeight->fat - $lastTimeWeight->fat, 2);
         $finalWords = $this->getFinalWords($diffWeight, $diffFat);
 
         return <<<EOD
@@ -167,7 +167,7 @@ EOD;
             return '👍 棒棒喔！要繼續保持唷！';
         }
 
-        return '😃 加油！要記得每天記錄喔，我會在提醒你的！';
+        return '😃 加油！要記得定時記錄喔，我會在提醒你的！';
     }
 
     private function saveGoal(array $weightInputs): string
@@ -274,8 +274,8 @@ EOD;
         if (! $setting) {
             return '';
         }
-        $diffWeight = $todayWeight->weight - $setting->goal_weight;
-        $diffFat = $todayWeight->fat - $setting->goal_fat;
+        $diffWeight = round($todayWeight->weight - $setting->goal_weight, 2);
+        $diffFat = round($todayWeight->fat - $setting->goal_fat, 2);
 
         return <<<EOD
 💪 與目標差距：
