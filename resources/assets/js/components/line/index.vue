@@ -96,7 +96,7 @@
 
 <style scoped>
 	#liff {
-		height: 800px;
+		min-height: 800px;
 	}
 
 	.fade-enter-active, .fade-leave-active {
