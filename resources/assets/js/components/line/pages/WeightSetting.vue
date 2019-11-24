@@ -209,8 +209,11 @@
         this.$set(this['time'], 'minute', timeArr[1]);
       }
       const notifyDays = this.setting.notify_days;
-      if (notifyDays) {
-        this.once_a_week = notifyDays.length === 1;
+      if (notifyDays && notifyDays.length === 1) {
+        this.once_a_week = true;
+        this.notify_at_day = notifyDays[0];
+      } else {
+        this.once_a_week = false;
       }
       this.stopLoading();
     }
