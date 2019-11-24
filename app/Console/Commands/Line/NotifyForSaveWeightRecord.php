@@ -27,7 +27,7 @@ class NotifyForSaveWeightRecord extends Command
 
         $weightSettings = WeightSetting::with('memory')
             ->where('enable_notification', 1)
-            ->where('notify_day', $day)
+            ->where('notify_days', 'like', "%{$day}%")
             ->where('notify_at', $timeAt)
             ->get();
 
