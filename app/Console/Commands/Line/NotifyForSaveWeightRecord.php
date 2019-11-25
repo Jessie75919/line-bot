@@ -51,6 +51,6 @@ class NotifyForSaveWeightRecord extends Command
             new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index').'?page=index'),
             new UriTemplateActionBuilder('調整目標設定', config('line.link_of_weight_index').'?page=setting'),
         ]);
-        return new TemplateMessageBuilder('請查看手機的訊息唷！', $target);
+        return new TemplateMessageBuilder('😉 記得今天要記錄體重喔！', $target);
     }
 }
