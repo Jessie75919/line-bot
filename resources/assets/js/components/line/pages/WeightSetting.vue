@@ -221,13 +221,7 @@
 </script>
 
 <style lang="scss" scoped>
-	.fade-enter-active, .fade-leave-active {
-		transition: opacity .3s;
-	}
 
-	.fade-enter, .fade-leave-to {
-		opacity: 0;
-	}
 
 	.time-picker {
 		width: 50%;

@@ -94,7 +94,7 @@
   };
 </script>
 
-<style scoped>
+<style>
 	#liff {
 		min-height: 800px;
 	}
