@@ -17,9 +17,9 @@
 					   class="nav-link"
 					>☀️ 今日記錄<span class="sr-only">(current)</span></a>
 				</li>
-				<li :class="{active: page === 'graph'}" class="nav-item"
+				<li :class="{active: page === 'review'}" class="nav-item"
 				    data-target=".navbar-collapse.show" data-toggle="collapse">
-					<a @click="setPage('graph')"
+					<a @click="setPage('review')"
 					   class="nav-link"
 					>↩️ 七天回顧<span class="sr-only">(current)</span></a>
 				</li>
