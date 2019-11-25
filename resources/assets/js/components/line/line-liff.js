@@ -1,9 +1,9 @@
 const LineLiff = require('./index');
 const Vue = require('vue');
+import VeLine from 'v-charts/lib/line.common';
 import Loading from 'vue-loading-overlay';
 // Import stylesheet
 import 'vue-loading-overlay/dist/vue-loading.css';
-
 import { download, get, patch, post, remove } from '../../custom/api';
 
 window.api = { get, download, post, patch, remove };
@@ -22,6 +22,7 @@ const isProduction = isProd => {
 isProduction(false);
 
 Vue.component('Loading', Loading);
+Vue.component(VeLine.name, VeLine);
 
 new Vue({
   render: h => h(LineLiff),
