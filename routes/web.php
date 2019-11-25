@@ -14,7 +14,8 @@ Route::group(['prefix' => 'line'], function () {
         Route::group(['prefix' => 'weight'], function () {
             Route::get("index", 'Line\LiffWeightController@index');
             Route::get("setting/{memory}", 'Line\LiffWeightController@setting');
-            Route::get("records/{memory}", 'Line\LiffWeightController@weightRecords');
+            Route::get("records/all/{memory}", 'Line\LiffWeightController@weightRecords');
+            Route::get("records/weekly/{memory}", 'Line\LiffWeightController@weeklyData');
         });
     });
 });

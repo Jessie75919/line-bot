@@ -10,6 +10,10 @@ export class LineLiffWeightApi {
   }
 
   getWeightsRecords() {
-    return api.get(`${this._baseUrl}/records/${this._userId}`);
+    return api.get(`${this._baseUrl}/records/all/${this._userId}`);
+  }
+
+  getWeeklyWeightsRecords() {
+    return api.get(`${this._baseUrl}/records/weekly/${this._userId}`);
   }
 }

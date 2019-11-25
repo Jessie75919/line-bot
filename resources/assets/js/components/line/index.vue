@@ -28,6 +28,11 @@
 				                @stopLoading="setLoading(false)"
 				                v-else-if="page === 'records'">
 				</weight-records>
+				<weight-graph :lineLiffApi="lineLiffApi"
+				              @startLoading="setLoading(true)"
+				              @stopLoading="setLoading(false)"
+				              v-else-if="page === 'graph'">
+				</weight-graph>
 			</transition>
 		</div>
 	</div>
@@ -36,6 +41,7 @@
 <script>
   import { LineLiffWeightApi } from './api/LineLiffWeightApi';
   import HeaderBar from './common/HeaderBar';
+  import WeightGraph from './pages/WeightGraph';
   import WeightInput from './pages/WeightInput';
   import WeightRecords from './pages/WeightRecords';
   import WeightSetting from './pages/WeightSetting';
@@ -44,6 +50,7 @@
   export default {
     name: 'line-liff-index',
     components: {
+      WeightGraph,
       HeaderBar,
       WeightInput,
       WeightSetting,

@@ -18,7 +18,7 @@ class Weight extends ResourceCollection
                 'weight' => $weight->weight,
                 'fat' => $weight->fat,
                 'bmi' => $weight->bmi,
-                'date' => $weight->created_at->format('Y-m-d'),
+                'date' => $weight->created_at->format('m/d'),
             ];
         })->toArray();
     }
