@@ -48,15 +48,24 @@
         this.$emit('startLoading');
       }
     },
+    watch: {
+      lineLiffApi: {
+        immediate: true,
+        handler(newValue, oldValue) {
+          if (!oldValue && newValue) {
+            newValue.getWeeklyWeightsRecords()
+              .then(res => {
+                  const records = res.data.data;
+                  this.$set(this['chartData'], 'rows', records);
+                  this.stopLoading();
+                }
+              );
+          }
+        }
+      }
+    },
     created() {
       this.startLoading();
-      this.lineLiffApi.getWeeklyWeightsRecords()
-        .then(res => {
-            const records = res.data.data;
-            this.$set(this['chartData'], 'rows', records);
-            this.stopLoading();
-          }
-        );
     }
   };
 </script>
