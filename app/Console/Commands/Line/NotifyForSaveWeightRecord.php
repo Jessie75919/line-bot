@@ -49,7 +49,7 @@ class NotifyForSaveWeightRecord extends Command
     {
         $target = new ConfirmTemplateBuilder('😉 記得今天要記錄體重喔！', [
             new UriTemplateActionBuilder('記錄今日體重', config('line.link_of_weight_index').'?page=index'),
-            new UriTemplateActionBuilder('調整目標設定', config('line.link_of_weight_index').'?page=setting'),
+            new UriTemplateActionBuilder('回顧七天記錄', config('line.link_of_weight_index').'?page=review'),
         ]);
         return new TemplateMessageBuilder('😉 記得今天要記錄體重喔！', $target);
     }
