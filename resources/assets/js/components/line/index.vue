@@ -15,23 +15,23 @@
 				              :setting="setting"
 				              @startLoading="setLoading(true)"
 				              @stopLoading="setLoading(false)"
-				              v-if="page ==='index'">
+				              v-if="lineLiffApi && page ==='index'">
 
 				</weight-input>
 				<weight-setting :liffService="liffService"
 				                :setting="setting"
 				                @stopLoading="setLoading(false)"
-				                v-else-if="page === 'setting'">
+				                v-else-if="lineLiffApi && page === 'setting'">
 				</weight-setting>
 				<weight-records :lineLiffApi="lineLiffApi"
 				                @startLoading="setLoading(true)"
 				                @stopLoading="setLoading(false)"
-				                v-else-if="page === 'records'">
+				                v-else-if="lineLiffApi && page === 'records'">
 				</weight-records>
 				<weight-graph :lineLiffApi="lineLiffApi"
 				              @startLoading="setLoading(true)"
 				              @stopLoading="setLoading(false)"
-				              v-else-if="page === 'graph'">
+				              v-else-if="lineLiffApi && page === 'review'">
 				</weight-graph>
 			</transition>
 		</div>
