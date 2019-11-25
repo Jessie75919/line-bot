@@ -27,9 +27,11 @@
     },
     "dependencies": {
         "ajv": "^6.5.2",
+        "echarts": "^4.5.0",
         "lightpick": "^1.2.6",
         "moment": "^2.22.2",
         "sweetalert": "^2.1.0",
+        "v-charts": "^1.19.0",
         "vue-loading-overlay": "^3.2.0",
         "vue-router": "^2.5.3"
     }
