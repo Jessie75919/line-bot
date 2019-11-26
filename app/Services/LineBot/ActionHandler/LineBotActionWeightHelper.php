@@ -123,8 +123,8 @@ class LineBotActionWeightHelper extends LineBotActionHandler
 📅 今日記錄：
 {$this->getRecordWording($todayWeight)}
 
- * 體重比上次{$this->getMoreOrLessStr($diffWeight)}了 {$diffWeight} kg
- * 體脂比上次{$this->getMoreOrLessStr($diffFat)}了 {$diffFat} % 
+{$this->compareWithLastTime($diffWeight, $diffFat)}
+
 
 {$this->getDiffWithGoal($todayWeight)}
 
@@ -281,6 +281,16 @@ EOD;
 💪 與目標差距：
 ☆ 體重：相差 {$diffWeight} kg
 ★ 體脂：相差 {$diffFat} %
+EOD;
+    }
+
+    private function compareWithLastTime(float $diffWeight, float $diffFat)
+    {
+        $absDiffWeight = abs($diffWeight);
+        $absDiffFat = abs($diffFat);
+        return <<<EOD
+* 體重比上次{$this->getMoreOrLessStr($diffWeight)}了 {$absDiffWeight} kg
+* 體脂比上次{$this->getMoreOrLessStr($diffFat)}了 {$absDiffFat} % 
 EOD;
     }
 }
