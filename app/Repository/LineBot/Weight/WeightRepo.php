@@ -17,10 +17,10 @@ class WeightRepo
             ->get();
     }
 
-    public function getWeeklyWeightRecords(): Collection
+    public function getWeightRecordsBeforeDays($beforeDay): Collection
     {
         $today = now('Asia/Taipei');
-        $lastWeek = $today->copy()->subWeek();
+        $lastWeek = $today->copy()->subDays($beforeDay + 1);
 
         return $this->memory->weights()
             ->whereBetween('created_at', [$lastWeek->toDateString(), $today->toDateString()])
