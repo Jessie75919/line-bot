@@ -35,7 +35,7 @@
           }
         },
         chartData: {
-          columns: ['date', 'weight', 'fat', 'bmi'],
+          columns: ['date', 'weight', 'fat'],
           rows: []
         },
       };
