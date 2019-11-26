@@ -6,6 +6,7 @@ use App\Console\Commands\BodyTemperatureDocsGenerator;
 use App\Console\Commands\Line\ExchangeRateWatcherNotification;
 use App\Console\Commands\Line\LineBotPushMessage;
 use App\Console\Commands\Line\NotifyForSaveWeightRecord;
+use App\Console\Commands\Line\NotifyForWeeklySummary;
 use App\Console\Commands\Line\NotifyToClockInOut;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
         ExchangeRateWatcherNotification::class,
         NotifyToClockInOut::class,
         NotifyForSaveWeightRecord::class,
+        NotifyForWeeklySummary::class,
     ];
 
     /**
@@ -39,6 +41,7 @@ class Kernel extends ConsoleKernel
         $this->registerScheduleForExchangeRateWatcher($schedule);
         $this->registerScheduleForNotifyClockInOut($schedule);
         $this->registerScheduleForNotifyWeightRecord($schedule);
+        $this->registerScheduleForNotifyForWeeklySummary($schedule);
     }
 
     /**
@@ -75,6 +78,13 @@ class Kernel extends ConsoleKernel
         $schedule->command('line:notify-to-clock-in-out')
             ->weekdays()
             ->dailyAt('18:30')
+            ->timezone('Asia/Taipei');
+    }
+
+    private function registerScheduleForNotifyForWeeklySummary(Schedule $schedule)
+    {
+        $schedule->command('line:notify-for-weekly-summary')
+            ->weeklyOn(0, '10:00')
             ->timezone('Asia/Taipei');
     }
 }
