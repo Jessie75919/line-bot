@@ -134,7 +134,6 @@ EOD;
 
     private function messageForToday($todayWeight)
     {
-        $diffWithGoal = $this->getDiffWithGoal($todayWeight);
         return <<<EOD
 😐️ 找不到上次的記錄。
 
