@@ -189,6 +189,11 @@ EOD;
             ->sort()
             ->implode(',');
 
+        if (! $this->getMemory()->weightSetting()->exists()) {
+            \Log::channel('slack')->info("Hi, 有新用戶新增設定囉！");
+            \Log::info(__METHOD__."[".__LINE__."] => ".'Hi, 有新用戶設定囉！ channel_id:'.$this->getMemory()->channel_id);
+        }
+
         WeightSetting::updateOrCreate(
             ['memory_id' => $this->getMemory()->id],
             [
