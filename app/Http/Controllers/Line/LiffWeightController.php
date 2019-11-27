@@ -34,7 +34,7 @@ class LiffWeightController extends ApiController
             : response()->json();
     }
 
-    public function weightRecords(Memory $memory, WeightRepo $weightRepo, Request $request)
+    public function weightRecords(Memory $memory, WeightRepo $weightRepo)
     {
         $weightRecords = $weightRepo->setMemory($memory)
             ->getWeightRecords();
