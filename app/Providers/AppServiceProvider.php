@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->lineBotRegister();
         $this->lineBotServiceRegister();
-        $this->lineBotReceiveMessageRegister();
         $this->googlePlaceServiceRegister();
     }
 
@@ -51,13 +50,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(LineBotPushService::class, function () {
             return new LineBotPushService();
-        });
-    }
-
-    private function lineBotReceiveMessageRegister()
-    {
-        $this->app->singleton(LineBotMessageReceiver::class, function () {
-            return new LineBotMessageReceiver();
         });
     }
 }
