@@ -9,7 +9,7 @@
 namespace App\Services\LineBot\ActionHandler;
 
 use App\Models\Memory;
-use App\Services\LineBot\TypePayloadHandler\TextTypePayloadHandler;
+use App\Services\LineBot\Router\LineBotRouter;
 use LINE\LINEBot;
 
 abstract class LineBotActionHandler
@@ -37,7 +37,7 @@ abstract class LineBotActionHandler
     {
         return collect(
             preg_split(
-                '/'.TextTypePayloadHandler::DELIMITER.'/',
+                '/'.LineBotRouter::DELIMITER.'/',
                 $userMessage
             )
         )->map(function ($item) {
