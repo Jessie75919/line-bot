@@ -6,7 +6,7 @@ use LINE\LINEBot\Event\BaseEvent;
 
 interface TypePayloadHandlerInterface
 {
-    public function checkPurpose(BaseEvent $message);
+    public function checkRoute(BaseEvent $message);
 
     public function dispatch();
 }

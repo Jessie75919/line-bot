@@ -31,9 +31,8 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
     public const DELIMITER = '('.self::DELIMITER_USE.')';
 
     private $memory;
-    private $rawPayload;
     private $payload;
-    private $purpose;
+    private $route;
 
     /**
      * TextPurposeChecker constructor.
@@ -44,75 +43,75 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
         $this->memory = $memory;
     }
 
-    public function checkPurpose(BaseEvent $textMessage)
+    public function checkRoute(BaseEvent $textMessage)
     {
         if ($textMessage instanceof PostbackEvent) {
             /* @var PostbackEvent $textMessage */
-            $this->rawPayload = $textMessage->getPostbackData();
+            $this->payload = $textMessage->getPostbackData();
             $text = $textMessage->getPostbackData();
         } else {
             /* @var MessageEvent\TextMessage $textMessage */
             $text = $textMessage->getText();
-            $this->rawPayload = $textMessage->getText();
+            $this->payload = $textMessage->getText();
         }
 
         // Help指令
         if (strtolower($text) === self::HELP) {
-            $this->purpose = self::HELP;
+            $this->route = self::HELP;
             return $this;
         }
 
         // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
         $pattern = "/^(提醒|rem|reminder|remR.*){1}\s?".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
-            $this->purpose = self::REMINDER;
+            $this->route = self::REMINDER;
             return $this;
         }
 
         /* 減重小幫手 */
-        $pattern = "/^(體重|weight)".self::DELIMITER."(.*)/";
+        $pattern = "/^(weight)".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
-            $this->purpose = self::WEIGHT;
+            $this->route = self::WEIGHT;
             return $this;
         }
 
         /* 減重設定小幫手 */
         $pattern = "/^(weight-goal)".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
-            $this->purpose = self::WEIGHT_GOAL;
+            $this->route = self::WEIGHT_GOAL;
             return $this;
         }
 
         // 匯率查詢指令
         $pattern = "/^(匯率|rate)".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
-            $this->purpose = self::RATE;
+            $this->route = self::RATE;
             return $this;
         }
 
         // 匯率每日通知指令
         $pattern = "/^(rate-watcher)".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
-            $this->purpose = self::RATE_WATCHER;
+            $this->route = self::RATE_WATCHER;
             return $this;
         }
 
         // 學習類型指令
         $pattern = "/^(學|learn){1}\s?".self::DELIMITER."(.*)/";
         if (preg_match($pattern, $text) == 1) {
-            $this->purpose = self::LEARN;
+            $this->route = self::LEARN;
             return $this;
         }
 
-        $this->purpose = self::TALK;
+        $this->route = self::TALK;
 
         return $this;
     }
 
     public function dispatch()
     {
-        \Log::info(__METHOD__." => ".$this->purpose);
-        switch ($this->purpose) {
+        \Log::info(__METHOD__." => ".$this->route);
+        switch ($this->route) {
             case self::TALK:
                 $instance = new LineBotActionCommonReplier();
                 break;
@@ -137,13 +136,13 @@ class TextTypePayloadHandler implements TypePayloadHandlerInterface
                 $instance = new LineBotActionReminder($todoListRepo);
                 break;
             default:
-                $this->purpose = self::HELP;
+                $this->route = self::HELP;
                 $instance = new LineBotCommandHelper();
         }
 
         return $instance
             ->setChannelId($this->memory->channel_id)
-            ->setPurpose($this->purpose)
-            ->preparePayload($this->rawPayload);
+            ->setPurpose($this->route)
+            ->preparePayload($this->payload);
     }
 }

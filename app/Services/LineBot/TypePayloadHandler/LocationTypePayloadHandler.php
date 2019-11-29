@@ -21,7 +21,7 @@ class LocationTypePayloadHandler implements TypePayloadHandlerInterface
         $this->memory = $memory;
     }
 
-    public function checkPurpose($messageEvent)
+    public function checkRoute($messageEvent)
     {
         $this->purpose = self::NEARBY_SEARCH;
         return $this;
