@@ -2,8 +2,6 @@
 
 namespace App\Services\LineBot;
 
-use App\Models\Message;
-
 class LineBotMessageResponser
 {
     const GENERAL_RESPONSE = '好喔～好喔～';
@@ -20,18 +18,6 @@ class LineBotMessageResponser
     }
 
     /**
-     * @param $userMsg
-     * @return string
-     */
-    public function keywordReply($userMsg): ?string
-    {
-        $resp = Message::where('keyword', $userMsg)
-            ->where('channel_id', $this->channelId)->get();
-
-        return count($resp) != 0 ? $resp->random()->message : null;
-    }
-
-    /**
      * @return string
      */
     public function responseToUser(): ?string
@@ -39,8 +25,6 @@ class LineBotMessageResponser
         switch ($this->purpose) {
             case 'response':
                 return $this->content;
-            case 'talk':
-                return $this->keywordReply($this->content);
         }
     }
 
