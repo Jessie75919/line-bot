@@ -8,5 +8,4 @@ interface TypePayloadHandlerInterface
 {
     public function checkRoute(BaseEvent $message);
 
-    public function dispatch();
 }
