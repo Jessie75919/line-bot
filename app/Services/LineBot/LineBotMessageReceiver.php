@@ -14,7 +14,6 @@ use LINE\LINEBot\Event\PostbackEvent;
 class LineBotMessageReceiver
 {
     public $purpose;
-    private $userDataType;
     private $memory;
 
     public function getHandler(BaseEvent $messageEvent)
@@ -25,35 +24,20 @@ class LineBotMessageReceiver
 
     public function dispatchByPayloadType(BaseEvent $messageEvent): LineBotActionHandler
     {
-        if ($messageEvent instanceof TextMessage) {
-            $this->userDataType = 'text';
+        if ($messageEvent instanceof TextMessage ||
+            $messageEvent instanceof PostbackEvent
+        ) {
             return (new TextTypePayloadHandler($this->memory))
-                ->checkPurpose($messageEvent)
-                ->dispatch();
-        }
-
-        if ($messageEvent instanceof PostbackEvent) {
-            $this->userDataType = 'text';
-            return (new TextTypePayloadHandler($this->memory))
-                ->checkPurpose($messageEvent)
+                ->checkRoute($messageEvent)
                 ->dispatch();
         }
 
         if ($messageEvent instanceof LocationMessage) {
-            $this->userDataType = 'location';
             return (new LocationTypePayloadHandler($this->memory))
-                ->checkPurpose($messageEvent)
+                ->checkRoute($messageEvent)
                 ->preparePayload($messageEvent)
                 ->dispatch();
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserDataType(): string
-    {
-        return $this->userDataType;
     }
 
     /** for the first time user which not has record in DB
