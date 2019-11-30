@@ -23,8 +23,8 @@ class NotifyForReminder extends Command
         $now = now('Asia/Taipei');
         /* @var Collection $todos */
         $todos = TodoList::where('is_sent', 0)
-            ->where('send_at', '<=', $now)
-            ->where('send_at', '>=', $now->copy()->subSeconds(60))
+            ->where('send_time', '<=', $now)
+            ->where('send_time', '>=', $now->copy()->subSeconds(60))
             ->get();
 
         if ($todos->isEmpty()) {
