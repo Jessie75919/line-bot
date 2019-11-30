@@ -32,7 +32,7 @@ class LineBotActionLearner extends LineBotActionHandler
 
     public function handle()
     {
-        [$key, $value] = $this->parseMessage($this->text);
+        [$key, $value] = $this->getKeyAndValue($this->text);
 
         if (strlen($key) <= 0 || strlen($value) <= 0) {
             return null;
@@ -55,9 +55,9 @@ EOD;
         }
     }
 
-    private function parseMessage($message)
+    private function getKeyAndValue($message)
     {
-        $messageArr = $this->breakdownMessage($message);
+        $messageArr = $this->parseMessage($message);
         return [$messageArr[1], $messageArr[2]];
     }
 }

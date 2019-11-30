@@ -28,7 +28,7 @@ class LineBotActionWeightHelper extends LineBotActionHandler
 
     public function paresMessage($message)
     {
-        $breakdownMessage = $this->breakdownMessage($message);
+        $breakdownMessage = $this->parseMessage($message);
         return [$breakdownMessage[0], $breakdownMessage[1] ?? null];
     }
 

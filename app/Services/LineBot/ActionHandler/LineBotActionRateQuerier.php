@@ -27,7 +27,6 @@ class LineBotActionRateQuerier extends LineBotActionHandler
      */
     public function __construct($text)
     {
-        parent::__construct();
         $this->exRate = new ExchangeRateService(new GuzzleApi());
         $this->text = $text;
     }
@@ -35,7 +34,7 @@ class LineBotActionRateQuerier extends LineBotActionHandler
     public function handle()
     {
         try {
-            $currencyChinese = $this->breakdownMessage($this->text)[1];
+            $currencyChinese = $this->parseMessage($this->text)[1];
             $rate = $this->exRate
                 ->setChineseCurrency($currencyChinese)
                 ->fetchNowCurrencyValue()
