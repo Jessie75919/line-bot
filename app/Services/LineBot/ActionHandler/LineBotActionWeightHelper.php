@@ -2,6 +2,7 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
+use App\Models\Memory;
 use App\Models\Weight;
 use App\Models\WeightSetting;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
@@ -10,51 +11,48 @@ use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 
 class LineBotActionWeightHelper extends LineBotActionHandler
 {
-    const INT_TO_DAY = [
-        '星期日',
-        '星期一',
-        '星期二',
-        '星期三',
-        '星期四',
-        '星期五',
-        '星期六',
-    ];
-    private $input;
+    const INT_TO_DAY = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六',];
     private $inputUrl;
+    /**
+     * @var Memory
+     */
+    private $memory;
+    private $text;
 
-    public function __construct()
+    public function __construct(Memory $memory, $text)
     {
-        parent::__construct();
+        $this->memory = $memory;
+        $this->text = $text;
         $this->inputUrl = config('line.link_of_weight_index');
     }
 
-    public function preparePayload($rawPayload)
+    public function paresMessage($message)
     {
-        $breakdownMessage = $this->breakdownMessage($rawPayload);
-
-        $this->input = $breakdownMessage[1] ?? null;
-
-        return $this;
+        $breakdownMessage = $this->breakdownMessage($message);
+        return [$breakdownMessage[0], $breakdownMessage[1] ?? null];
     }
 
     public function handle()
     {
-        if (! $this->input) {
+        [$page, $input] = $this->paresMessage($this->text);
+        \Log::info(__METHOD__."[".__LINE__."] =>".print_r($page, true));
+        \Log::info(__METHOD__."[".__LINE__."] =>".print_r($input, true));
+        if (! $input) {
             return null;
         }
 
-        if ($this->input === 'show') {
+        if ($input === 'show') {
             return $this->buildOpenPanel();
         }
 
         try {
-            $weightInputs = json_decode($this->input, true);
+            $weightInputs = json_decode($input, true);
             if (! is_array($weightInputs)) {
                 return null;
             }
 
             /* 目標設定 */
-            if ($this->purpose === 'weight_goal') {
+            if ($page === 'weight-setting') {
                 return $this->saveGoal($weightInputs);
             }
 
@@ -67,14 +65,6 @@ class LineBotActionWeightHelper extends LineBotActionHandler
         }
     }
 
-    public function reply(string $replyToken, $replyMessage)
-    {
-        if (is_string($replyMessage)) {
-            return $this->LINEBot->replyText($replyToken, $replyMessage);
-        }
-        return $this->LINEBot->replyMessage($replyToken, $replyMessage);
-    }
-
     public function getMoreOrLessStr($diff): string
     {
         return $diff >= 0 ? '增加' : '減少';
@@ -85,7 +75,7 @@ class LineBotActionWeightHelper extends LineBotActionHandler
      */
     private function buildOpenPanel(): TemplateMessageBuilder
     {
-        $weightSetting = $this->getMemory()->weightSetting()->exists();
+        $weightSetting = $this->memory->weightSetting()->exists();
         if (! $weightSetting) {
             $target = new ConfirmTemplateBuilder('請先輸入目標設定', [
                 new UriTemplateActionBuilder('點我進行設定', config('line.link_of_weight_index').'?page=setting'),
@@ -102,7 +92,7 @@ class LineBotActionWeightHelper extends LineBotActionHandler
 
     private function replySaveMessage($todayWeight)
     {
-        $lastTimeWeight = Weight::getLastTimeRecord($this->getMemory());
+        $lastTimeWeight = Weight::getLastTimeRecord($this->memory);
         if ($lastTimeWeight) {
             return $this->messageForLastTime($lastTimeWeight, $todayWeight);
         }
@@ -175,8 +165,6 @@ EOD;
             return $this->errorMessage();
         }
 
-        \Log::info(__METHOD__.' => '.print_r($weightInputs, true));
-
         if (! isset($weightInputs['height']) ||
             ! isset($weightInputs['goal_fat']) ||
             ! isset($weightInputs['goal_weight']) ||
@@ -189,13 +177,13 @@ EOD;
             ->sort()
             ->implode(',');
 
-        if (! $this->getMemory()->weightSetting()->exists()) {
+        if (! $this->memory->weightSetting()->exists()) {
             \Log::channel('slack')->info("Hi, 有新用戶新增設定囉！");
-            \Log::info(__METHOD__."[".__LINE__."] => ".'Hi, 有新用戶設定囉！ channel_id:'.$this->getMemory()->channel_id);
+            \Log::info(__METHOD__."[".__LINE__."] => ".'Hi, 有新用戶設定囉！ channel_id:'.$this->memory->channel_id);
         }
 
         WeightSetting::updateOrCreate(
-            ['memory_id' => $this->getMemory()->id],
+            ['memory_id' => $this->memory->id],
             [
                 'height' => $weightInputs['height'],
                 'goal_fat' => $weightInputs['goal_fat'],
@@ -220,7 +208,7 @@ EOD;
         }
 
         $todayWeight = Weight::saveRecordForToday(
-            $this->getMemory(),
+            $this->memory,
             $weightInputs['weight'],
             $weightInputs['fat'],
             $weightInputs['bmi'] ?? null
@@ -274,7 +262,7 @@ EOD;
 
     private function getDiffWithGoal($todayWeight)
     {
-        $setting = $this->getMemory()->weightSetting;
+        $setting = $this->memory->weightSetting;
         if (! $setting) {
             return '';
         }

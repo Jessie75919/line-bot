@@ -156,7 +156,7 @@
         if (this.once_a_week) {
           this.$set(this.setting, 'notify_days', [this.notify_at_day]);
         }
-        this.liffService.sendTextMessage(`weight-goal，${JSON.stringify(this.setting)}`);
+        this.liffService.sendTextMessage(`weight-setting，${JSON.stringify(this.setting)}`);
         this.liffService.close();
       },
       stopLoading() {
