@@ -14,38 +14,41 @@ use App\Services\LineExchangeRate\ExchangeRateService;
 
 class LineBotActionRateWatcher extends LineBotActionHandler
 {
-    private $payload;
-    /**
-     * @var ExchangeRateService
-     */
     private $exRate;
-    private $userInput1;
-    private $userInput2;
+    /**
+     * @var Memory
+     */
+    private $memory;
+    private $text;
 
     /**
      * LineBotActionRateWatcher constructor.
+     * @param  Memory  $memory
+     * @param $text
+     * @throws \InvalidArgumentException
      */
-    public function __construct()
+    public function __construct(Memory $memory, $text)
     {
         $this->exRate = new ExchangeRateService(new GuzzleApi());
-    }
-
-    public function preparePayload($rawPayload)
-    {
-        $msgArr = $this->breakdownMessage($rawPayload);
-
-        /* 日幣＼美金＼澳幣 */
-        $this->userInput1 = $msgArr[1];
-        /* 現金＼即期 */
-        $this->userInput2 = $msgArr[2] ?? '現金';
-
-        return $this;
+        $this->memory = $memory;
+        $this->text = $text;
     }
 
     public function handle()
     {
-        $memory = Memory::getByChannelId($this->channelId);
+        [$currency, $type] = $this->parseMessage($this->text);
         return $this->exRate
-            ->subscribe($memory, $this->userInput1, $this->userInput2);
+            ->subscribe($this->memory, $currency, $type);
+    }
+
+    private function parseMessage($message)
+    {
+        $msgArr = $this->breakdownMessage($message);
+        /* 日幣＼美金＼澳幣 */
+        $currency = $msgArr[1];
+        /* 現金＼即期 */
+        $type = $msgArr[2] ?? '現金';
+
+        return [$currency, $type];
     }
 }
