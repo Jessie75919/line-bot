@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\BodyTemperatureDocsGenerator;
 use App\Console\Commands\Line\ExchangeRateWatcherNotification;
 use App\Console\Commands\Line\LineBotPushMessage;
+use App\Console\Commands\Line\NotifyForReminder;
 use App\Console\Commands\Line\NotifyForSaveWeightRecord;
 use App\Console\Commands\Line\NotifyForWeeklySummary;
 use App\Console\Commands\Line\NotifyToClockInOut;
@@ -29,6 +30,7 @@ class Kernel extends ConsoleKernel
         NotifyToClockInOut::class,
         NotifyForSaveWeightRecord::class,
         NotifyForWeeklySummary::class,
+        NotifyForReminder::class,
     ];
 
     /**
@@ -42,6 +44,7 @@ class Kernel extends ConsoleKernel
         $this->registerScheduleForNotifyClockInOut($schedule);
         $this->registerScheduleForNotifyWeightRecord($schedule);
         $this->registerScheduleForNotifyForWeeklySummary($schedule);
+        $this->registerScheduleForNotifyForReminder($schedule);
     }
 
     /**
@@ -85,6 +88,13 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('line:notify-for-weekly-summary')
             ->weeklyOn(0, '10:00')
+            ->timezone('Asia/Taipei');
+    }
+
+    private function registerScheduleForNotifyForReminder(Schedule $schedule)
+    {
+        $schedule->command('line:reminder-schedule')
+            ->everyMinute()
             ->timezone('Asia/Taipei');
     }
 }

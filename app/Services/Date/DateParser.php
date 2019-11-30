@@ -2,34 +2,33 @@
 
 namespace App\Services\Date;
 
-use Exception;
 use Carbon\Carbon;
+use Exception;
 
 class DateParser
 {
-    const DATE_PATTERNS      = [
-        'FORMAL_DATE_PATTERN'      => "/(2\d{3})(-|\\|\s|,|\/){1}(\d{2})(-|\\|\s|,|\/){1}(\d{2})\s+(.*)/mu",
-        'TIME_ALIAS_PATTERN'       => "/(早上|上午|中午|下午|晚上)?(.*)/mu",
+    const DATE_PATTERNS = [
+        'FORMAL_DATE_PATTERN' => "/(2\d{3})(-|\\|\s|,|\/){1}(\d{2})(-|\\|\s|,|\/){1}(\d{2})\s+(.*)/mu",
+        'TIME_ALIAS_PATTERN' => "/(早上|上午|中午|下午|晚上)?(.*)/mu",
         'CROSS_DAYS_ALIAS_PATTERN' => "/(今天|明天|後天)(.*)/mu",
-        'WEEKDAY_ALIAS_PATTERN'    => "/(下*)((星期|禮拜){1})(\w{1})(.*)/mu"
+        'WEEKDAY_ALIAS_PATTERN' => "/(下*)((星期|禮拜){1})(\w{1})(.*)/mu",
     ];
     const CHINESE_NUMBER_MAP = [
-        '日'  => 7,
-        '一'  => 1,
-        '二'  => 2,
-        '三'  => 3,
-        '四'  => 4,
-        '五'  => 5,
-        '六'  => 6,
-        '七'  => 7,
-        '八'  => 8,
-        '九'  => 9,
-        '十'  => 10,
+        '日' => 7,
+        '一' => 1,
+        '二' => 2,
+        '三' => 3,
+        '四' => 4,
+        '五' => 5,
+        '六' => 6,
+        '七' => 7,
+        '八' => 8,
+        '九' => 9,
+        '十' => 10,
         '十一' => 11,
         '十二' => 12,
     ];
     private $datetimeStr;
-
 
     /**
      * DateParser constructor.
@@ -39,7 +38,6 @@ class DateParser
     {
         $this->datetimeStr = $datetimeStr;
     }
-
 
     public function getTargetTime(): Carbon
     {
@@ -64,33 +62,28 @@ class DateParser
         }
     }
 
-
-    public function validTimeInThePast($targetTime): bool
+    public function validTimeInThePast(Carbon $targetTime): bool
     {
         try {
-            \Log::info("targetTime(validTimeInThePast) => " . print_r($targetTime, true));
             if ($targetTime->lessThan(Carbon::now('Asia/Taipei'))) {
                 return true;
             }
             return false;
         } catch (Exception $e) {
-            \Log::error(__METHOD__ . " => " . $e);
+            \Log::error(__METHOD__." => ".$e);
             return false;
         }
     }
-
 
     public function getDelayTime(Carbon $targetTime): int
     {
         return $targetTime->diffInSeconds(Carbon::now('Asia/Taipei'));
     }
 
-
     private function isNeedToPlus12($timeInterval, $dateCarbon): bool
     {
         return in_array($timeInterval, ['下午', '晚上']);
     }
-
 
     private function timeFormatParse($time): string
     {
@@ -121,7 +114,6 @@ class DateParser
         }
     }
 
-
     private function createTargetTime(string $dateTime, bool $isNeedPlus12Hours = false)
     {
         $targetTime = Carbon::createFromFormat('Y-m-d H:i', $dateTime, 'Asia/Taipei');
@@ -129,7 +121,6 @@ class DateParser
             ? $targetTime->addHours(12)
             : $targetTime;
     }
-
 
     private function getAddDaysCountFromCrossDay(string $crossDay): int
     {
@@ -145,14 +136,12 @@ class DateParser
         }
     }
 
-
     private function dateTimeFormatParse(Carbon $dateCarbon, $dateAlias, $time): array
     {
         $isNeedPlus12 = $this->isNeedToPlus12($dateAlias, $dateCarbon);
         $time = $this->timeFormatParse($time);
         return ["{$dateCarbon->toDateString()} {$time}", $isNeedPlus12];
     }
-
 
     private function getAddDaysCountByWeekday(int $targetDay): int
     {
@@ -162,7 +151,6 @@ class DateParser
         // Today : Mon. =>  Target : Fri.
         return $nowDay <= $targetDay ? $targetDay - $nowDay : -1;
     }
-
 
     /**
      * @param $datetimeStr
@@ -188,7 +176,6 @@ class DateParser
         return $this->createTargetTimeWithDateStrAndTime($time, $date);
     }
 
-
     /**
      * @param $datetimeStr
      * @return Carbon
@@ -200,12 +187,10 @@ class DateParser
         return $this->createTargetTime($dateData[0], $dateData[1]);
     }
 
-
     private function isPatternFor($datePattern)
     {
         return preg_match($datePattern, $this->datetimeStr) === 1;
     }
-
 
     /**
      * @param        $datetimeStr
@@ -226,7 +211,6 @@ class DateParser
         return $this->dateTimeFormatParse($dateCarbon, $times[0], $times[1]);
     }
 
-
     /**
      * @param $datetimeStr
      * @return Carbon
@@ -246,7 +230,7 @@ class DateParser
         /* 下 \ 下下 */
         $nextWeekStr = $payload[0];
         /* 星期n|禮拜n */
-        $weekday = (int)strtr($payload[1], self::CHINESE_NUMBER_MAP);
+        $weekday = (int) strtr($payload[1], self::CHINESE_NUMBER_MAP);
         /* 下午六點半|晚上九點 */
         $time = $payload[2];
 
@@ -262,7 +246,6 @@ class DateParser
 
         return $this->createTargetTimeWithDateStrAndTime($time, $targetDate);
     }
-
 
     private function handleForCrossDaysAliasDatetime($datetimeStr)
     {
@@ -286,9 +269,8 @@ class DateParser
         return $this->createTargetTimeWithDateStrAndTime($time, $targetDate);
     }
 
-
     /**
-     * @param string $time
+     * @param  string  $time
      * @param        $targetDate
      * @return Carbon
      */
