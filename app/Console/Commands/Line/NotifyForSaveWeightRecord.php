@@ -17,13 +17,9 @@ class NotifyForSaveWeightRecord extends Command
 
     public function handle(LineBotPushService $lineBotPushService)
     {
-        \Log::channel('slack')->info("line:notify-for-save-record starting...");
-
         $now = now('Asia/Taipei');
         $day = $now->dayOfWeek;
         $timeAt = $now->format('H:i:00');
-
-        \Log::channel('slack')->info("day:{$day} / timeAt:{$timeAt}");
 
         $weightSettings = WeightSetting::with('memory')
             ->where('enable_notification', 1)
@@ -31,18 +27,22 @@ class NotifyForSaveWeightRecord extends Command
             ->where('notify_at', $timeAt)
             ->get();
 
+        if ($weightSettings->isEmpty()) {
+            return null;
+        }
+
+        \Log::channel('weight')->info("line:notify-for-save-record starting...");
+        \Log::channel('weight')->info("day:{$day} / timeAt:{$timeAt}");
+
         foreach ($weightSettings as $weightSetting) {
             $channelId = $weightSetting->memory->channel_id;
 
-            \Log::channel('slack')->info("notification to : $channelId");
+            \Log::channel('weight')->info("notification to : $channelId");
 
-            $lineBotPushService->pushMessage(
-                $channelId,
-                $this->getMessagePanel()
-            );
+            $lineBotPushService->pushMessage($channelId, $this->getMessagePanel());
         }
 
-        \Log::channel('slack')->info("line:notify-for-save-record done !");
+        \Log::channel('weight')->info("line:notify-for-save-record done !");
     }
 
     public function getMessagePanel()
