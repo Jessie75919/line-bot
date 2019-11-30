@@ -8,9 +8,9 @@ use App\Services\LineBot\ActionHandler\LineBotActionKeywordReplier;
 use App\Services\LineBot\ActionHandler\LineBotActionLearner;
 use App\Services\LineBot\ActionHandler\LineBotActionRateQuerier;
 use App\Services\LineBot\ActionHandler\LineBotActionRateWatcher;
-use App\Services\LineBot\ActionHandler\LineBotActionReminder;
 use App\Services\LineBot\ActionHandler\LineBotActionWeightHelper;
 use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
+use App\Services\LineBot\ActionHandler\Reminder\LineBotActionReminder;
 use LINE\LINEBot\Event\BaseEvent;
 use LINE\LINEBot\Event\PostbackEvent;
 use LINE\LINEBot\Exception\InvalidEventSourceException;
@@ -26,18 +26,13 @@ class LineBotRouter
     public const REMINDER = 'reminder';
     public const DELIMITER = '('.self::DELIMITER_USE.')';
     public const WEIGHT = 'weight';
+    /* @var string */
     public $route = null;
-    /**
-     * @var Memory
-     */
+    /** @var Memory */
     private $memory;
-    /**
-     * @var BaseEvent
-     */
+    /** @var BaseEvent */
     private $messageEvent;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $text;
 
     /**
