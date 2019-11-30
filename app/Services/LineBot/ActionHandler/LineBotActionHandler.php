@@ -8,32 +8,15 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
-use App\Models\Memory;
 use App\Services\LineBot\Router\LineBotRouter;
-use LINE\LINEBot;
 
 abstract class LineBotActionHandler
 {
-    protected $purpose;
-    protected $channelId;
-    /**
-     * @var LINEBot
-     */
-    protected $LINEBot;
-
-    /**
-     * LineBotActionHandler constructor.
-     */
-    public function __construct()
-    {
-        $this->LINEBot = app(LINEBot::class);
-    }
-
     /** Dissect the Message if it is a learning command with <學;key;value>
      * @param $userMessage
      * @return array
      */
-    public function breakdownMessage($userMessage): array
+    public function parseMessage($userMessage): array
     {
         return collect(
             preg_split(
@@ -46,34 +29,4 @@ abstract class LineBotActionHandler
     }
 
     abstract public function handle();
-
-    public function reply(string $replyToken, $replyMessage)
-    {
-        return $this->LINEBot->replyText($replyToken, $replyMessage);
-    }
-
-    /**
-     * @param  mixed  $purpose
-     * @return LineBotActionHandler
-     */
-    public function setPurpose($purpose)
-    {
-        $this->purpose = $purpose;
-        return $this;
-    }
-
-    /**
-     * @param  mixed  $channelId
-     * @return LineBotActionHandler
-     */
-    public function setChannelId($channelId)
-    {
-        $this->channelId = $channelId;
-        return $this;
-    }
-
-    public function getMemory(): ?Memory
-    {
-        return Memory::getByChannelId($this->channelId);
-    }
 }
