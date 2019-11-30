@@ -26,8 +26,8 @@ class LineBotRouter
     public const REMINDER = 'reminder';
     public const DELIMITER = '('.self::DELIMITER_USE.')';
     public const WEIGHT = 'weight';
-    /* @var string */
-    public $route = null;
+    /* @var array */
+    public $routes = null;
     /** @var Memory */
     private $memory;
     /** @var BaseEvent */
@@ -50,14 +50,14 @@ class LineBotRouter
 
     public function initRoute()
     {
-        if ($this->route) {
+        if ($this->routes) {
             return;
         }
 
         $memory = $this->memory;
         $text = $this->text;
 
-        $this->route = [
+        $this->routes = [
             // Help指令
             [
                 'pattern' => "/^help$/",
@@ -99,7 +99,7 @@ class LineBotRouter
 
     public function getController(): ?LineBotActionHandler
     {
-        foreach ($this->route as $pattern) {
+        foreach ($this->routes as $pattern) {
             if (preg_match($pattern['pattern'], $this->text) == 1) {
                 \Log::info(__METHOD__."[".__LINE__."] => ROUTE :".$pattern['route']);
                 return $pattern['controller'];
