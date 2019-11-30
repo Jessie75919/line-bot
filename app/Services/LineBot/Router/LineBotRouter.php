@@ -25,7 +25,6 @@ class LineBotRouter
     public const LEARN = 'learn';
     public const REMINDER = 'reminder';
     public const DELIMITER = '('.self::DELIMITER_USE.')';
-    public const WEIGHT_GOAL = 'weight_goal';
     public const WEIGHT = 'weight';
     public $route = null;
     /**
@@ -70,24 +69,6 @@ class LineBotRouter
                 'route' => self::HELP,
                 'controller' => app(LineBotCommandHelper::class),
             ],
-            // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
-            [
-                'pattern' => "/^(提醒|rem|reminder|remR.*){1}\s?".self::DELIMITER."(.*)/",
-                'route' => self::REMINDER,
-                'controller' => app(LineBotActionReminder::class, compact('memory', 'text')),
-            ],
-            /* 減重小幫手 */
-            [
-                'pattern' => "/^(weight)".self::DELIMITER."(.*)/",
-                'route' => self::WEIGHT,
-                'controller' => app(LineBotActionWeightHelper::class, compact('memory', 'text')),
-            ],
-            /* 減重設定小幫手 */
-            [
-                'pattern' => "/^(weight-goal)".self::DELIMITER."(.*)/",
-                'route' => self::WEIGHT_GOAL,
-                'controller' => app(LineBotActionWeightHelper::class, compact('memory', 'text')),
-            ],
             // 匯率查詢指令
             [
                 'pattern' => "/^(rate)".self::DELIMITER."(.*)/",
@@ -98,21 +79,34 @@ class LineBotRouter
             [
                 'pattern' => "/^(rate-watcher)".self::DELIMITER."(.*)/",
                 'route' => self::RATE_WATCHER,
-                'controller' => LineBotActionRateWatcher::class, compact('memory', 'text'),
+                'controller' => app(LineBotActionRateWatcher::class, compact('memory', 'text')),
+            ],
+            // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
+            [
+                'pattern' => "/^(提醒|rem|reminder|remR.*){1}\s?".self::DELIMITER."(.*)/",
+                'route' => self::REMINDER,
+                'controller' => app(LineBotActionReminder::class, compact('memory', 'text')),
+            ],
+            /* 減重小幫手 */
+            [
+                'pattern' => "/^(weight.*)".self::DELIMITER."(.*)/",
+                'route' => self::WEIGHT,
+                'controller' => app(LineBotActionWeightHelper::class, compact('memory', 'text')),
             ],
             // 學習類型指令
             [
                 'pattern' => "/^(學|learn){1}\s?".self::DELIMITER."(.*)/",
                 'route' => self::LEARN,
-                'controller' => LineBotActionLearner::class, compact('memory', 'text'),
+                'controller' => app(LineBotActionLearner::class, compact('memory', 'text')),
             ],
         ];
     }
 
-    public function getController(): LineBotActionHandler
+    public function getController(): ?LineBotActionHandler
     {
         foreach ($this->route as $pattern) {
             if (preg_match($pattern['pattern'], $this->text) == 1) {
+                \Log::info(__METHOD__."[".__LINE__."] => ROUTE :".$pattern['route']);
                 return $pattern['controller'];
             }
         }
