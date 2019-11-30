@@ -17,6 +17,15 @@ use LINE\LINEBot\Exception\InvalidEventSourceException;
 
 class LineBotRouter
 {
+    const HELP = 'help';
+    const DELIMITER_USE = ';|、|，|=';
+    const RATE = 'rate';
+    const RATE_WATCHER = 'rate_watcher';
+    const LEARN = 'learn';
+    const REMINDER = 'reminder';
+    const DELIMITER = '('.self::DELIMITER_USE.')';
+    const WEIGHT = 'weight';
+    const FOOD = 'food';
 
     /* @var array */
     public $routes = null;
@@ -70,7 +79,7 @@ class LineBotRouter
             ],
             // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
             [
-                'pattern' => "/^(提醒|rem|reminder|remR.*){1}\s?".self::DELIMITER."(.*)/",
+                'pattern' => "/^(rem|remR.*){1}\s?".self::DELIMITER."(.*)/",
                 'route' => self::REMINDER,
                 'controller' => app(LineBotActionReminder::class, compact('memory', 'text')),
             ],
