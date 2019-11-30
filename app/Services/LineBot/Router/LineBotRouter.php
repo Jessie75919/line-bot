@@ -5,6 +5,7 @@ namespace App\Services\LineBot\Router;
 use App\Models\Memory;
 use App\Services\LineBot\ActionHandler\CurrencyRate\LineBotActionRateQuerier;
 use App\Services\LineBot\ActionHandler\CurrencyRate\LineBotActionRateWatcher;
+use App\Services\LineBot\ActionHandler\Diet\LineBotDietHelper;
 use App\Services\LineBot\ActionHandler\Help\LineBotCommandHelper;
 use App\Services\LineBot\ActionHandler\Keyword\LineBotActionKeywordReplier;
 use App\Services\LineBot\ActionHandler\Learner\LineBotActionLearner;
@@ -94,6 +95,12 @@ class LineBotRouter
                 'pattern' => "/^(學|learn){1}\s?".self::DELIMITER."(.*)/",
                 'route' => self::LEARN,
                 'controller' => app(LineBotActionLearner::class, compact('memory', 'text')),
+            ],
+            // 飲食記錄小幫手
+            [
+                'pattern' => "/^(food.*)\s?".self::DELIMITER."(.*)/",
+                'route' => self::FOOD,
+                'controller' => app(LineBotDietHelper::class, compact('memory', 'text')),
             ],
         ];
     }
