@@ -3,6 +3,7 @@
 namespace App\Services\LineBot\Router;
 
 use App\Models\Memory;
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use App\Services\LineBot\ActionHandler\LineBotActionKeywordReplier;
 use App\Services\LineBot\ActionHandler\LineBotActionLearner;
 use App\Services\LineBot\ActionHandler\LineBotActionRateQuerier;
@@ -22,7 +23,6 @@ class LineBotRouter
     public const RATE = 'rate';
     public const RATE_WATCHER = 'rate_watcher';
     public const LEARN = 'learn';
-    public const TALK = 'talk';
     public const REMINDER = 'reminder';
     public const DELIMITER = '('.self::DELIMITER_USE.')';
     public const WEIGHT_GOAL = 'weight_goal';
@@ -44,12 +44,14 @@ class LineBotRouter
     /**
      * LineBotRouter constructor.
      * @param  BaseEvent  $messageEvent
+     * @throws InvalidEventSourceException
      */
     public function __construct(BaseEvent $messageEvent)
     {
         $this->messageEvent = $messageEvent;
-        $this->parseMessage();
-        $this->initRoute();
+        $this->parseText()
+            ->intiMemory()
+            ->initRoute();
     }
 
     public function initRoute()
@@ -107,7 +109,7 @@ class LineBotRouter
         ];
     }
 
-    public function getController()
+    public function getController(): LineBotActionHandler
     {
         foreach ($this->route as $pattern) {
             if (preg_match($pattern['pattern'], $this->text) == 1) {
@@ -118,24 +120,24 @@ class LineBotRouter
         return (new LineBotActionKeywordReplier($this->memory, $this->text));
     }
 
-    private function parseMessage()
+    private function parseText()
     {
         if ($this->messageEvent instanceof PostbackEvent) {
             $this->text = $this->messageEvent->getPostbackData();
         } else {
             $this->text = $this->messageEvent->getText();
         }
-
-        $this->intiMemory();
+        return $this;
     }
 
     /**
-     * @return void
+     * @return LineBotRouter
      * @throws InvalidEventSourceException
      */
     private function intiMemory()
     {
         $channelId = $this->messageEvent->getEventSourceId();
         $this->memory = Memory::firstOrCreate(['channel_id' => $channelId], ['is_talk' => 1]);
+        return $this;
     }
 }
