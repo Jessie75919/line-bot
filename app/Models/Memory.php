@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property mixed $messages
+ * @property int channel_id
  */
 class Memory extends Model
 {
