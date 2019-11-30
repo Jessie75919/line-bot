@@ -52,6 +52,22 @@ return [
             'permission' => 0664,
         ],
 
+        'reminder' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/reminder/reminder.log'),
+            'level' => 'debug',
+            'days' => 7,
+            'permission' => 0664,
+        ],
+
+        'weight' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/weight/weight.log'),
+            'level' => 'debug',
+            'days' => 7,
+            'permission' => 0664,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
