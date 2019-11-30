@@ -17,7 +17,6 @@ class LineBotActionKeywordReplier extends LineBotActionHandler
      */
     public function __construct($memory, $text)
     {
-        parent::__construct();
         $this->memory = $memory;
         $this->text = $text;
     }
