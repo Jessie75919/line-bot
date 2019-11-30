@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services\LineBot\ActionHandler;
+namespace App\Services\LineBot\ActionHandler\NearByFood;
 
 use App\Services\Google\GooglePlaceApiService;
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use Illuminate\Support\Collection;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;

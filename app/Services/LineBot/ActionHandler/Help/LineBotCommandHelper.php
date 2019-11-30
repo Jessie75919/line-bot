@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Services\LineBot\ActionHandler;
+namespace App\Services\LineBot\ActionHandler\Help;
 
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use App\Services\LineBot\Router\LineBotRouter;
 
 class LineBotCommandHelper extends LineBotActionHandler

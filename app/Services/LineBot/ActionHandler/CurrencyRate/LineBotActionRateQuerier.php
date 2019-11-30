@@ -6,9 +6,10 @@
  * Time: 10:21
  */
 
-namespace App\Services\LineBot\ActionHandler;
+namespace App\Services\LineBot\ActionHandler\CurrencyRate;
 
 use App\Services\API\GuzzleApi;
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use App\Services\LineExchangeRate\ExchangeRateService;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 

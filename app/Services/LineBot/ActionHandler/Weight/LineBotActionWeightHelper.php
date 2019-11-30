@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Services\LineBot\ActionHandler;
+namespace App\Services\LineBot\ActionHandler\Weight;
 
 use App\Models\Memory;
 use App\Models\Weight;
 use App\Models\WeightSetting;
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;

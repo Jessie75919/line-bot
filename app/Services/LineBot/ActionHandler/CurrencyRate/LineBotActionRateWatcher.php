@@ -6,10 +6,11 @@
  * Time: 10:21
  */
 
-namespace App\Services\LineBot\ActionHandler;
+namespace App\Services\LineBot\ActionHandler\CurrencyRate;
 
 use App\Models\Memory;
 use App\Services\API\GuzzleApi;
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use App\Services\LineExchangeRate\ExchangeRateService;
 
 class LineBotActionRateWatcher extends LineBotActionHandler

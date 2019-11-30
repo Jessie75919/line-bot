@@ -3,14 +3,14 @@
 namespace App\Services\LineBot\Router;
 
 use App\Models\Memory;
+use App\Services\LineBot\ActionHandler\CurrencyRate\LineBotActionRateQuerier;
+use App\Services\LineBot\ActionHandler\CurrencyRate\LineBotActionRateWatcher;
+use App\Services\LineBot\ActionHandler\Help\LineBotCommandHelper;
+use App\Services\LineBot\ActionHandler\Keyword\LineBotActionKeywordReplier;
+use App\Services\LineBot\ActionHandler\Learner\LineBotActionLearner;
 use App\Services\LineBot\ActionHandler\LineBotActionHandler;
-use App\Services\LineBot\ActionHandler\LineBotActionKeywordReplier;
-use App\Services\LineBot\ActionHandler\LineBotActionLearner;
-use App\Services\LineBot\ActionHandler\LineBotActionRateQuerier;
-use App\Services\LineBot\ActionHandler\LineBotActionRateWatcher;
-use App\Services\LineBot\ActionHandler\LineBotActionWeightHelper;
-use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
 use App\Services\LineBot\ActionHandler\Reminder\LineBotActionReminder;
+use App\Services\LineBot\ActionHandler\Weight\LineBotActionWeightHelper;
 use LINE\LINEBot\Event\BaseEvent;
 use LINE\LINEBot\Event\PostbackEvent;
 use LINE\LINEBot\Exception\InvalidEventSourceException;
@@ -18,14 +18,6 @@ use LINE\LINEBot\Exception\InvalidEventSourceException;
 class LineBotRouter
 {
 
-    public const HELP = 'help';
-    public const DELIMITER_USE = ';|、|，|=';
-    public const RATE = 'rate';
-    public const RATE_WATCHER = 'rate_watcher';
-    public const LEARN = 'learn';
-    public const REMINDER = 'reminder';
-    public const DELIMITER = '('.self::DELIMITER_USE.')';
-    public const WEIGHT = 'weight';
     /* @var array */
     public $routes = null;
     /** @var Memory */

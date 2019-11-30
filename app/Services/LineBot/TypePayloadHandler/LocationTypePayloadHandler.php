@@ -2,7 +2,7 @@
 
 namespace App\Services\LineBot\TypePayloadHandler;
 
-use App\Services\LineBot\ActionHandler\LineBotActionFoodNearbySearcher;
+use App\Services\LineBot\ActionHandler\NearByFood\LineBotActionFoodNearbySearcher;
 use LINE\LINEBot\Event\MessageEvent\LocationMessage;
 
 class LocationTypePayloadHandler implements TypePayloadHandlerInterface

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services\LineBot\ActionHandler;
+namespace App\Services\LineBot\ActionHandler\Keyword;
 
 use App\Models\Message;
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use Illuminate\Support\Collection;
 
 class LineBotActionKeywordReplier extends LineBotActionHandler
