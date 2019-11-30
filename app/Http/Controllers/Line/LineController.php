@@ -5,38 +5,37 @@ namespace App\Http\Controllers\Line;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Line\LineMessageApiRequest;
 use App\Services\Google\GooglePlaceApiService;
-use App\Services\LineBot\LineBotMainService;
+use App\Services\LineBot\LineBotIndexService;
 use Illuminate\Http\Request;
 use LINE\LINEBot\Constant\HTTPHeader;
 use LINE\LINEBot\Event\MessageEvent;
 
 class LineController extends Controller
 {
-    /* @var LineBotMainService $lineMainService */
-    private $lineMainService;
+    /* @var LineBotIndexService $lineIndex */
+    private $lineIndex;
 
     /**
      * LineController constructor.
-     * @param  LineBotMainService  $lineBotMainService
+     * @param  LineBotIndexService  $lineBotMainService
      */
-    public function __construct(LineBotMainService $lineBotMainService)
+    public function __construct(LineBotIndexService $lineBotMainService)
     {
         \Log::info('Line Bot Starting .... ');
-        $this->lineMainService = $lineBotMainService;
+        $this->lineIndex = $lineBotMainService;
     }
 
     public function index(LineMessageApiRequest $request)
     {
         $body = $request->getContent();
-
         $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
 
         /* @var MessageEvent $messageEvt */
-        $messageEvt = $this->lineMainService->parseEventRequest($body, $signature);
+        $messageEvt = $this->lineIndex->parseEventRequest($body, $signature);
 
         \Log::info(__METHOD__.' => '.print_r($messageEvt, true));
 
-        $response = $this->lineMainService->handle($messageEvt[0]);
+        $response = $this->lineIndex->handle($messageEvt[0]);
 
         \Log::info(__METHOD__.' => '.print_r($response, true));
 
