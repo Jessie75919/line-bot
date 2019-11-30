@@ -5,8 +5,8 @@ namespace App\Console;
 use App\Console\Commands\BodyTemperatureDocsGenerator;
 use App\Console\Commands\Line\ExchangeRateWatcherNotification;
 use App\Console\Commands\Line\LineBotPushMessage;
-use App\Console\Commands\Line\NotifyForReminder;
 use App\Console\Commands\Line\NotifyForSaveWeightRecord;
+use App\Console\Commands\Line\NotifyForToDoReminder;
 use App\Console\Commands\Line\NotifyForWeeklySummary;
 use App\Console\Commands\Line\NotifyToClockInOut;
 use App\Console\Commands\MailTest;
@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         NotifyToClockInOut::class,
         NotifyForSaveWeightRecord::class,
         NotifyForWeeklySummary::class,
-        NotifyForReminder::class,
+        NotifyForToDoReminder::class,
     ];
 
     /**

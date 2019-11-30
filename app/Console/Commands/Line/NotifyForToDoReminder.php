@@ -8,7 +8,7 @@ use App\Services\LineBot\PushHandler\LineBotPushService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
-class NotifyForReminder extends Command
+class NotifyForToDoReminder extends Command
 {
     protected $signature = 'line:reminder-schedule';
     protected $description = '執行 Line 提醒功能';
