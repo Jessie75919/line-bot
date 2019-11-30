@@ -8,63 +8,56 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
+use App\Models\Memory;
 use App\Models\Message;
-use App\Services\LineBot\LineBotMessageResponser;
 
 class LineBotActionLearner extends LineBotActionHandler
 {
-    private $payload;
+    /**
+     * @var Memory
+     */
+    private $memory;
+    private $text;
 
-    public function preparePayload($rawPayload)
+    /**
+     * LineBotActionLearner constructor.
+     * @param  Memory  $memory
+     * @param $text
+     */
+    public function __construct(Memory $memory, $text)
     {
-        $breakdownMessage = $this->breakdownMessage($rawPayload);
-
-        $this->payload = [
-            'channelId' => $this->channelId,
-            'purpose' => $this->purpose,
-            'message' => [
-                'origin' => $rawPayload,
-                'key' => count($breakdownMessage) > 0 ? $breakdownMessage[1] : null,
-                'value' => count($breakdownMessage) === 3 ? $breakdownMessage[2] : null,
-            ],
-        ];
-
-        return $this;
+        $this->memory = $memory;
+        $this->text = $text;
     }
 
     public function handle()
     {
-        $key = $this->payload['message']['key'];
-        $message = $this->payload['message']['value'];
+        [$key, $value] = $this->parseMessage($this->text);
 
-        \Log::info('key = '.$key);
-        \Log::info('message = '.$message);
-
-        if (strlen($key) <= 0 && strlen($message) <= 0) {
-            return false;
+        if (strlen($key) <= 0 || strlen($value) <= 0) {
+            return null;
         }
 
         try {
-            Message::create(
-                [
-                    'keyword' => $key,
-                    'message' => $message,
-                    'channel_id' => $this->payload['channelId'],
-                ]
-            );
+            Message::create([
+                'keyword' => $key,
+                'message' => $value,
+                'channel_id' => $this->memory->channel_id,
+            ]);
 
-            return (new LineBotMessageResponser(
-                $this->payload['channelId'],
-                'response',
-                LineBotMessageResponser::GENERAL_RESPONSE
-            ))->responseToUser();
+            return <<<EOD
+🙂️ 我已經記起來 {$key} 等於 {$value} 的意思囉！
+EOD;
+
         } catch (\Exception $e) {
             \Log::error(__METHOD__.' => '.$e);
-            return (new LineBotMessageResponser(
-                $this->payload['channelId'],
-                'response',
-                LineBotMessageResponser::ERROR_MESSAGE
-            ))->responseToUser();
+            return "😭️ 好像哪裏發生錯誤惹！";
         }
+    }
+
+    private function parseMessage($message)
+    {
+        $messageArr = $this->breakdownMessage($message);
+        return [$messageArr[1], $messageArr[2]];
     }
 }
