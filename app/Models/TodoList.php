@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Models;;
+namespace App\Models;
+;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property \Carbon\Carbon $created_at
- * @property int            $id
+ * @property int $id
  * @property \Carbon\Carbon $updated_at
  */
 class TodoList extends Model
@@ -17,6 +18,15 @@ class TodoList extends Model
         'repeat_period',
         'message',
         'send_time',
-        'is_sent'
+        'is_sent',
     ];
+
+    protected $dates = [
+        'send_time',
+    ];
+
+    public function isRepeat(): bool
+    {
+        return isset($this->repeat_period);
+    }
 }
