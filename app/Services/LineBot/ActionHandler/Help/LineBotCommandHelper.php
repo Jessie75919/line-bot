@@ -11,7 +11,7 @@ class LineBotCommandHelper extends LineBotActionHandler
     {
         $delimiter = str_replace('|', ' 或 ', LineBotRouter::DELIMITER_USE);
 
-        return <<<EOD
+        $message = <<<EOD
 #help 幫助文件
 ## 分段符 ： {$delimiter} 
     ex : 提醒;今天早上九點;吃早餐 
@@ -34,5 +34,7 @@ class LineBotCommandHelper extends LineBotActionHandler
         - 學;apple;蘋果 
         - learn;apple;蘋果 
 EOD;
+
+        return $this->reply($message);
     }
 }

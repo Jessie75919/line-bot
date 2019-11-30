@@ -46,14 +46,16 @@ class LineBotActionLearner extends LineBotActionHandler
                 'channel_id' => $this->memory->channel_id,
             ]);
 
-            return <<<EOD
+            $message = <<<EOD
 🙂️ 我已經記起來 {$key} 等於 {$value} 的意思囉！
 EOD;
 
         } catch (\Exception $e) {
             \Log::error(__METHOD__.' => '.$e);
-            return "😭️ 好像哪裏發生錯誤惹！";
+            $message = "😭️ 好像哪裏發生錯誤惹！";
         }
+
+        $this->reply($message);
     }
 
     private function getKeyAndValue($message)

@@ -40,9 +40,13 @@ class LineBotActionRateQuerier extends LineBotActionHandler
                 ->setChineseCurrency($currencyChinese)
                 ->fetchNowCurrencyValue()
                 ->getLowest();
-            return $this->exRate->toFormatCurrencyReportMessage($rate);
+            return $this->reply(
+                $this->exRate->toFormatCurrencyReportMessage($rate)
+            );
         } catch (NotFoundResourceException $e) {
-            return $this->exRate->toCurrencyNotFoundReplyMessage();
+            return $this->reply(
+                $this->exRate->toCurrencyNotFoundReplyMessage()
+            );
         }
     }
 }

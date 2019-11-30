@@ -26,7 +26,7 @@ class LineBotRouter
     const REMINDER = 'reminder';
     const DELIMITER = '('.self::DELIMITER_USE.')';
     const WEIGHT = 'weight';
-    const FOOD = 'food';
+    const DIET = 'diet';
 
     /* @var array */
     public $routes = null;
@@ -50,7 +50,23 @@ class LineBotRouter
             ->initRoute();
     }
 
-    public function initRoute()
+    public function getController(): ?LineBotActionHandler
+    {
+        $replyToken = $this->messageEvent->getReplyToken();
+
+        foreach ($this->routes as $pattern) {
+            if (preg_match($pattern['pattern'], $this->text) == 1) {
+                \Log::info(__METHOD__."[".__LINE__."] => ROUTE :".$pattern['route']);
+                return $pattern['controller']
+                    ->setReplyToken($replyToken);
+            }
+        }
+
+        return (new LineBotActionKeywordReplier($this->memory, $this->text))
+            ->setReplyToken($replyToken);
+    }
+
+    private function initRoute()
     {
         if ($this->routes) {
             return;
@@ -80,7 +96,7 @@ class LineBotRouter
             ],
             // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
             [
-                'pattern' => "/^(rem|remR.*){1}\s?".self::DELIMITER."(.*)/",
+                'pattern' => "/^(rem.*){1}\s?".self::DELIMITER."(.*)/",
                 'route' => self::REMINDER,
                 'controller' => app(LineBotActionReminder::class, compact('memory', 'text')),
             ],
@@ -98,23 +114,11 @@ class LineBotRouter
             ],
             // 飲食記錄小幫手
             [
-                'pattern' => "/^(food.*)\s?".self::DELIMITER."(.*)/",
-                'route' => self::FOOD,
+                'pattern' => "/^(diet.*)\s?".self::DELIMITER."(.*)/",
+                'route' => self::DIET,
                 'controller' => app(LineBotDietHelper::class, compact('memory', 'text')),
             ],
         ];
-    }
-
-    public function getController(): ?LineBotActionHandler
-    {
-        foreach ($this->routes as $pattern) {
-            if (preg_match($pattern['pattern'], $this->text) == 1) {
-                \Log::info(__METHOD__."[".__LINE__."] => ROUTE :".$pattern['route']);
-                return $pattern['controller'];
-            }
-        }
-
-        return (new LineBotActionKeywordReplier($this->memory, $this->text));
     }
 
     private function parseText()

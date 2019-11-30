@@ -28,6 +28,8 @@ class LineBotActionKeywordReplier extends LineBotActionHandler
         $keywords = Message::where('keyword', $this->text)
             ->where('channel_id', $this->memory->channel_id)->get();
 
-        return count($keywords) > 0 ? $keywords->random()->message : null;
+        $message = count($keywords) > 0 ? $keywords->random()->message : null;
+
+        return $this->reply($message);
     }
 }

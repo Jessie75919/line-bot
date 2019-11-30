@@ -52,13 +52,15 @@ class LineBotActionWeightHelper extends LineBotActionHandler
                 return null;
             }
 
-            /* 目標設定 */
             if ($page === 'weight-setting') {
-                return $this->saveGoal($weightInputs);
+                /* 目標設定 */
+                $message = $this->saveGoal($weightInputs);
+            } else {
+                /* 每日記錄 */
+                $message = $this->saveDailyRecord($weightInputs);
             }
 
-            /* 每日記錄 */
-            return $this->saveDailyRecord($weightInputs);
+            return $this->reply($message);
 
         } catch (\Exception $e) {
             \Log::error(__METHOD__.' => '.$e);

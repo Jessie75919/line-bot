@@ -38,8 +38,11 @@ class LineBotActionRateWatcher extends LineBotActionHandler
     public function handle()
     {
         [$currency, $type] = $this->getCurrencyAndType($this->text);
-        return $this->exRate
+
+        $message = $this->exRate
             ->subscribe($this->memory, $currency, $type);
+
+        return $this->reply($message);
     }
 
     public function getCurrencyAndType($message)

@@ -57,14 +57,19 @@ class LineBotActionReminder extends LineBotActionHandler
 
         switch ($command) {
             case self::REMINDER_STATE:
-                return (new ReminderStateHandler($this->memory))->handle();
+                $message = (new ReminderStateHandler($this->memory))->handle();
+                break;
             case self::REMINDER_DELETE:
-                return (new DeleteReminderHandler($this->memory, $this->toDo))->handle();
+                $message = (new DeleteReminderHandler($this->memory, $this->toDo))->handle();
+                break;
             case self::REMINDER:
-                return (new CreateReminderHandler($this->memory, $msgArr, $this->repeatPeriod))->handle();
+                $message = (new CreateReminderHandler($this->memory, $msgArr, $this->repeatPeriod))->handle();
+                break;
             default:
-                return '🤨 指令好像輸入錯誤囉！';
+                $message = '😥️ 指令好像輸入錯誤囉！';
         }
+
+        return $this->reply($message);
     }
 
     private function getDetailCommand($msgArr)
