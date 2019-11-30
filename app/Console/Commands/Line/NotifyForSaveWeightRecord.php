@@ -21,6 +21,9 @@ class NotifyForSaveWeightRecord extends Command
         $day = $now->dayOfWeek;
         $timeAt = $now->format('H:i:00');
 
+        \Log::channel('weight')->info("line:notify-for-save-record starting...");
+        \Log::channel('weight')->info("day:{$day} / timeAt:{$timeAt}");
+
         $weightSettings = WeightSetting::with('memory')
             ->where('enable_notification', 1)
             ->where('notify_days', 'like', "%{$day}%")
@@ -28,11 +31,9 @@ class NotifyForSaveWeightRecord extends Command
             ->get();
 
         if ($weightSettings->isEmpty()) {
+            \Log::channel('weight')->info('weightSettings is empty, skipped');
             return null;
         }
-
-        \Log::channel('weight')->info("line:notify-for-save-record starting...");
-        \Log::channel('weight')->info("day:{$day} / timeAt:{$timeAt}");
 
         foreach ($weightSettings as $weightSetting) {
             $channelId = $weightSetting->memory->channel_id;
