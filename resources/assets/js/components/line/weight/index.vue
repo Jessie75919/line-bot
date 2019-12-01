@@ -39,13 +39,13 @@
 </template>
 
 <script>
-  import { LineLiffWeightApi } from './api/LineLiffWeightApi';
-  import HeaderBar from './common/HeaderBar';
-  import WeightGraph from './pages/WeightGraph';
-  import WeightInput from './pages/WeightInput';
-  import WeightRecords from './pages/WeightRecords';
-  import WeightSetting from './pages/WeightSetting';
-  import { LineLiff } from './services/LineLiff';
+  import { LineLiffWeightApi } from 'resources/assets/js/components/line/api/LineLiffWeightApi';
+  import HeaderBar from 'resources/assets/js/components/line/common/HeaderBar';
+  import WeightGraph from 'resources/assets/js/components/line/pages/WeightGraph';
+  import WeightInput from 'resources/assets/js/components/line/pages/WeightInput';
+  import WeightRecords from 'resources/assets/js/components/line/pages/WeightRecords';
+  import WeightSetting from 'resources/assets/js/components/line/pages/WeightSetting';
+  import { LineLiff } from 'resources/assets/js/components/line/services/LineLiff';
 
   export default {
     name: 'line-liff-index',

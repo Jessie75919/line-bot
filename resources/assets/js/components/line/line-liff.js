@@ -1,4 +1,4 @@
-const LineLiff = require('./index');
+const LineLiff = require('resources/assets/js/components/line/weight/index');
 const Vue = require('vue');
 import VeLine from 'v-charts/lib/line.common';
 import Loading from 'vue-loading-overlay';
@@ -26,4 +26,4 @@ Vue.component(VeLine.name, VeLine);
 
 new Vue({
   render: h => h(LineLiff),
-}).$mount('#line-liff');
+}).$mount('#line-liff-weight');

@@ -13,7 +13,7 @@
 <input type="hidden" id="page" value="{{$page}}">
 
 
-<div id="line-liff"></div>
+<div id="line-liff-weight"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/vconsole@3.2.0/dist/vconsole.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
