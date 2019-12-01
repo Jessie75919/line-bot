@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Line\Meal;
 
 use App\Http\Controllers\Controller;
-use app\Services\LineBot\Liff\LiffService;
+use App\Services\LineBot\Liff\LiffService;
 use Illuminate\Http\Request;
 
 class LiffMealController extends Controller

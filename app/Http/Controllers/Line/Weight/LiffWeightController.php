@@ -7,7 +7,7 @@ use App\Http\Resources\Weight as WeightCollection;
 use App\Http\Resources\WeightSetting as WeightSettingResource;
 use App\Models\Memory;
 use App\Repository\LineBot\Weight\WeightRepo;
-use app\Services\LineBot\Liff\LiffService;
+use App\Services\LineBot\Liff\LiffService;
 use Illuminate\Http\Request;
 
 class LiffWeightController extends ApiController

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Services\LineBot\Liff;
+namespace App\Services\LineBot\Liff;
 
 class LiffService
 {
