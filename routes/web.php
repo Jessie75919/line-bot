@@ -12,10 +12,16 @@ Route::group(['prefix' => 'line'], function () {
     /* Line Liff pages */
     Route::group(['prefix' => 'liff'], function () {
         Route::group(['prefix' => 'weight'], function () {
-            Route::get("index", 'Line\LiffWeightController@index');
-            Route::get("setting/{memory}", 'Line\LiffWeightController@setting');
-            Route::get("records/all/{memory}", 'Line\LiffWeightController@weightRecords');
-            Route::get("records/weekly/{memory}", 'Line\LiffWeightController@weeklyData');
+            Route::get("index", 'Line\Weight\LiffWeightController@index');
+            Route::get("setting/{memory}", 'Line\Weight\LiffWeightController@setting');
+            Route::get("records/all/{memory}", 'Line\Weight\LiffWeightController@weightRecords');
+            Route::get("records/weekly/{memory}", 'Line\Weight\LiffWeightController@weeklyData');
+        });
+        Route::group(['prefix' => 'meal'], function () {
+            Route::get("index", 'Line\Meal\LiffMealController@index');
+            Route::get("setting/{memory}", 'Line\Meal\LiffMealController@setting');
+            Route::get("records/all/{memory}", 'Line\Meal\LiffMealController@weightRecords');
+            Route::get("records/weekly/{memory}", 'Line\Meal\LiffMealController@weeklyData');
         });
     });
 });
