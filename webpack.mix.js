@@ -79,5 +79,5 @@ mix.babel([
 // ---------------------------------------------
 // Line Liff
 // ---------------------------------------------
-mix.js('resources/assets/js/components/line/line-liff.js', 'public/js');
-mix.minify('public/js/line-liff.js').version();
+mix.js('resources/assets/js/components/line/weight/line-liff.js', 'public/js/line/weight');
+mix.minify('public/js/line/weight/line-liff.js').version();

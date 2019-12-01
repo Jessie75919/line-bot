@@ -1,10 +1,10 @@
-const LineLiff = require('resources/assets/js/components/line/weight/index');
+const WeightLiff = require('./index');
 const Vue = require('vue');
 import VeLine from 'v-charts/lib/line.common';
 import Loading from 'vue-loading-overlay';
 // Import stylesheet
 import 'vue-loading-overlay/dist/vue-loading.css';
-import { download, get, patch, post, remove } from '../../custom/api';
+import { download, get, patch, post, remove } from '../../../custom/api';
 
 window.api = { get, download, post, patch, remove };
 window.jQuery = require('jquery');
@@ -25,5 +25,5 @@ Vue.component('Loading', Loading);
 Vue.component(VeLine.name, VeLine);
 
 new Vue({
-  render: h => h(LineLiff),
+  render: h => h(WeightLiff),
 }).$mount('#line-liff-weight');
