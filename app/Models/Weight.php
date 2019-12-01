@@ -76,11 +76,6 @@ class Weight extends Model
         return $memory->weights()->create($payload);
     }
 
-    public static function getPageToken(string $linkUrl)
-    {
-        return preg_replace('/line:\/\/app\/(.*)/m', '$1', $linkUrl);
-    }
-
     public function memory()
     {
         return $this->belongsTo('\App\Models\Memory');
