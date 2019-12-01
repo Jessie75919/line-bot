@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Line\Meal;
+use App\Models\Line\MealType;
+use App\Models\Line\ProcessStatus;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property mixed $messages
  * @property int channel_id
+ * @property string process_status
+ * @property ProcessStatus processStatus
  */
 class Memory extends Model
 {
@@ -40,8 +45,37 @@ class Memory extends Model
         return $this->hasOne('\App\Models\WeightSetting');
     }
 
+    public function meal()
+    {
+        return $this->hasMany('\App\Models\Line\Meal');
+    }
+
     public function getRouteKeyName()
     {
         return 'channel_id';
     }
+
+    public function processStatus()
+    {
+        return $this->hasOne(ProcessStatus::class);
+    }
+
+    /**
+     * @param $mealTypeId
+     * @return Meal
+     * @throws \Exception
+     */
+    public function getTodayMealByType($mealTypeId): Meal
+    {
+        if (! MealType::where('id', $mealTypeId)->exists()) {
+            throw new \Exception("Meal type is not existed");
+        }
+
+        return Meal::firstOrCreate([
+            'memory_id' => $this->id,
+            'meal_type_id' => $mealTypeId,
+            'save_date' => now('Asia/Taipei')->toDateString(),
+        ]);
+    }
+
 }
