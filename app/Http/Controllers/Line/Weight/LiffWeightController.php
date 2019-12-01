@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Line;
+namespace App\Http\Controllers\Line\Weight;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Weight as WeightCollection;
 use App\Http\Resources\WeightSetting as WeightSettingResource;
 use App\Models\Memory;
-use App\Models\Weight;
 use App\Repository\LineBot\Weight\WeightRepo;
+use app\Services\LineBot\Liff\LiffService;
 use Illuminate\Http\Request;
 
 class LiffWeightController extends ApiController
@@ -17,10 +17,9 @@ class LiffWeightController extends ApiController
         return view(
             "line.weight.index",
             [
-                'liffToken' => Weight::getPageToken(config('line.link_of_weight_index')),
+                'liffToken' => LiffService::parsePageToken(config('line.link_of_weight_index')),
                 'today' => now('Asia/Taipei')->toDateString(),
                 'page' => $request->all()['page'] ?? 'index',
-                'uuid' => uniqid(),
             ]
         );
     }
