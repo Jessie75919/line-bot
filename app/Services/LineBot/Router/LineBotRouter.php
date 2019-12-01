@@ -5,11 +5,11 @@ namespace App\Services\LineBot\Router;
 use App\Models\Memory;
 use App\Services\LineBot\ActionHandler\CurrencyRate\LineBotActionRateQuerier;
 use App\Services\LineBot\ActionHandler\CurrencyRate\LineBotActionRateWatcher;
-use App\Services\LineBot\ActionHandler\Diet\LineBotDietHelper;
 use App\Services\LineBot\ActionHandler\Help\LineBotCommandHelper;
 use App\Services\LineBot\ActionHandler\Keyword\LineBotActionKeywordReplier;
 use App\Services\LineBot\ActionHandler\Learner\LineBotActionLearner;
 use App\Services\LineBot\ActionHandler\LineBotActionHandler;
+use App\Services\LineBot\ActionHandler\Meal\LineBotMealHelper;
 use App\Services\LineBot\ActionHandler\Reminder\LineBotActionReminder;
 use App\Services\LineBot\ActionHandler\Weight\LineBotActionWeightHelper;
 use LINE\LINEBot\Event\BaseEvent;
@@ -26,7 +26,7 @@ class LineBotRouter
     const REMINDER = 'reminder';
     const DELIMITER = '('.self::DELIMITER_USE.')';
     const WEIGHT = 'weight';
-    const DIET = 'diet';
+    const MEAL = 'meal';
 
     /* @var array */
     public $routes = null;
@@ -114,9 +114,9 @@ class LineBotRouter
             ],
             // 飲食記錄小幫手
             [
-                'pattern' => "/^(diet.*)\s?".self::DELIMITER."(.*)/",
-                'route' => self::DIET,
-                'controller' => app(LineBotDietHelper::class, compact('memory', 'text')),
+                'pattern' => "/^(meal.*)\s?".self::DELIMITER."(.*)/",
+                'route' => self::MEAL,
+                'controller' => app(LineBotMealHelper::class, compact('memory', 'text')),
             ],
         ];
     }
