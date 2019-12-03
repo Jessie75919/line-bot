@@ -46,10 +46,6 @@ class LineBotMealHelper extends LineBotActionHandler
             return $this->askWayOfRecord();
         }
 
-        if ($command === 'ready_add') {
-            return $this->readySaveTextRecord();
-        }
-
         $processStatus = $this->memory->processStatus;
         if (is_null($processStatus)) {
             return null;
@@ -90,13 +86,6 @@ class LineBotMealHelper extends LineBotActionHandler
         $quickReply = new QuickReplyMessageBuilder([
             new QuickReplyButtonBuilder(new CameraTemplateActionBuilder('拍照記錄')),
             new QuickReplyButtonBuilder(new CameraRollTemplateActionBuilder('使用相簿')),
-            new QuickReplyButtonBuilder(
-                new UriTemplateActionBuilder(
-                    '文字記錄',
-                    config('line.link_of_meal_index').'?page=index',
-                    null
-                )
-            ),
         ]);
         $message = new TextMessageBuilder('請問要用什麼方式記錄呢？', $quickReply);
         /* @var Meal $meal */
@@ -116,11 +105,5 @@ class LineBotMealHelper extends LineBotActionHandler
                 )
             );
         })->all();
-    }
-
-    private function readySaveTextRecord()
-    {
-        $mealTypeId = $this->memory->processStatus->data['meal_type_id'];
-        $this->processStatus->mealReadySaveTextRecord($mealTypeId);
     }
 }
