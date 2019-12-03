@@ -18,13 +18,13 @@ class LineBotActionFoodNearbySearcher extends LineBotActionHandler
 
     /**
      * LineBotActionFoodNearbySearcher constructor.
-     * @param $text
+     * @param $message
      */
-    public function __construct($text)
+    public function __construct($message)
     {
-        $this->payload = $text;
+        $this->payload = $message;
         $this->placeApi = (app(GooglePlaceApiService::class))
-            ->setPayload($text);
+            ->setPayload($message);
     }
 
     public function handle()

@@ -9,23 +9,23 @@ use Illuminate\Support\Collection;
 class LineBotActionKeywordReplier extends LineBotActionHandler
 {
     private $memory;
-    private $text;
+    private $message;
 
     /**
      * LineBotActionKeywordReplier constructor.
      * @param $memory
-     * @param $text
+     * @param $message
      */
-    public function __construct($memory, $text)
+    public function __construct($memory, $message)
     {
         $this->memory = $memory;
-        $this->text = $text;
+        $this->message = $message;
     }
 
     public function handle()
     {
         /* @var Collection $keywords */
-        $keywords = Message::where('keyword', $this->text)
+        $keywords = Message::where('keyword', $this->message)
             ->where('channel_id', $this->memory->channel_id)->get();
 
         $message = count($keywords) > 0 ? $keywords->random()->message : null;

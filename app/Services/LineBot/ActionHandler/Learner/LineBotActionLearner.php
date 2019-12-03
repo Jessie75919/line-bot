@@ -15,25 +15,18 @@ use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 class LineBotActionLearner extends LineBotActionHandler
 {
     /**
-     * @var Memory
-     */
-    private $memory;
-    private $text;
-
-    /**
      * LineBotActionLearner constructor.
      * @param  Memory  $memory
-     * @param $text
+     * @param $message
      */
-    public function __construct(Memory $memory, $text)
+    public function __construct(Memory $memory, $message)
     {
-        $this->memory = $memory;
-        $this->text = $text;
+        parent::__construct($memory, $message);
     }
 
     public function handle()
     {
-        [$key, $value] = $this->getKeyAndValue($this->text);
+        [$key, $value] = $this->getKeyAndValue($this->message);
 
         if (strlen($key) <= 0 || strlen($value) <= 0) {
             return null;

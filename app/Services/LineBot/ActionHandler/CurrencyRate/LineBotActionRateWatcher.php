@@ -16,28 +16,22 @@ use App\Services\LineExchangeRate\ExchangeRateService;
 class LineBotActionRateWatcher extends LineBotActionHandler
 {
     private $exRate;
-    /**
-     * @var Memory
-     */
-    private $memory;
-    private $text;
 
     /**
      * LineBotActionRateWatcher constructor.
      * @param  Memory  $memory
-     * @param $text
+     * @param $message
      * @throws \InvalidArgumentException
      */
-    public function __construct(Memory $memory, $text)
+    public function __construct(Memory $memory, $message)
     {
+        parent::__construct($memory, $message);
         $this->exRate = new ExchangeRateService(new GuzzleApi());
-        $this->memory = $memory;
-        $this->text = $text;
     }
 
     public function handle()
     {
-        [$currency, $type] = $this->getCurrencyAndType($this->text);
+        [$currency, $type] = $this->getCurrencyAndType($this->message);
 
         $message = $this->exRate
             ->subscribe($this->memory, $currency, $type);

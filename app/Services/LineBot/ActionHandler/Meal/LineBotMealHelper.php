@@ -17,8 +17,6 @@ use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 
 class LineBotMealHelper extends LineBotActionHandler
 {
-    private $memory;
-    private $text;
     /**
      * @var \Illuminate\Database\Eloquent\Model
      */
@@ -27,17 +25,17 @@ class LineBotMealHelper extends LineBotActionHandler
     /**
      * LineBotActionKeywordReplier constructor.
      * @param $memory
-     * @param $text
+     * @param $message
      */
-    public function __construct(Memory $memory, $text)
+    public function __construct(Memory $memory, $message)
     {
-        $this->memory = $memory;
-        $this->text = $text;
+        parent::__construct($memory, $message);
     }
 
     public function handle()
     {
-        [$meal, $command] = $this->parseMessage($this->text);
+
+        [$meal, $command] = $this->parseMessage($this->message);
         $this->processStatus = $this->memory->processStatus()->firstOrCreate([]);
 
         if ($command === 'start') {

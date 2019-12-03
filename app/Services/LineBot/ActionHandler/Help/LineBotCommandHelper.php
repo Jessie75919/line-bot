@@ -7,6 +7,14 @@ use App\Services\LineBot\Router\LineBotRouter;
 
 class LineBotCommandHelper extends LineBotActionHandler
 {
+
+    /**
+     * LineBotCommandHelper constructor.
+     */
+    public function __construct()
+    {
+    }
+
     public function handle()
     {
         $delimiter = str_replace('|', ' 或 ', LineBotRouter::DELIMITER_USE);

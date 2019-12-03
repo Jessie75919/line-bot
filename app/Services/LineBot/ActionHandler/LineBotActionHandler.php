@@ -14,6 +14,19 @@ use LINE\LINEBot;
 abstract class LineBotActionHandler
 {
     protected $replyToken;
+    protected $memory;
+    protected $message;
+
+    /**
+     * LineBotActionHandler constructor.
+     * @param $memory
+     * @param $message
+     */
+    public function __construct($memory, $message)
+    {
+        $this->memory = $memory;
+        $this->message = $message;
+    }
 
     /** Dissect the Message if it is a learning command with <學;key;value>
      * @param $userMessage

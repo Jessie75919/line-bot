@@ -14,16 +14,10 @@ class LineBotActionWeightHelper extends LineBotActionHandler
 {
     const INT_TO_DAY = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六',];
     private $inputUrl;
-    /**
-     * @var Memory
-     */
-    private $memory;
-    private $text;
 
-    public function __construct(Memory $memory, $text)
+    public function __construct(Memory $memory, $message)
     {
-        $this->memory = $memory;
-        $this->text = $text;
+        parent::__construct($memory, $message);
         $this->inputUrl = config('line.link_of_weight_index');
     }
 
@@ -35,7 +29,7 @@ class LineBotActionWeightHelper extends LineBotActionHandler
 
     public function handle()
     {
-        [$page, $input] = $this->paresMessage($this->text);
+        [$page, $input] = $this->paresMessage($this->message);
         \Log::info(__METHOD__."[".__LINE__."] =>".print_r($page, true));
         \Log::info(__METHOD__."[".__LINE__."] =>".print_r($input, true));
         if (! $input) {

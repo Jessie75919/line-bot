@@ -15,7 +15,6 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class LineBotActionRateQuerier extends LineBotActionHandler
 {
-    private $text;
     /**
      * @var ExchangeRateService
      */
@@ -23,19 +22,19 @@ class LineBotActionRateQuerier extends LineBotActionHandler
 
     /**
      * LineBotActionRateWatcher constructor.
-     * @param $text
+     * @param $message
      * @throws \InvalidArgumentException
      */
-    public function __construct($text)
+    public function __construct($message)
     {
         $this->exRate = new ExchangeRateService(new GuzzleApi());
-        $this->text = $text;
+        $this->message = $message;
     }
 
     public function handle()
     {
         try {
-            $currencyChinese = $this->parseMessage($this->text)[1];
+            $currencyChinese = $this->parseMessage($this->message)[1];
             $rate = $this->exRate
                 ->setChineseCurrency($currencyChinese)
                 ->fetchNowCurrencyValue()

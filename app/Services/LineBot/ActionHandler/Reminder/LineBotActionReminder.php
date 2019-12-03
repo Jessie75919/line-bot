@@ -17,22 +17,16 @@ class LineBotActionReminder extends LineBotActionHandler
         "m" => 'Minute',
     ];
     private $repeatPeriod = null;
-    /**
-     * @var Memory
-     */
-    private $memory;
-    private $text;
     private $toDo;
 
     /**
      * LineBotLearnService constructor.
      * @param  Memory  $memory
-     * @param $text
+     * @param $message
      */
-    public function __construct(Memory $memory, $text)
+    public function __construct(Memory $memory, $message)
     {
-        $this->memory = $memory;
-        $this->text = $text;
+        parent::__construct($memory, $message);
     }
 
     /**
@@ -52,7 +46,7 @@ class LineBotActionReminder extends LineBotActionHandler
 
     public function handle()
     {
-        $msgArr = $this->parseMessage($this->text);
+        $msgArr = $this->parseMessage($this->message);
         $command = $this->getDetailCommand($msgArr);
 
         switch ($command) {
