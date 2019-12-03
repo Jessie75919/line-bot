@@ -61,7 +61,7 @@ class NotifyForWeeklySummary extends Command
             ->setWeight(ComponentFontWeight::BOLD)
             ->setSize(ComponentFontSize::LG);
 
-        $desktopUrl = 'https://liff.line.me/'.LiffService::parsePageToken(config('line.link_of_weight_index'));
+        $desktopUrl = (new LiffService)->parseToHttpsUrl(config('line.link_of_weight_index'));
 
         $button = ButtonComponentBuilder::builder()
             ->setStyle(ComponentButtonStyle::PRIMARY)
