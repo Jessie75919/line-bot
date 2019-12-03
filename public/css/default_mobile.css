@@ -1,1 +1,164 @@
-@media only screen and (max-width:1200px){.container .panel .panelBody.col20p,.container .panel .panelBody.col25p,.container .panel .panelBody.col30p,.container .panel .panelBody.col40p,.container .panel .panelBody.col50p,.container .panel .panelBody.col60p,.container .panel .panelBody.col75p{width:100%}}@media only screen and (max-width:910px){header .open{position:relative;top:auto;left:auto;float:left;margin:25px 0 0 20px}@-webkit-keyframes nofull{0%{width:100%;float:right}to{width:100%;float:right}}.container.full{width:100%}@-webkit-keyframes full{0%{width:100%}to{width:100%}}.container.start{-webkit-animation:none;animation:none}.editListBtn{width:94%;right:3%}@-webkit-keyframes editListBtnNoFull{0%{width:94%}to{width:94%}}@-webkit-keyframes editListBtnFull{0%{width:94%}to{width:94%}}}@media only screen and (max-width:600px){header .headerRight{width:auto}header .headerRight>ul>li a{font-size:1.3em;padding:10px}header .headerRight>ul>li a>span{display:none}header .headerRight>ul>li a>span.remind{display:block}.stuts .stutsList{width:33.33333%}.stuts .stutsList.sendBtn{width:100px}.stuts .stutsList input[type=button]{margin-top:0}.formList .formInfo,.formList .formName{width:100%}}@media only screen and (max-width:400px){.stuts .stutsList{width:100%}}
+@charset "UTF-8";
+
+@media only screen and (max-width: 1200px) {
+  .container .panel .panelBody.col75p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col60p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col50p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col40p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col30p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col25p {
+    width: 100%;
+  }
+
+  .container .panel .panelBody.col20p {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 910px) {
+  /*---------------share---------------*/
+
+  /*header*/
+
+  header .open {
+    position: relative;
+    top: auto;
+    left: auto;
+    float: left;
+    margin: 25px 0 0 20px;
+  }
+
+  /*側邊攔*/
+
+  /*----------主要內容----------*/
+
+@-webkit-keyframes nofull {
+    from {
+      width: 100%;
+      float: right;
+    }
+
+    to {
+      width: 100%;
+      float: right;
+      /*margin-right: -250px;*/
+    }
+}
+
+  .container.full {
+    width: 100%;
+  }
+
+@-webkit-keyframes full {
+    from {
+      width: 100%;
+      /*margin-right: -250px;*/
+    }
+
+    to {
+      width: 100%;
+      /*margin-right: 0px;*/
+    }
+}
+
+  .container.start {
+    -webkit-animation: none;
+            animation: none;
+  }
+
+  /*----------其他內容設定----------*/
+
+  .editListBtn {
+    width: 94%;
+    right: 3%;
+  }
+
+@-webkit-keyframes editListBtnNoFull {
+    from {
+      width: 94%;
+    }
+
+    to {
+      width: 94%;
+    }
+}
+
+@-webkit-keyframes editListBtnFull {
+    from {
+      width: 94%;
+    }
+
+    to {
+      width: 94%;
+    }
+}
+}
+
+@media only screen and (max-width: 600px) {
+  /*header*/
+
+  header .headerRight {
+    width: auto;
+  }
+
+  header .headerRight > ul > li a {
+    font-size: 1.3em;
+    padding: 10px;
+  }
+
+  header .headerRight > ul > li a > span {
+    display: none;
+  }
+
+  header .headerRight > ul > li a > span.remind {
+    display: block;
+  }
+
+  /*----------其他內容設定----------*/
+
+  .stuts .stutsList {
+    width: calc(100% / 3);
+  }
+
+  .stuts .stutsList.sendBtn {
+    width: 100px;
+  }
+
+  .stuts .stutsList input[type="button"] {
+    margin-top: 0px;
+  }
+
+  /*表單*/
+
+  .formList .formName {
+    width: 100%;
+  }
+
+  .formList .formInfo {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  /*----------其他內容設定----------*/
+
+  .stuts .stutsList {
+    width: 100%;
+  }
+}
+
