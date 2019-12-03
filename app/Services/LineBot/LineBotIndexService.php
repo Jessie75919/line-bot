@@ -40,6 +40,10 @@ class LineBotIndexService
             app(LineBotRouter::class, ['messageEvent' => $messageEvent])
                 ->getController();
 
+        if (is_null($controller)) {
+            return null;
+        }
+
         return $controller->handle();
     }
 }
