@@ -13,6 +13,8 @@ use App\Services\LineBot\ActionHandler\Meal\LineBotMealHelper;
 use App\Services\LineBot\ActionHandler\Reminder\LineBotActionReminder;
 use App\Services\LineBot\ActionHandler\Weight\LineBotActionWeightHelper;
 use LINE\LINEBot\Event\BaseEvent;
+use LINE\LINEBot\Event\MessageEvent\ContentProvider;
+use LINE\LINEBot\Event\MessageEvent\ImageMessage;
 use LINE\LINEBot\Event\PostbackEvent;
 use LINE\LINEBot\Exception\InvalidEventSourceException;
 
@@ -35,7 +37,7 @@ class LineBotRouter
     /** @var BaseEvent */
     private $messageEvent;
     /** @var string */
-    private $text;
+    private $message;
 
     /**
      * LineBotRouter constructor.
@@ -45,7 +47,7 @@ class LineBotRouter
     public function __construct(BaseEvent $messageEvent)
     {
         $this->messageEvent = $messageEvent;
-        $this->parseText()
+        $this->parseData()
             ->intiMemory()
             ->initRoute();
     }
@@ -54,15 +56,23 @@ class LineBotRouter
     {
         $replyToken = $this->messageEvent->getReplyToken();
 
+        if ($this->message instanceof ContentProvider) {
+            if ($this->memory->processStatus->isOnSelectMealType()) {
+                return (new LineBotMealHelper($this->memory, $this->message))
+                    ->setReplyToken($replyToken);
+            }
+            return null;
+        }
+
         foreach ($this->routes as $pattern) {
-            if (preg_match($pattern['pattern'], $this->text) == 1) {
+            if (preg_match($pattern['pattern'], $this->message) == 1) {
                 \Log::info(__METHOD__."[".__LINE__."] => ROUTE :".$pattern['route']);
                 return $pattern['controller']
                     ->setReplyToken($replyToken);
             }
         }
 
-        return (new LineBotActionKeywordReplier($this->memory, $this->text))
+        return (new LineBotActionKeywordReplier($this->memory, $this->message))
             ->setReplyToken($replyToken);
     }
 
@@ -73,7 +83,7 @@ class LineBotRouter
         }
 
         $memory = $this->memory;
-        $text = $this->text;
+        $text = $this->message;
 
         $this->routes = [
             // Help指令
@@ -121,13 +131,17 @@ class LineBotRouter
         ];
     }
 
-    private function parseText()
+    private function parseData()
     {
         if ($this->messageEvent instanceof PostbackEvent) {
-            $this->text = $this->messageEvent->getPostbackData();
+            $method = 'getPostbackData';
+        } elseif ($this->messageEvent instanceof ImageMessage) {
+            $method = 'getContentProvider';
         } else {
-            $this->text = $this->messageEvent->getText();
+            $method = 'getText';
         }
+
+        $this->message = $this->messageEvent->$method();
         return $this;
     }
 
