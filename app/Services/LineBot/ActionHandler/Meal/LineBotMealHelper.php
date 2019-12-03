@@ -13,7 +13,6 @@ use LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder;
 use LINE\LINEBot\TemplateActionBuilder\CameraRollTemplateActionBuilder;
 use LINE\LINEBot\TemplateActionBuilder\CameraTemplateActionBuilder;
 use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
-use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 
 class LineBotMealHelper extends LineBotActionHandler
 {
@@ -71,7 +70,7 @@ class LineBotMealHelper extends LineBotActionHandler
         $mealsBtns = $this->getMealQuickReplyButtons();
         $quickReply = new QuickReplyMessageBuilder($mealsBtns);
 
-        $message = new TextMessageBuilder('請問要記錄哪一餐呢？', $quickReply);
+        $message = new TextMessageBuilder('hi～hi，請問要記錄哪一餐呢？', $quickReply);
         $this->processStatus->mealStart();
         return $this->reply($message);
     }
@@ -82,12 +81,12 @@ class LineBotMealHelper extends LineBotActionHandler
      */
     protected function askWayOfRecord()
     {
-        [$diet, $command, $mealTypeId] = $this->parseMessage($this->text);
+        [$meal, $command, $mealTypeId] = $this->parseMessage($this->message);
         $quickReply = new QuickReplyMessageBuilder([
             new QuickReplyButtonBuilder(new CameraTemplateActionBuilder('拍照記錄')),
             new QuickReplyButtonBuilder(new CameraRollTemplateActionBuilder('使用相簿')),
         ]);
-        $message = new TextMessageBuilder('請問要用什麼方式記錄呢？', $quickReply);
+        $message = new TextMessageBuilder('好哦！請問要用什麼方式記錄呢？', $quickReply);
         /* @var Meal $meal */
         $meal = $this->memory->getTodayMealByType($mealTypeId);
         $this->processStatus->mealSelectMealType($meal->meal_type_id);
@@ -100,7 +99,7 @@ class LineBotMealHelper extends LineBotActionHandler
             return new QuickReplyButtonBuilder(
                 new PostbackTemplateActionBuilder(
                     $mealType->name,
-                    "diet，select，{$mealType->id}",
+                    "meal，select，{$mealType->id}",
                     "hi，我想要記錄{$mealType->name} 🙂️"
                 )
             );
