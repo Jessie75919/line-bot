@@ -16,6 +16,8 @@ abstract class LineBotActionHandler
     protected $replyToken;
     protected $memory;
     protected $message;
+    /* @var LINEBot lineBot */
+    protected $lineBot;
 
     /**
      * LineBotActionHandler constructor.
@@ -26,6 +28,7 @@ abstract class LineBotActionHandler
     {
         $this->memory = $memory;
         $this->message = $message;
+        $this->lineBot = app(LINEBot::class);
     }
 
     /** Dissect the Message if it is a learning command with <學;key;value>
@@ -50,8 +53,7 @@ abstract class LineBotActionHandler
      */
     public function reply($message)
     {
-        return app(LINEBot::class)
-            ->replyText($this->replyToken, $message);
+        return $this->lineBot->replyText($this->replyToken, $message);
     }
 
     abstract public function handle();
