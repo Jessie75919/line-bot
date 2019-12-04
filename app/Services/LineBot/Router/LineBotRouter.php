@@ -56,14 +56,6 @@ class LineBotRouter
     {
         $replyToken = $this->messageEvent->getReplyToken();
 
-        if ($this->message instanceof ContentProvider) {
-            if ($this->memory->processStatus->isOnSelectMealType()) {
-                return (new LineBotMealHelper($this->memory, $this->message))
-                    ->setReplyToken($replyToken);
-            }
-            return null;
-        }
-
         foreach ($this->routes as $pattern) {
             if (preg_match($pattern['pattern'], $this->message) == 1) {
                 \Log::info(__METHOD__."[".__LINE__."] => ROUTE :".$pattern['route']);
