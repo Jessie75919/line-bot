@@ -67,15 +67,20 @@ class ProcessStatus extends Model
 
     public function mealStart()
     {
-        return $this->updateProcessStatus('meal', 'start', 'start', null);
+        return $this->updateProcessStatus(
+            'meal',
+            self::MEAL['START'],
+            self::MEAL['START'],
+            null
+        );
     }
 
     public function mealSelectMealType(int $mealTypeId)
     {
         return $this->updateProcessStatus(
             'meal',
-            'select_meal_type',
-            'select_meal_type',
+            self::MEAL['SELECT_MEAL_TYPE'],
+            self::MEAL['SELECT_MEAL_TYPE'],
             ['meal_type_id' => $mealTypeId]
         );
     }
