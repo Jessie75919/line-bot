@@ -125,14 +125,13 @@ class LineBotRouter
     private function parseData()
     {
         if ($this->messageEvent instanceof PostbackEvent) {
-            $method = 'getPostbackData';
+            $this->message = $this->messageEvent->getPostbackData();
         } elseif ($this->messageEvent instanceof ImageMessage) {
-            $method = 'getContentProvider';
+            $this->message = 'meal，add-image，'.$this->messageEvent->getMessageId();
         } else {
-            $method = 'getText';
+            $this->message = $this->messageEvent->getText();
         }
 
-        $this->message = $this->messageEvent->$method();
         return $this;
     }
 
