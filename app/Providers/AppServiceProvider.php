@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Services\Google\GooglePlaceApiService;
 use App\Services\LineBot\LineBotMessageReceiver;
 use App\Services\LineBot\PushHandler\LineBotPushService;
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use LINE\LINEBot;
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        if ($this->app->environment() !== 'production') {
+            $this->app->register(IdeHelperServiceProvider::class);
+        }
         $this->lineBotRegister();
         $this->lineBotServiceRegister();
         $this->googlePlaceServiceRegister();
