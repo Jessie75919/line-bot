@@ -13,7 +13,6 @@ use App\Services\LineBot\ActionHandler\Meal\LineBotMealHelper;
 use App\Services\LineBot\ActionHandler\Reminder\LineBotActionReminder;
 use App\Services\LineBot\ActionHandler\Weight\LineBotActionWeightHelper;
 use LINE\LINEBot\Event\BaseEvent;
-use LINE\LINEBot\Event\MessageEvent\ContentProvider;
 use LINE\LINEBot\Event\MessageEvent\ImageMessage;
 use LINE\LINEBot\Event\PostbackEvent;
 use LINE\LINEBot\Exception\InvalidEventSourceException;
@@ -75,7 +74,7 @@ class LineBotRouter
         }
 
         $memory = $this->memory;
-        $text = $this->message;
+        $message = $this->message;
 
         $this->routes = [
             // Help指令
@@ -88,37 +87,37 @@ class LineBotRouter
             [
                 'pattern' => "/^(rate)".self::DELIMITER."(.*)/",
                 'route' => self::RATE,
-                'controller' => app(LineBotActionRateQuerier::class, compact('text')),
+                'controller' => app(LineBotActionRateQuerier::class, compact('message')),
             ],
             // 匯率每日通知指令
             [
                 'pattern' => "/^(rate-watcher)".self::DELIMITER."(.*)/",
                 'route' => self::RATE_WATCHER,
-                'controller' => app(LineBotActionRateWatcher::class, compact('memory', 'text')),
+                'controller' => app(LineBotActionRateWatcher::class, compact('memory', 'message')),
             ],
             // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
             [
                 'pattern' => "/^(rem.*){1}\s?".self::DELIMITER."(.*)/",
                 'route' => self::REMINDER,
-                'controller' => app(LineBotActionReminder::class, compact('memory', 'text')),
+                'controller' => app(LineBotActionReminder::class, compact('memory', 'message')),
             ],
             /* 減重小幫手 */
             [
                 'pattern' => "/^(weight.*)".self::DELIMITER."(.*)/",
                 'route' => self::WEIGHT,
-                'controller' => app(LineBotActionWeightHelper::class, compact('memory', 'text')),
+                'controller' => app(LineBotActionWeightHelper::class, compact('memory', 'message')),
             ],
             // 學習類型指令
             [
                 'pattern' => "/^(學|learn){1}\s?".self::DELIMITER."(.*)/",
                 'route' => self::LEARN,
-                'controller' => app(LineBotActionLearner::class, compact('memory', 'text')),
+                'controller' => app(LineBotActionLearner::class, compact('memory', 'message')),
             ],
             // 飲食記錄小幫手
             [
                 'pattern' => "/^(meal.*)\s?".self::DELIMITER."(.*)/",
                 'route' => self::MEAL,
-                'controller' => app(LineBotMealHelper::class, compact('memory', 'text')),
+                'controller' => app(LineBotMealHelper::class, compact('memory', 'message')),
             ],
         ];
     }
