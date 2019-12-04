@@ -4,20 +4,24 @@ namespace App\Services\LineBot\ActionHandler\Meal;
 
 use App\Models\Line\Meal;
 use App\Models\Line\MealType;
+use App\Models\Line\ProcessStatus;
 use App\Models\Memory;
 use App\Services\LineBot\ActionHandler\LineBotActionHandler;
+use Illuminate\Database\Eloquent\Model;
 use LINE\LINEBot;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder;
 use LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder;
+use LINE\LINEBot\Response;
 use LINE\LINEBot\TemplateActionBuilder\CameraRollTemplateActionBuilder;
 use LINE\LINEBot\TemplateActionBuilder\CameraTemplateActionBuilder;
 use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
+use Storage;
 
 class LineBotMealHelper extends LineBotActionHandler
 {
     /**
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var Model
      */
     private $processStatus;
 
@@ -33,7 +37,7 @@ class LineBotMealHelper extends LineBotActionHandler
 
     public function handle()
     {
-
+        /* 文字輸入 */
         [$meal, $command] = $this->parseMessage($this->message);
         $this->processStatus = $this->memory->processStatus()->firstOrCreate([]);
 
@@ -45,14 +49,10 @@ class LineBotMealHelper extends LineBotActionHandler
             return $this->askWayOfRecord();
         }
 
-        $processStatus = $this->memory->processStatus;
-        if (is_null($processStatus)) {
-            return null;
+        if ($command === 'add-image') {
+            return $this->handleForImageUpload();
         }
 
-        if ($processStatus->isOnReadyAdd()) {
-
-        }
     }
 
     public function reply($message)
@@ -104,5 +104,24 @@ class LineBotMealHelper extends LineBotActionHandler
                 )
             );
         })->all();
+    }
+
+    private function handleForImageUpload()
+    {
+        [$meal, $command, $messageId] = $this->parseMessage($this->message);
+        /* @var ProcessStatus $processStatus */
+        $processStatus = $this->memory->processStatus;
+        if (is_null($processStatus)) {
+            return null;
+        }
+
+        if (! $processStatus->isOnSelectMealType()) {
+            return null;
+        }
+
+        /* @var Response $resp */
+        $resp = $this->lineBot->getMessageContent($messageId);
+
+        Storage::disk('line-meal')->put('/line/test.jpg', $resp->getRawBody());
     }
 }
