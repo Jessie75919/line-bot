@@ -8,9 +8,6 @@ use Illuminate\Support\Collection;
 
 class LineBotActionKeywordReplier extends LineBotActionHandler
 {
-    private $memory;
-    private $message;
-
     /**
      * LineBotActionKeywordReplier constructor.
      * @param $memory
@@ -18,8 +15,7 @@ class LineBotActionKeywordReplier extends LineBotActionHandler
      */
     public function __construct($memory, $message)
     {
-        $this->memory = $memory;
-        $this->message = $message;
+        parent::__construct($memory, $message);
     }
 
     public function handle()
@@ -28,7 +24,11 @@ class LineBotActionKeywordReplier extends LineBotActionHandler
         $keywords = Message::where('keyword', $this->message)
             ->where('channel_id', $this->memory->channel_id)->get();
 
-        $message = count($keywords) > 0 ? $keywords->random()->message : null;
+        if (count($keywords) == 0) {
+            return null;
+        }
+
+        $message = $keywords->random()->message;
 
         return $this->reply($message);
     }
