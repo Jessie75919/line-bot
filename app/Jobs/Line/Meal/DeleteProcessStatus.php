@@ -3,6 +3,7 @@
 namespace App\Jobs\Line\Meal;
 
 use App\Models\Line\ProcessStatus;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -29,10 +30,15 @@ class DeleteProcessStatus implements ShouldQueue
     /**
      * Execute the job.
      * @return void
-     * @throws \Exception
      */
     public function handle()
     {
-        $this->processStatus->delete();
+        try {
+            if ($this->processStatus) {
+                $this->processStatus->delete();
+            }
+        } catch (Exception $e) {
+            \Log::error(__METHOD__." => ".$e);
+        }
     }
 }
