@@ -46,8 +46,8 @@ class LineBotRouter
     public function __construct(BaseEvent $messageEvent)
     {
         $this->messageEvent = $messageEvent;
-        $this->parseData()
-            ->intiMemory()
+        $this->intiMemory()
+            ->parseData()
             ->initRoute();
     }
 
@@ -127,7 +127,10 @@ class LineBotRouter
         if ($this->messageEvent instanceof PostbackEvent) {
             $this->message = $this->messageEvent->getPostbackData();
         } elseif ($this->messageEvent instanceof ImageMessage) {
-            $this->message = 'meal，add-image，'.$this->messageEvent->getMessageId();
+            if ($processStatus = $this->memory->processStatus) {
+                $purpose = $processStatus->purpose;
+                $this->message = "{$purpose}，image-upload，".$this->messageEvent->getMessageId();
+            }
         } else {
             $this->message = $this->messageEvent->getText();
         }
