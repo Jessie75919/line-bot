@@ -2,27 +2,24 @@
 
 namespace App\Services\LineBot\ActionHandler\Meal;
 
+use App\Jobs\Line\Meal\DeleteProcessStatus;
+use App\Jobs\Line\Meal\UploadMealImage;
 use App\Models\Line\Meal;
 use App\Models\Line\MealType;
 use App\Models\Line\ProcessStatus;
 use App\Models\Memory;
 use App\Services\LineBot\ActionHandler\LineBotActionHandler;
-use Illuminate\Database\Eloquent\Model;
 use LINE\LINEBot;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder;
 use LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder;
-use LINE\LINEBot\Response;
 use LINE\LINEBot\TemplateActionBuilder\CameraRollTemplateActionBuilder;
 use LINE\LINEBot\TemplateActionBuilder\CameraTemplateActionBuilder;
 use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
-use Storage;
 
 class LineBotMealHelper extends LineBotActionHandler
 {
-    /**
-     * @var Model
-     */
+    /** @var ProcessStatus */
     private $processStatus;
 
     /**
@@ -49,10 +46,9 @@ class LineBotMealHelper extends LineBotActionHandler
             return $this->askWayOfRecord();
         }
 
-        if ($command === 'add-image') {
+        if ($command === 'image-upload') {
             return $this->handleForImageUpload();
         }
-
     }
 
     public function reply($message)
@@ -90,6 +86,10 @@ class LineBotMealHelper extends LineBotActionHandler
         /* @var Meal $meal */
         $meal = $this->memory->getTodayMealByType($mealTypeId);
         $this->processStatus->mealSelectMealType($meal->meal_type_id);
+
+        dispatch(new DeleteProcessStatus($this->processStatus))
+            ->delay(now()->addMinutes(5));
+
         return $this->reply($message);
     }
 
@@ -119,9 +119,11 @@ class LineBotMealHelper extends LineBotActionHandler
             return null;
         }
 
-        /* @var Response $resp */
-        $resp = $this->lineBot->getMessageContent($messageId);
+        dispatch(new UploadMealImage($this->memory, $messageId));
 
-        Storage::disk('line-meal')->put('/line/test.jpg', $resp->getRawBody());
+        $mealType = $processStatus->getMealType();
+        $message = new TextMessageBuilder("🙂️ 已經幫你記錄好{$mealType->name}囉！");
+
+        return $this->reply($message);
     }
 }
