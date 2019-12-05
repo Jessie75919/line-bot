@@ -12,10 +12,9 @@ class Meal extends Model
     protected $fillable = [
         'memory_id',
         'meal_type_id',
-        'photo_url',
+        'image_url',
         'comment',
         'save_date',
-        'line_message_id',
     ];
 
     public function memory()
