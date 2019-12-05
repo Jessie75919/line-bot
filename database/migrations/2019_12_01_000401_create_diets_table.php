@@ -16,12 +16,12 @@ class CreateDietsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('memory_id');
             $table->unsignedInteger('meal_type_id');
-            $table->string('photo_url')->nullable();
+            $table->string('image_url')->nullable();
             $table->string('comment')->nullable();
-            $table->string('line_message_id')->nullable();
             $table->date('save_date');
             $table->timestamps();
             $table->index('memory_id');
+            $table->index('meal_type_id');
         });
     }
 
