@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property string status
  * @property array data
+ * @property mixed purpose
  */
 class ProcessStatus extends Model
 {
@@ -50,11 +51,6 @@ class ProcessStatus extends Model
         return $this->status === self::MEAL['SELECT_MEAL_TYPE'];
     }
 
-    public function isOnReadyAdd(): bool
-    {
-        return $this->status === self::MEAL['READY_ADD'];
-    }
-
     public function updateProcessStatus($purpose, $command, $status, $data)
     {
         return $this->update([
@@ -75,22 +71,19 @@ class ProcessStatus extends Model
         );
     }
 
+    public function getMealType()
+    {
+        return isset($this->data['meal_type_id'])
+            ? MealType::find($this->data['meal_type_id'])
+            : null;
+    }
+
     public function mealSelectMealType(int $mealTypeId)
     {
         return $this->updateProcessStatus(
             'meal',
             self::MEAL['SELECT_MEAL_TYPE'],
             self::MEAL['SELECT_MEAL_TYPE'],
-            ['meal_type_id' => $mealTypeId]
-        );
-    }
-
-    public function mealReadySaveTextRecord(int $mealTypeId)
-    {
-        return $this->updateProcessStatus(
-            'meal',
-            'ready_add',
-            'ready_add',
             ['meal_type_id' => $mealTypeId]
         );
     }
