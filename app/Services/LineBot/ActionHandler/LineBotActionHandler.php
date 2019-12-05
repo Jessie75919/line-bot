@@ -8,12 +8,14 @@
 
 namespace App\Services\LineBot\ActionHandler;
 
+use App\Models\Memory;
 use App\Services\LineBot\Router\LineBotRouter;
 use LINE\LINEBot;
 
 abstract class LineBotActionHandler
 {
     protected $replyToken;
+    /* @var Memory */
     protected $memory;
     protected $message;
     /* @var LINEBot lineBot */
@@ -50,6 +52,7 @@ abstract class LineBotActionHandler
     /**
      * @param $message
      * @return mixed
+     * @throws \ReflectionException
      */
     public function reply($message)
     {
