@@ -2,7 +2,6 @@
 
 namespace App\Services\LineBot\ActionHandler\Meal;
 
-use App\Jobs\Line\Meal\DeleteProcessStatus;
 use App\Jobs\Line\Meal\UploadMealImage;
 use App\Models\Line\Meal;
 use App\Models\Line\MealReminder;
@@ -40,7 +39,7 @@ class LineBotMealHelper extends LineBotActionHandler
         $message = null;
 
         if ($command === 'start') {
-            $message = $this->showMealType();
+            $message = $this->handleMealStart('hi～hi，請問要記錄哪一餐呢？');
         }
 
         if ($command === 'select') {
@@ -64,13 +63,11 @@ class LineBotMealHelper extends LineBotActionHandler
      * @param  string  $text
      * @return TextMessageBuilder
      */
-    public function getMealTypeQuickMenus(string $text): TextMessageBuilder
+    public function handleMealStart(string $text): TextMessageBuilder
     {
-        $mealsBtns = MealType::getMealQuickReplyButtons();
-        return new TextMessageBuilder(
-            $text,
-            new QuickReplyMessageBuilder($mealsBtns)
-        );
+        return app(LineBotMealMenu::class)
+            ->startMenu($this->processStatus)
+            ->getMealTypeQuickMenus($text);
     }
 
     protected function reply($message)
@@ -78,12 +75,6 @@ class LineBotMealHelper extends LineBotActionHandler
         /* @var LINEBot bot */
         $bot = app(LINEBot::class);
         return $bot->replyMessage($this->replyToken, $message);
-    }
-
-    protected function showMealType()
-    {
-        $this->processStatus->mealStart();
-        return $this->getMealTypeQuickMenus('hi～hi，請問要記錄哪一餐呢？');
     }
 
     /**
@@ -97,9 +88,6 @@ class LineBotMealHelper extends LineBotActionHandler
         /* @var Meal $meal */
         $meal = $this->memory->getTodayMealByType($mealTypeId);
         $this->processStatus->mealSelectMealType($meal->meal_type_id);
-
-        dispatch(new DeleteProcessStatus($this->processStatus))
-            ->delay(now()->addMinutes(5));
 
         $quickReply = new QuickReplyMessageBuilder([
             new QuickReplyButtonBuilder(new CameraTemplateActionBuilder('拍照記錄')),
