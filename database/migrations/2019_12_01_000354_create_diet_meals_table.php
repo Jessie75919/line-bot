@@ -8,14 +8,38 @@ use Illuminate\Support\Facades\Schema;
 class CreateDietMealsTable extends Migration
 {
     const MEAL_TYPE = [
-        'BREAKFAST' => '早餐',
-        'BRUNCH' => '早午餐',
-        'LUNCH' => '午餐',
-        'AFTERNOON_TEA' => '下午茶',
-        'DINNER' => '晚餐',
-        'NIGHT_SNACK' => '宵夜',
-        'NIBBLE' => '零食',
-        'DESSERT' => '甜點',
+        'BREAKFAST' => [
+            'name' => '早餐',
+            'time' => '08:00',
+        ],
+        'BRUNCH' => [
+            'name' => '早午餐',
+            'time' => '10:00',
+        ],
+        'LUNCH' => [
+            'name' => '午餐',
+            'time' => '12:00',
+        ],
+        'AFTERNOON_TEA' => [
+            'name' => '下午茶',
+            'time' => '15:00',
+        ],
+        'DINNER' => [
+            'name' => '晚餐',
+            'time' => '19:00',
+        ],
+        'NIGHT_SNACK' => [
+            'name' => '宵夜',
+            'time' => '22:00',
+        ],
+        'NIBBLE' => [
+            'name' => '零食',
+            'time' => '20:00',
+        ],
+        'DESSERT' => [
+            'name' => '甜點',
+            'time' => '16:00',
+        ],
     ];
 
     /**
@@ -28,13 +52,15 @@ class CreateDietMealsTable extends Migration
             $table->increments('id');
             $table->string('key', 50);
             $table->string('name', 50);
+            $table->time('time');
             $table->timestamps();
         });
 
-        foreach (self::MEAL_TYPE as $mealKey => $mealName) {
+        foreach (self::MEAL_TYPE as $mealKey => $meal) {
             MealType::create([
                 'key' => $mealKey,
-                'name' => $mealName,
+                'name' => $meal['name'],
+                'time' => $meal['time'],
             ]);
         }
     }
