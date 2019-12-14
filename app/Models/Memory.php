@@ -85,4 +85,9 @@ class Memory extends Model
         ]);
     }
 
+    public function getProcessStatus(): ProcessStatus
+    {
+        return $this->processStatus()->firstOrCreate([]);
+    }
+
 }
