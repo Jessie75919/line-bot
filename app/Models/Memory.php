@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Line\Meal;
+use App\Models\Line\MealReminder;
 use App\Models\Line\MealType;
 use App\Models\Line\ProcessStatus;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int channel_id
  * @property string process_status
  * @property ProcessStatus processStatus
+ * @property mixed mealReminders
  */
 class Memory extends Model
 {
@@ -58,6 +60,11 @@ class Memory extends Model
     public function processStatus()
     {
         return $this->hasOne(ProcessStatus::class);
+    }
+
+    public function mealReminders()
+    {
+        return $this->hasMany(MealReminder::class);
     }
 
     /**
