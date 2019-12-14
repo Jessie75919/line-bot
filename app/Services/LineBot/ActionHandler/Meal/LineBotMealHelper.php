@@ -16,7 +16,6 @@ use LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder;
 use LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder;
 use LINE\LINEBot\TemplateActionBuilder\CameraRollTemplateActionBuilder;
 use LINE\LINEBot\TemplateActionBuilder\CameraTemplateActionBuilder;
-use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
 
 class LineBotMealHelper extends LineBotActionHandler
 {
@@ -37,23 +36,41 @@ class LineBotMealHelper extends LineBotActionHandler
     {
         /* 文字輸入 */
         [$meal, $command] = $this->parseMessage($this->message);
-        $this->processStatus = $this->memory->processStatus()->firstOrCreate([]);
+        $this->processStatus = $this->memory->getProcessStatus();
+        $message = null;
 
         if ($command === 'start') {
-            return $this->showMealType();
+            $message = $this->showMealType();
         }
 
         if ($command === 'select') {
-            return $this->askWayOfRecord();
+            $message = $this->askWayOfRecord();
         }
 
         if ($command === 'setting') {
-            return $this->setSetting();
+            $message = $this->setSetting();
         }
 
         if ($command === 'image-upload') {
-            return $this->handleForImageUpload();
+            $message = $this->handleForImageUpload();
         }
+
+        if ($message) {
+            $this->reply($message);
+        }
+    }
+
+    /**
+     * @param  string  $text
+     * @return TextMessageBuilder
+     */
+    public function getMealTypeQuickMenus(string $text): TextMessageBuilder
+    {
+        $mealsBtns = MealType::getMealQuickReplyButtons();
+        return new TextMessageBuilder(
+            $text,
+            new QuickReplyMessageBuilder($mealsBtns)
+        );
     }
 
     protected function reply($message)
@@ -63,17 +80,10 @@ class LineBotMealHelper extends LineBotActionHandler
         return $bot->replyMessage($this->replyToken, $message);
     }
 
-    /**
-     * @return mixed
-     */
     protected function showMealType()
     {
-        $mealsBtns = $this->getMealQuickReplyButtons();
-        $quickReply = new QuickReplyMessageBuilder($mealsBtns);
-
-        $message = new TextMessageBuilder('hi～hi，請問要記錄哪一餐呢？', $quickReply);
         $this->processStatus->mealStart();
-        return $this->reply($message);
+        return $this->getMealTypeQuickMenus('hi～hi，請問要記錄哪一餐呢？');
     }
 
     /**
@@ -83,11 +93,7 @@ class LineBotMealHelper extends LineBotActionHandler
     protected function askWayOfRecord()
     {
         [$meal, $command, $mealTypeId] = $this->parseMessage($this->message);
-        $quickReply = new QuickReplyMessageBuilder([
-            new QuickReplyButtonBuilder(new CameraTemplateActionBuilder('拍照記錄')),
-            new QuickReplyButtonBuilder(new CameraRollTemplateActionBuilder('使用相簿')),
-        ]);
-        $message = new TextMessageBuilder('好哦！請問要用什麼方式記錄呢？', $quickReply);
+
         /* @var Meal $meal */
         $meal = $this->memory->getTodayMealByType($mealTypeId);
         $this->processStatus->mealSelectMealType($meal->meal_type_id);
@@ -95,20 +101,12 @@ class LineBotMealHelper extends LineBotActionHandler
         dispatch(new DeleteProcessStatus($this->processStatus))
             ->delay(now()->addMinutes(5));
 
-        return $this->reply($message);
-    }
+        $quickReply = new QuickReplyMessageBuilder([
+            new QuickReplyButtonBuilder(new CameraTemplateActionBuilder('拍照記錄')),
+            new QuickReplyButtonBuilder(new CameraRollTemplateActionBuilder('使用相簿')),
+        ]);
 
-    private function getMealQuickReplyButtons()
-    {
-        return MealType::all()->map(function ($mealType) {
-            return new QuickReplyButtonBuilder(
-                new PostbackTemplateActionBuilder(
-                    $mealType->name,
-                    "meal，select，{$mealType->id}",
-                    "hi，我想要記錄{$mealType->name} 🙂️"
-                )
-            );
-        })->all();
+        return new TextMessageBuilder('好哦！請問要用什麼方式記錄呢？', $quickReply);
     }
 
     private function handleForImageUpload()
@@ -127,39 +125,38 @@ class LineBotMealHelper extends LineBotActionHandler
         dispatch(new UploadMealImage($this->memory, $messageId));
 
         $mealType = $processStatus->getMealType();
-        $message = new TextMessageBuilder("🙂️ 已經幫你記錄好{$mealType->name}囉！");
 
-        return $this->reply($message);
+        return new TextMessageBuilder("🙂️ 已經幫你記錄好{$mealType->name}囉！");
     }
 
     private function setSetting()
     {
-        [$meal, $command, $data] = $this->parseMessage($this->message);
+        [, , $data] = $this->parseMessage($this->message);
         $notifyTimes = json_decode($data, true);
 
+        $this->memory->mealReminders()->delete();
+
         if (count($notifyTimes) === 0) {
-            $this->memory->mealReminders()->delete();
-            $messageStr = "已經幫你關閉所有提醒囉！你要記得自己提醒自己喔 😥️";
-        } else {
-            foreach ($notifyTimes as $time) {
-                MealReminder::updateOrCreate([
-                    'memory_id' => $this->memory->id,
-                    'meal_type_id' => $time['meal_type_id'],
-                ], [
-                    'remind_at' => $time['time'],
-                ]);
-            }
+            return new TextMessageBuilder("已經幫你關閉所有提醒囉！你要記得自己提醒自己喔 😥️");
+        }
 
-            $mealsStr = $this->getMealsStr();
+        foreach ($notifyTimes as $time) {
+            MealReminder::create([
+                'memory_id' => $this->memory->id,
+                'meal_type_id' => $time['meal_type_id'],
+                'remind_at' => $time['time'],
+            ]);
+        }
 
-            $messageStr = <<<EOD
+        $mealsStr = $this->getMealsStr();
+
+        $messageStr = <<<EOD
 🙂️ 已經幫您設定好以下提醒時間囉！
 
 {$mealsStr}
 EOD;
-        }
 
-        return $this->reply(new TextMessageBuilder($messageStr));
+        return new TextMessageBuilder($messageStr);
     }
 
     /**
@@ -167,7 +164,9 @@ EOD;
      */
     private function getMealsStr()
     {
-        return $this->memory->mealReminders
+        return $this->memory->mealReminders()
+            ->orderBy('meal_type_id')
+            ->get()
             ->map(function ($reminder) {
                 $mealType = MealType::find($reminder->meal_type_id);
                 [$hour, $minute,] = explode(':', $reminder->remind_at);
