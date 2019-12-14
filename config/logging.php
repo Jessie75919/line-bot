@@ -68,6 +68,14 @@ return [
             'permission' => 0664,
         ],
 
+        'meal' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/meal/meal.log'),
+            'level' => 'debug',
+            'days' => 7,
+            'permission' => 0664,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
