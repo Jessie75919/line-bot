@@ -56,7 +56,7 @@ class LineBotMealHelper extends LineBotActionHandler
         }
     }
 
-    public function reply($message)
+    protected function reply($message)
     {
         /* @var LINEBot bot */
         $bot = app(LINEBot::class);

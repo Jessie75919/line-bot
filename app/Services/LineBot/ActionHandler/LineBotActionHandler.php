@@ -49,16 +49,6 @@ abstract class LineBotActionHandler
         })->toArray();
     }
 
-    /**
-     * @param $message
-     * @return mixed
-     * @throws \ReflectionException
-     */
-    public function reply($message)
-    {
-        return $this->lineBot->replyText($this->replyToken, $message);
-    }
-
     abstract public function handle();
 
     /**
@@ -69,5 +59,15 @@ abstract class LineBotActionHandler
     {
         $this->replyToken = $replyToken;
         return $this;
+    }
+
+    /**
+     * @param $message
+     * @return mixed
+     * @throws \ReflectionException
+     */
+    protected function reply($message)
+    {
+        return $this->lineBot->replyText($this->replyToken, $message);
     }
 }
