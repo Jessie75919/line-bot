@@ -1,6 +1,6 @@
 <template>
 	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-		<a class="navbar-brand" href="#">Give Me Lighter!</a>
+		<a class="navbar-brand" href="#">體重管理小幫手</a>
 		<button aria-controls="navbarSupportedContent" aria-expanded="false"
 		        aria-label="Toggle navigation"
 		        class="navbar-toggler"
