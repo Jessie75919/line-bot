@@ -9,8 +9,8 @@ export class LineLiffMealApi {
     return api.get(`${this._baseUrl}/setting/${this._userId}`);
   }
 
-  getWeightsRecords() {
-    return api.get(`${this._baseUrl}/records/all/${this._userId}`);
+  getMealTypes() {
+    return api.get(`${this._baseUrl}/meal_types`);
   }
 
   getWeeklyWeightsRecords() {

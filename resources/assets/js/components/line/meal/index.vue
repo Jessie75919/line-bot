@@ -11,22 +11,12 @@
 		></header-bar>
 		<div class="liff-content">
 			<transition mode="out-in" name="fade">
-				<meal-input :liffService="liffService"
-				            :setting="setting"
-				            @startLoading="setLoading(true)"
-				            @stopLoading="setLoading(false)"
-				            v-if="lineLiffApi && page ==='index'">
-				</meal-input>
 				<meal-setting :liffService="liffService"
+				              :lineLiffApi="lineLiffApi"
 				              :setting="setting"
 				              @stopLoading="setLoading(false)"
-				              v-else-if="lineLiffApi && page === 'setting'">
+				              v-if="lineLiffApi && page === 'index'">
 				</meal-setting>
-				<meal-records :lineLiffApi="lineLiffApi"
-				              @startLoading="setLoading(true)"
-				              @stopLoading="setLoading(false)"
-				              v-else-if="lineLiffApi && page === 'records'">
-				</meal-records>
 			</transition>
 		</div>
 	</div>
@@ -55,10 +45,7 @@
         appUrl: document.getElementById('app_url').value,
         page: document.getElementById('page').value,
         lineLiffApi: null,
-        setting: {
-          enable_notification: false,
-          notify_at: null,
-        },
+        setting: null,
       };
     },
     methods: {
@@ -75,17 +62,11 @@
       const profile = this.liffService.profile;
       this.lineLiffApi = new LineLiffMealApi(this.appUrl, profile.userId);
       this.isLoading = false;
-//      this.lineLiffApi.getSetting()
-//        .then(res => {
-//            const setting = res.data.data;
-//            if (setting) {
-//              this.$set(this, 'setting', setting);
-//              this.isLoading = false;
-//            } else {
-//              this.page = 'setting';
-//            }
-//          }
-//        );
+      this.lineLiffApi.getSetting()
+        .then(res => {
+            this.$set(this, 'setting', res.data.data);
+          }
+        );
     }
   };
 </script>
