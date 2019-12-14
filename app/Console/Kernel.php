@@ -9,6 +9,7 @@ use App\Console\Commands\Line\NotifyForSaveWeightRecord;
 use App\Console\Commands\Line\NotifyForToDoReminder;
 use App\Console\Commands\Line\NotifyForWeeklySummary;
 use App\Console\Commands\Line\NotifyToClockInOut;
+use App\Console\Commands\Line\RemindToSaveMeal;
 use App\Console\Commands\MailTest;
 use App\Console\Commands\UrlSpider;
 use App\Services\LineExchangeRate\ExchangeRateService;
@@ -31,6 +32,7 @@ class Kernel extends ConsoleKernel
         NotifyForSaveWeightRecord::class,
         NotifyForWeeklySummary::class,
         NotifyForToDoReminder::class,
+        RemindToSaveMeal::class,
     ];
 
     /**
@@ -45,6 +47,7 @@ class Kernel extends ConsoleKernel
         $this->registerScheduleForNotifyWeightRecord($schedule);
         $this->registerScheduleForNotifyForWeeklySummary($schedule);
         $this->registerScheduleForNotifyForReminder($schedule);
+        $this->registerScheduleForNotifyForMealRecord($schedule);
     }
 
     /**
@@ -69,6 +72,13 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('line:notify-for-save-record')
             ->everyThirtyMinutes()
+            ->timezone('Asia/Taipei');
+    }
+
+    private function registerScheduleForNotifyForMealRecord(Schedule $schedule)
+    {
+        $schedule->command('line:notify-for-save-meal')
+            ->everyFifteenMinutes()
             ->timezone('Asia/Taipei');
     }
 
