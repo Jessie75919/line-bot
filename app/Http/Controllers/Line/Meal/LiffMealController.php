@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Line\Meal;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\MealRemindersResource;
+use App\Http\Resources\MealReminderCollection;
 use App\Http\Resources\MealTypesResource;
 use App\Models\Line\MealType;
 use App\Models\Memory;
@@ -30,8 +30,8 @@ class LiffMealController extends Controller
         /* @var Collection $mealReminders */
         $mealReminders = $memory->mealReminders;
 
-        return $mealReminders->count()
-            ? new MealRemindersResource($mealReminders)
+        return $mealReminders->count() > 0
+            ? new MealReminderCollection($mealReminders)
             : response()->json([]);
     }
 
