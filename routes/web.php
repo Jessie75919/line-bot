@@ -19,6 +19,7 @@ Route::group(['prefix' => 'line'], function () {
         });
         Route::group(['prefix' => 'meal'], function () {
             Route::get("index", 'Line\Meal\LiffMealController@index');
+            Route::get("meal_types", 'Line\Meal\LiffMealController@mealTypes');
             Route::get("setting/{memory}", 'Line\Meal\LiffMealController@setting');
             Route::get("records/all/{memory}", 'Line\Meal\LiffMealController@weightRecords');
             Route::get("records/weekly/{memory}", 'Line\Meal\LiffMealController@weeklyData');

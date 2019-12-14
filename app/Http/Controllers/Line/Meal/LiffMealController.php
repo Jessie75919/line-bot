@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Line\Meal;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MealTypesResource;
+use App\Models\Line\MealType;
 use App\Services\LineBot\Liff\LiffService;
 use Illuminate\Http\Request;
 
@@ -18,5 +20,9 @@ class LiffMealController extends Controller
                 'page' => $request->all()['page'] ?? 'index',
             ]
         );
+    }
+    public function mealTypes()
+    {
+        return new MealTypesResource(MealType::all());
     }
 }
