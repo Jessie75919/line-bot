@@ -21,4 +21,9 @@ class MealReminder extends Model
     {
         return $this->belongsTo(Memory::class);
     }
+
+    public function mealType()
+    {
+        return $this->belongsTo(MealType::class);
+    }
 }
