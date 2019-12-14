@@ -5,6 +5,7 @@ namespace App\Services\LineBot\ActionHandler\Meal;
 use App\Jobs\Line\Meal\DeleteProcessStatus;
 use App\Jobs\Line\Meal\UploadMealImage;
 use App\Models\Line\Meal;
+use App\Models\Line\MealReminder;
 use App\Models\Line\MealType;
 use App\Models\Line\ProcessStatus;
 use App\Models\Memory;
@@ -44,6 +45,10 @@ class LineBotMealHelper extends LineBotActionHandler
 
         if ($command === 'select') {
             return $this->askWayOfRecord();
+        }
+
+        if ($command === 'setting') {
+            return $this->setSetting();
         }
 
         if ($command === 'image-upload') {
@@ -125,5 +130,48 @@ class LineBotMealHelper extends LineBotActionHandler
         $message = new TextMessageBuilder("🙂️ 已經幫你記錄好{$mealType->name}囉！");
 
         return $this->reply($message);
+    }
+
+    private function setSetting()
+    {
+        [$meal, $command, $data] = $this->parseMessage($this->message);
+        $notifyTimes = json_decode($data, true);
+
+        if (count($notifyTimes) === 0) {
+            $this->memory->mealReminders()->delete();
+            $messageStr = "已經幫你關閉所有提醒囉！你要記得自己提醒自己喔 😥️";
+        } else {
+            foreach ($notifyTimes as $time) {
+                MealReminder::updateOrCreate([
+                    'memory_id' => $this->memory->id,
+                    'meal_type_id' => $time['meal_type_id'],
+                ], [
+                    'remind_at' => $time['time'],
+                ]);
+            }
+
+            $mealsStr = $this->getMealsStr();
+
+            $messageStr = <<<EOD
+🙂️ 已經幫您設定好以下提醒時間囉！
+
+{$mealsStr}
+EOD;
+        }
+
+        return $this->reply(new TextMessageBuilder($messageStr));
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getMealsStr()
+    {
+        return $this->memory->mealReminders
+            ->map(function ($reminder) {
+                $mealType = MealType::find($reminder->meal_type_id);
+                [$hour, $minute,] = explode(':', $reminder->remind_at);
+                return "{$mealType->name} : {$hour}:{$minute}";
+            })->implode("\n");
     }
 }
