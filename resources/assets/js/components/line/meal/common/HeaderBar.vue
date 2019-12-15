@@ -17,6 +17,12 @@
 					   class="nav-link">
 						⚙️ 飲食提醒設定<span class="sr-only"></span></a>
 				</li>
+				<li :class="{active: page === 'records'}" class="nav-item"
+				    data-target=".navbar-collapse.show" data-toggle="collapse">
+					<a @click="setPage('records')"
+					   class="nav-link"
+					>🗓️ 歷史記錄<span class="sr-only"></span></a>
+				</li>
 			</ul>
 		</div>
 	</nav>

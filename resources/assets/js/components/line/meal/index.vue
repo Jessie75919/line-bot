@@ -17,6 +17,11 @@
 				              @stopLoading="setLoading(false)"
 				              v-if="lineLiffApi && page === 'index'">
 				</meal-setting>
+				<meal-records :lineLiffApi="lineLiffApi"
+				              @startLoading="setLoading(true)"
+				              @stopLoading="setLoading(false)"
+				              v-else-if="lineLiffApi && page === 'records'">
+				</meal-records>
 			</transition>
 		</div>
 	</div>
