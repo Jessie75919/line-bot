@@ -3,8 +3,8 @@
 namespace App\Services\LineBot\ActionHandler\Meal;
 
 use App\Jobs\Line\Meal\DeleteProcessStatus;
+use App\Models\Line\MealType;
 use App\Models\Line\ProcessStatus;
-use Illuminate\Database\Eloquent\Model;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder;
 use LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder;
@@ -14,7 +14,7 @@ class LineBotMealMenu
 {
     public function getMealQuickReplyButtons()
     {
-        return Model::all()->map(function ($mealType) {
+        return MealType::all()->map(function ($mealType) {
             return new QuickReplyButtonBuilder(
                 new PostbackTemplateActionBuilder(
                     $mealType->name,
