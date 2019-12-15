@@ -31,7 +31,6 @@
   import { LineLiff } from '../services/LineLiff';
   import { LineLiffMealApi } from './api/LineLiffMealApi';
   import HeaderBar from './common/HeaderBar';
-  import MealInput from './pages/Input';
   import MealRecords from './pages/Records';
   import MealSetting from './pages/Setting';
 
@@ -39,7 +38,6 @@
     name: 'line-liff-index',
     components: {
       HeaderBar,
-      MealInput,
       MealSetting,
       MealRecords
     },
