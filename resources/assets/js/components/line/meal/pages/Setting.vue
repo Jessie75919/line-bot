@@ -72,13 +72,7 @@
     data() {
       return {
         mealTypes: null,
-        notify_times: [
-          {
-            meal_type_id: 1,
-            hour: '08',
-            minute: '00'
-          },
-        ],
+        notify_times: [],
       };
     },
     methods: {
