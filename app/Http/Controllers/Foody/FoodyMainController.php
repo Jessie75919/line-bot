@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Foody;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Services\LineBot\ActionHandler\LineBotActionFoodNearbySearcher;
+use App\Services\LineBot\ActionHandler\NearByFood\LineBotActionFoodNearbySearcher;
 use Illuminate\Http\Request;
 use Validator;
 

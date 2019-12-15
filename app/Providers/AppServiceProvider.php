@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Repository\LineBot\Meal\IMealRepo;
+use App\Repository\LineBot\Meal\MealRepo;
 use App\Services\Google\GooglePlaceApiService;
 use App\Services\LineBot\LineBotMessageReceiver;
 use App\Services\LineBot\PushHandler\LineBotPushService;
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use LINE\LINEBot;
@@ -26,9 +29,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        if ($this->app->environment() !== 'production') {
+            $this->app->register(IdeHelperServiceProvider::class);
+        }
         $this->lineBotRegister();
         $this->lineBotServiceRegister();
         $this->googlePlaceServiceRegister();
+        $this->bindRepos();
     }
 
     private function lineBotRegister()
@@ -51,5 +58,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(LineBotPushService::class, function () {
             return new LineBotPushService();
         });
+    }
+
+    private function bindRepos()
+    {
+        $this->app->bind(IMealRepo::class, MealRepo::class);
     }
 }

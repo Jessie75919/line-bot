@@ -38,8 +38,6 @@ class LineController extends Controller
         $response = $this->lineIndex->handle($messageEvt[0]);
 
         \Log::info(__METHOD__.' => '.print_r($response, true));
-
-        return response(200);
     }
 
     public function imagePreview(Request $request)

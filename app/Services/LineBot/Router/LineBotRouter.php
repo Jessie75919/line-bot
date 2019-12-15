@@ -3,29 +3,32 @@
 namespace App\Services\LineBot\Router;
 
 use App\Models\Memory;
+use App\Services\LineBot\ActionHandler\CurrencyRate\LineBotActionRateQuerier;
+use App\Services\LineBot\ActionHandler\CurrencyRate\LineBotActionRateWatcher;
+use App\Services\LineBot\ActionHandler\Help\LineBotCommandHelper;
+use App\Services\LineBot\ActionHandler\Keyword\LineBotActionKeywordReplier;
+use App\Services\LineBot\ActionHandler\Learner\LineBotActionLearner;
 use App\Services\LineBot\ActionHandler\LineBotActionHandler;
-use App\Services\LineBot\ActionHandler\LineBotActionKeywordReplier;
-use App\Services\LineBot\ActionHandler\LineBotActionLearner;
-use App\Services\LineBot\ActionHandler\LineBotActionRateQuerier;
-use App\Services\LineBot\ActionHandler\LineBotActionRateWatcher;
-use App\Services\LineBot\ActionHandler\LineBotActionWeightHelper;
-use App\Services\LineBot\ActionHandler\LineBotCommandHelper;
+use App\Services\LineBot\ActionHandler\Meal\LineBotMealHelper;
 use App\Services\LineBot\ActionHandler\Reminder\LineBotActionReminder;
+use App\Services\LineBot\ActionHandler\Weight\LineBotActionWeightHelper;
 use LINE\LINEBot\Event\BaseEvent;
+use LINE\LINEBot\Event\MessageEvent\ImageMessage;
 use LINE\LINEBot\Event\PostbackEvent;
 use LINE\LINEBot\Exception\InvalidEventSourceException;
 
 class LineBotRouter
 {
+    const HELP = 'help';
+    const DELIMITER_USE = ';|、|，|=';
+    const RATE = 'rate';
+    const RATE_WATCHER = 'rate_watcher';
+    const LEARN = 'learn';
+    const REMINDER = 'reminder';
+    const DELIMITER = '('.self::DELIMITER_USE.')';
+    const WEIGHT = 'weight';
+    const MEAL = 'meal';
 
-    public const HELP = 'help';
-    public const DELIMITER_USE = ';|、|，|=';
-    public const RATE = 'rate';
-    public const RATE_WATCHER = 'rate_watcher';
-    public const LEARN = 'learn';
-    public const REMINDER = 'reminder';
-    public const DELIMITER = '('.self::DELIMITER_USE.')';
-    public const WEIGHT = 'weight';
     /* @var array */
     public $routes = null;
     /** @var Memory */
@@ -33,7 +36,7 @@ class LineBotRouter
     /** @var BaseEvent */
     private $messageEvent;
     /** @var string */
-    private $text;
+    private $message;
 
     /**
      * LineBotRouter constructor.
@@ -43,19 +46,35 @@ class LineBotRouter
     public function __construct(BaseEvent $messageEvent)
     {
         $this->messageEvent = $messageEvent;
-        $this->parseText()
-            ->intiMemory()
+        $this->intiMemory()
+            ->parseData()
             ->initRoute();
     }
 
-    public function initRoute()
+    public function getController(): ?LineBotActionHandler
+    {
+        $replyToken = $this->messageEvent->getReplyToken();
+
+        foreach ($this->routes as $pattern) {
+            if (preg_match($pattern['pattern'], $this->message) == 1) {
+                \Log::info(__METHOD__."[".__LINE__."] => ROUTE :".$pattern['route']);
+                return $pattern['controller']
+                    ->setReplyToken($replyToken);
+            }
+        }
+
+        return (new LineBotActionKeywordReplier($this->memory, $this->message))
+            ->setReplyToken($replyToken);
+    }
+
+    private function initRoute()
     {
         if ($this->routes) {
             return;
         }
 
         $memory = $this->memory;
-        $text = $this->text;
+        $message = $this->message;
 
         $this->routes = [
             // Help指令
@@ -68,54 +87,54 @@ class LineBotRouter
             [
                 'pattern' => "/^(rate)".self::DELIMITER."(.*)/",
                 'route' => self::RATE,
-                'controller' => app(LineBotActionRateQuerier::class, compact('text')),
+                'controller' => app(LineBotActionRateQuerier::class, compact('message')),
             ],
             // 匯率每日通知指令
             [
                 'pattern' => "/^(rate-watcher)".self::DELIMITER."(.*)/",
                 'route' => self::RATE_WATCHER,
-                'controller' => app(LineBotActionRateWatcher::class, compact('memory', 'text')),
+                'controller' => app(LineBotActionRateWatcher::class, compact('memory', 'message')),
             ],
             // 提醒類型指令 : remRD = reminder Repeat Day \ remRW = reminder Repeat Week
             [
-                'pattern' => "/^(提醒|rem|reminder|remR.*){1}\s?".self::DELIMITER."(.*)/",
+                'pattern' => "/^(rem.*){1}\s?".self::DELIMITER."(.*)/",
                 'route' => self::REMINDER,
-                'controller' => app(LineBotActionReminder::class, compact('memory', 'text')),
+                'controller' => app(LineBotActionReminder::class, compact('memory', 'message')),
             ],
             /* 減重小幫手 */
             [
                 'pattern' => "/^(weight.*)".self::DELIMITER."(.*)/",
                 'route' => self::WEIGHT,
-                'controller' => app(LineBotActionWeightHelper::class, compact('memory', 'text')),
+                'controller' => app(LineBotActionWeightHelper::class, compact('memory', 'message')),
             ],
             // 學習類型指令
             [
                 'pattern' => "/^(學|learn){1}\s?".self::DELIMITER."(.*)/",
                 'route' => self::LEARN,
-                'controller' => app(LineBotActionLearner::class, compact('memory', 'text')),
+                'controller' => app(LineBotActionLearner::class, compact('memory', 'message')),
+            ],
+            // 飲食記錄小幫手
+            [
+                'pattern' => "/^(meal.*)\s?".self::DELIMITER."(.*)/",
+                'route' => self::MEAL,
+                'controller' => app(LineBotMealHelper::class, compact('memory', 'message')),
             ],
         ];
     }
 
-    public function getController(): ?LineBotActionHandler
-    {
-        foreach ($this->routes as $pattern) {
-            if (preg_match($pattern['pattern'], $this->text) == 1) {
-                \Log::info(__METHOD__."[".__LINE__."] => ROUTE :".$pattern['route']);
-                return $pattern['controller'];
-            }
-        }
-
-        return (new LineBotActionKeywordReplier($this->memory, $this->text));
-    }
-
-    private function parseText()
+    private function parseData()
     {
         if ($this->messageEvent instanceof PostbackEvent) {
-            $this->text = $this->messageEvent->getPostbackData();
+            $this->message = $this->messageEvent->getPostbackData();
+        } elseif ($this->messageEvent instanceof ImageMessage) {
+            if ($processStatus = $this->memory->processStatus) {
+                $purpose = $processStatus->purpose;
+                $this->message = "{$purpose}，image-upload，".$this->messageEvent->getMessageId();
+            }
         } else {
-            $this->text = $this->messageEvent->getText();
+            $this->message = $this->messageEvent->getText();
         }
+
         return $this;
     }
 

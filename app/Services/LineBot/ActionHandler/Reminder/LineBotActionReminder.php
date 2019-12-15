@@ -17,22 +17,16 @@ class LineBotActionReminder extends LineBotActionHandler
         "m" => 'Minute',
     ];
     private $repeatPeriod = null;
-    /**
-     * @var Memory
-     */
-    private $memory;
-    private $text;
     private $toDo;
 
     /**
      * LineBotLearnService constructor.
      * @param  Memory  $memory
-     * @param $text
+     * @param $message
      */
-    public function __construct(Memory $memory, $text)
+    public function __construct(Memory $memory, $message)
     {
-        $this->memory = $memory;
-        $this->text = $text;
+        parent::__construct($memory, $message);
     }
 
     /**
@@ -52,19 +46,24 @@ class LineBotActionReminder extends LineBotActionHandler
 
     public function handle()
     {
-        $msgArr = $this->parseMessage($this->text);
+        $msgArr = $this->parseMessage($this->message);
         $command = $this->getDetailCommand($msgArr);
 
         switch ($command) {
             case self::REMINDER_STATE:
-                return (new ReminderStateHandler($this->memory))->handle();
+                $message = (new ReminderStateHandler($this->memory))->handle();
+                break;
             case self::REMINDER_DELETE:
-                return (new DeleteReminderHandler($this->memory, $this->toDo))->handle();
+                $message = (new DeleteReminderHandler($this->memory, $this->toDo))->handle();
+                break;
             case self::REMINDER:
-                return (new CreateReminderHandler($this->memory, $msgArr, $this->repeatPeriod))->handle();
+                $message = (new CreateReminderHandler($this->memory, $msgArr, $this->repeatPeriod))->handle();
+                break;
             default:
-                return '🤨 指令好像輸入錯誤囉！';
+                $message = '😥️ 指令好像輸入錯誤囉！';
         }
+
+        return $this->reply($message);
     }
 
     private function getDetailCommand($msgArr)

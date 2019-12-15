@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands\Line;
 
-use App\Models\Weight;
 use App\Models\WeightSetting;
+use app\Services\LineBot\Liff\LiffService;
 use Illuminate\Console\Command;
 use LINE\LINEBot;
 use LINE\LINEBot\Constant\Flex\BubleContainerSize;
@@ -61,7 +61,7 @@ class NotifyForWeeklySummary extends Command
             ->setWeight(ComponentFontWeight::BOLD)
             ->setSize(ComponentFontSize::LG);
 
-        $desktopUrl = 'https://liff.line.me/'.Weight::getPageToken(config('line.link_of_weight_index'));
+        $desktopUrl = (new LiffService)->parseToHttpsUrl(config('line.link_of_weight_index'));
 
         $button = ButtonComponentBuilder::builder()
             ->setStyle(ComponentButtonStyle::PRIMARY)

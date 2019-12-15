@@ -2,10 +2,10 @@
 
 namespace App\Services\LineBot;
 
+use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use App\Services\LineBot\Router\LineBotRouter;
 use LINE\LINEBot;
 use LINE\LINEBot\Event\BaseEvent;
-use ReflectionException;
 
 class LineBotIndexService
 {
@@ -35,17 +35,15 @@ class LineBotIndexService
 
     public function handle(BaseEvent $messageEvent)
     {
-        $controller = app(LineBotRouter::class, ['messageEvent' => $messageEvent])
-            ->getController();
+        /* @var LineBotActionHandler $controller */
+        $controller =
+            app(LineBotRouter::class, ['messageEvent' => $messageEvent])
+                ->getController();
 
-        $message = $controller->handle();
-
-        \Log::info(__METHOD__."[".__LINE__."] => ".$message);
-
-        try {
-            return $this->lineBot->replyText($messageEvent->getReplyToken(), $message);
-        } catch (ReflectionException $e) {
-            \Log::error(__METHOD__." => ".$e);
+        if (is_null($controller)) {
+            return null;
         }
+
+        return $controller->handle();
     }
 }
