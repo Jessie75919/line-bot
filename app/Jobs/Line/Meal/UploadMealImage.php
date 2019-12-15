@@ -8,10 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
 use LINE\LINEBot;
 use LINE\LINEBot\Response;
-use Storage;
 
 class UploadMealImage implements ShouldQueue
 {
@@ -51,16 +49,10 @@ class UploadMealImage implements ShouldQueue
         $image = $LINEBot->getMessageContent($this->messageId)
             ->getRawBody();
 
-        $today = now('Asia/Taipei')->toDateString();
-        $uuid = (string) Str::uuid();
-        $path = "/{$this->memory->id}/{$today}/{$mealTypeId}/{$uuid}.jpeg";
+        $this->memory
+            ->getTodayMealByType($mealTypeId)
+            ->storeFile($image);
 
-        Storage::disk('line-meal')->put($path, $image);
-        $this->memory->meal()->create([
-            'meal_type_id' => $mealTypeId,
-            'image_url' => $path,
-            'save_date' => $today,
-        ]);
         $processStatus->delete();
     }
 }
