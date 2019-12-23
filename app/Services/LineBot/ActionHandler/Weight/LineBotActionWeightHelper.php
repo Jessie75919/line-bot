@@ -164,8 +164,7 @@ EOD;
 
         if (! isset($weightInputs['height']) ||
             ! isset($weightInputs['goal_fat']) ||
-            ! isset($weightInputs['goal_weight']) ||
-            ! (bool) ($weightInputs['enable_notification'])
+            ! isset($weightInputs['goal_weight'])
         ) {
             return $this->errorMessage();
         }
@@ -237,7 +236,7 @@ EOD;
 
     private function settingText($weightInputs): string
     {
-        if ($weightInputs['enable_notification'] === 0) {
+        if (! $weightInputs['enable_notification']) {
             return <<<EOD
 🔕 紀錄提醒：關閉
 EOD;
