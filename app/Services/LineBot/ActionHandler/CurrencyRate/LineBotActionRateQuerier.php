@@ -11,6 +11,7 @@ namespace App\Services\LineBot\ActionHandler\CurrencyRate;
 use App\Services\API\GuzzleApi;
 use App\Services\LineBot\ActionHandler\LineBotActionHandler;
 use App\Services\LineExchangeRate\ExchangeRateService;
+use LINE\LINEBot;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class LineBotActionRateQuerier extends LineBotActionHandler
@@ -28,6 +29,7 @@ class LineBotActionRateQuerier extends LineBotActionHandler
     public function __construct($message)
     {
         $this->exRate = new ExchangeRateService(new GuzzleApi());
+        $this->lineBot = app(LINEBot::class);
         $this->message = $message;
     }
 
