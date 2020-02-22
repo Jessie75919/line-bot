@@ -44,7 +44,7 @@ class LiffWeightController extends ApiController
     public function weeklyData(Memory $memory, WeightRepo $weightRepo)
     {
         $weightRecords = $weightRepo->setMemory($memory)
-            ->getWeightRecordsBeforeDays(7);
+            ->getWeightRecordsByNumber(7);
 
         return new WeightCollection($weightRecords);
     }

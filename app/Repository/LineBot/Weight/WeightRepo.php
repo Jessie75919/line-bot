@@ -17,14 +17,11 @@ class WeightRepo
             ->get();
     }
 
-    public function getWeightRecordsBeforeDays($beforeDay): Collection
+    public function getWeightRecordsByNumber($number): Collection
     {
-        $today = now('Asia/Taipei')->addDay();
-        $lastWeek = $today->copy()->subDays($beforeDay);
-
         return $this->memory->weights()
-            ->whereBetween('created_at', [$lastWeek->toDateString(), $today->toDateString()])
             ->orderBy('created_at')
+            ->take($number)
             ->get();
     }
 
