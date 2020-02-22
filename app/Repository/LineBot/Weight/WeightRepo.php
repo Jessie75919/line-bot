@@ -20,9 +20,10 @@ class WeightRepo
     public function getWeightRecordsByNumber($number): Collection
     {
         return $this->memory->weights()
-            ->orderBy('created_at')
+            ->latest()
             ->take($number)
-            ->get();
+            ->get()
+            ->reverse();
     }
 
     /**
