@@ -45,7 +45,6 @@ class Kernel extends ConsoleKernel
         $this->registerScheduleForExchangeRateWatcher($schedule);
         $this->registerScheduleForNotifyClockInOut($schedule);
         $this->registerScheduleForNotifyWeightRecord($schedule);
-        $this->registerScheduleForNotifyForWeeklySummary($schedule);
         $this->registerScheduleForNotifyForReminder($schedule);
         $this->registerScheduleForNotifyForMealRecord($schedule);
     }
@@ -91,13 +90,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('line:notify-to-clock-in-out')
             ->weekdays()
             ->dailyAt('18:30')
-            ->timezone('Asia/Taipei');
-    }
-
-    private function registerScheduleForNotifyForWeeklySummary(Schedule $schedule)
-    {
-        $schedule->command('line:notify-for-weekly-summary')
-            ->weeklyOn(0, '10:00')
             ->timezone('Asia/Taipei');
     }
 
