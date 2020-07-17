@@ -20,7 +20,7 @@
         "jquery-ui": "^1.12.1",
         "jquery-validation": "^1.17.0",
         "laravel-mix": "^2.0",
-        "lodash": "^4.17.10",
+        "lodash": "^4.17.19",
         "popper.js": "^1.12",
         "sortablejs": "^1.7.0",
         "vue": "^2.5.7"
